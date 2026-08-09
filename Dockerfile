@@ -9,4 +9,5 @@ COPY . .
 
 EXPOSE 8000
 
-CMD uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}
+# 启动：由 Python 代码读取 PORT 环境变量
+CMD ["python", "app.py"]

@@ -169,12 +169,13 @@ async def health_check():
 # ===== 启动脚本 =====
 if __name__ == "__main__":
     import uvicorn
+    port = int(os.environ.get("PORT", 8000))
     print("=" * 60)
     print("📊 AI 股票成交单审核平台")
     print("=" * 60)
     api_status = "✅ AI 审核已启用 (Claude API)" if os.environ.get("ANTHROPIC_API_KEY") else "⚠️  AI 审核未启用 (规则引擎模式)"
     print(f"   {api_status}")
-    print(f"   🌐 访问地址: http://localhost:8000")
-    print(f"   📖 API 文档: http://localhost:8000/docs")
+    print(f"   🌐 访问地址: http://localhost:{port}")
+    print(f"   📖 API 文档: http://localhost:{port}/docs")
     print("=" * 60)
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=port)

@@ -15,5 +15,5 @@ RUN mkdir -p uploads
 # 暴露端口
 EXPOSE 8000
 
-# 启动服务
-CMD ["python", "app.py"]
+# 启动服务（使用 PORT 环境变量，兼容 Railway）
+CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}"]

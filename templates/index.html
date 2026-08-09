@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 成交单审核平台</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- ====== Header ====== -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📊 AI 成交单审核平台</h1>
+                <p class="subtitle">上传股票成交单 PDF · 智能识别费用豁免 · 合规检查 · 异常检测</p>
+            </div>
+            <div class="header-badge" id="ai-status">🔍 检测中...</div>
+        </header>
+
+        <!-- ====== Main Content ====== -->
+        <main class="main">
+            <!-- Upload Zone -->
+            <section class="upload-section">
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-icon">📄</div>
+                    <h2>拖拽 PDF 文件到此处，或点击上传</h2>
+                    <p>支持 ZA Bank 及其他券商的股票成交单 (PDF)</p>
+                    <input type="file" id="file-input" accept=".pdf" hidden>
+                    <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+                        选择 PDF 文件
+                    </button>
+                    <p class="upload-hint">也支持批量上传多个文件</p>
+                </div>
+
+                <!-- File List -->
+                <div class="file-list" id="file-list"></div>
+
+                <!-- Progress -->
+                <div class="progress-container hidden" id="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <p class="progress-text" id="progress-text">正在处理...</p>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section hidden" id="results-section">
+                <div class="results-header">
+                    <h2>📋 审核报告</h2>
+                    <button class="btn btn-secondary" onclick="resetAll()">🔄 审核新文件</button>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="summary-cards" id="summary-cards"></div>
+
+                <!-- Fee Waiver Detail -->
+                <div class="card fee-waiver-card hidden" id="fee-waiver-card">
+                    <h3>🏷️ 费用豁免详情</h3>
+                    <div id="fee-waiver-content"></div>
+                </div>
+
+                <!-- AI Summary -->
+                <div class="card ai-summary-card hidden" id="ai-summary-card">
+                    <h3>🤖 AI 审核摘要</h3>
+                    <p id="ai-summary-text"></p>
+                </div>
+
+                <!-- Findings List -->
+                <div class="findings-section">
+                    <h3>🔍 审核发现 (<span id="findings-count">0</span>)</h3>
+                    <div id="findings-list"></div>
+                </div>
+
+                <!-- Contract Data Table -->
+                <div class="card data-table-card">
+                    <h3>📊 提取的成交单数据</h3>
+                    <div class="data-table" id="data-table"></div>
+                </div>
+
+                <!-- Raw Text -->
+                <details class="card raw-text-card">
+                    <summary>📝 原始 PDF 文本</summary>
+                    <pre id="raw-text"></pre>
+                </details>
+            </section>
+        </main>
+
+        <!-- ====== Footer ====== -->
+        <footer class="footer">
+            <p>AI Contract Note Audit Platform v1.0 · Powered by Claude API · 仅供内部审核使用</p>
+        </footer>
+    </div>
+
+    <script>
+    // ====== Global State ======
+    let auditResults = [];
+
+    // ====== Init ======
+    document.addEventListener('DOMContentLoaded', () => {
+        checkHealth();
+        setupDragDrop();
+        setupFileInput();
+    });
+
+    // ====== Health Check ======
+    async function checkHealth() {
+        try {
+            const resp = await fetch('/api/health');
+            const data = await resp.json();
+            const badge = document.getElementById('ai-status');
+            if (data.ai_enabled) {
+                badge.textContent = '🤖 AI 审核已启用';
+                badge.className = 'header-badge badge-on';
+            } else {
+                badge.textContent = '⚙️ 规则引擎模式';
+                badge.className = 'header-badge badge-off';
+            }
+        } catch (e) {
+            document.getElementById('ai-status').textContent = '⚠️ 服务未连接';
+            document.getElementById('ai-status').className = 'header-badge badge-error';
+        }
+    }
+
+    // ====== Drag & Drop ======
+    function setupDragDrop() {
+        const zone = document.getElementById('upload-zone');
+
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            zone.classList.add('drag-over');
+        });
+
+        zone.addEventListener('dragleave', () => {
+            zone.classList.remove('drag-over');
+        });
+
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
+            const files = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.pdf'));
+            if (files.length > 0) {
+                handleFiles(files);
+            } else {
+                alert('请上传 PDF 格式的文件。');
+            }
+        });
+    }
+
+    function setupFileInput() {
+        const input = document.getElementById('file-input');
+        input.addEventListener('change', () => {
+            if (input.files.length > 0) {
+                handleFiles(Array.from(input.files));
+            }
+        });
+    }
+
+    // ====== File Handling ======
+    function handleFiles(files) {
+        const list = document.getElementById('file-list');
+        list.innerHTML = files.map(f =>
+            `<div class="file-item">📄 ${f.name} (${formatSize(f.size)})</div>`
+        ).join('');
+
+        uploadFiles(files);
+    }
+
+    function formatSize(bytes) {
+        return bytes < 1024 ? bytes + ' B' :
+               bytes < 1048576 ? (bytes / 1024).toFixed(1) + ' KB' :
+               (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    // ====== Upload & Audit ======
+    async function uploadFiles(files) {
+        showProgress(true);
+        auditResults = [];
+
+        const total = files.length;
+        for (let i = 0; i < total; i++) {
+            updateProgress(i / total * 100, `正在处理 ${i + 1}/${total}: ${files[i].name}`);
+
+            const formData = new FormData();
+            formData.append('file', files[i]);
+
+            try {
+                const resp = await fetch('/api/audit', { method: 'POST', body: formData });
+                const data = await resp.json();
+
+                if (data.success) {
+                    auditResults.push(data);
+                } else {
+                    alert(`审核失败: ${data.error}`);
+                }
+            } catch (err) {
+                alert(`请求失败: ${err.message}`);
+            }
+        }
+
+        updateProgress(100, '审核完成!');
+        showProgress(false);
+
+        if (auditResults.length > 0) {
+            renderResults(auditResults);
+        }
+    }
+
+    // ====== Progress ======
+    function showProgress(show) {
+        document.getElementById('progress-container').classList.toggle('hidden', !show);
+    }
+
+    function updateProgress(percent, text) {
+        document.getElementById('progress-fill').style.width = percent + '%';
+        document.getElementById('progress-text').textContent = text;
+    }
+
+    // ====== Render Results ======
+    function renderResults(results) {
+        document.getElementById('results-section').classList.remove('hidden');
+
+        const r = results[0]; // Show first result in detail
+
+        // Summary Cards
+        renderSummaryCards(r);
+
+        // Fee Waiver
+        renderFeeWaiver(r);
+
+        // AI Summary
+        if (r.ai_summary) {
+            document.getElementById('ai-summary-card').classList.remove('hidden');
+            document.getElementById('ai-summary-text').textContent = r.ai_summary;
+        }
+
+        // Findings
+        renderFindings(r.findings);
+
+        // Data Table
+        renderDataTable(r.contract_data);
+
+        // Raw Text
+        document.getElementById('raw-text').textContent = r.contract_data.raw_text || '无';
+
+        // Scroll to results
+        document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderSummaryCards(r) {
+        document.getElementById('summary-cards').innerHTML = `
+            <div class="summary-card card-critical">
+                <div class="sc-number">${r.critical_count}</div>
+                <div class="sc-label">严重问题</div>
+            </div>
+            <div class="summary-card card-warning">
+                <div class="sc-number">${r.warning_count}</div>
+                <div class="sc-label">警告</div>
+            </div>
+            <div class="summary-card card-info">
+                <div class="sc-number">${r.info_count}</div>
+                <div class="sc-label">信息</div>
+            </div>
+            <div class="summary-card card-total">
+                <div class="sc-number">${r.total_findings}</div>
+                <div class="sc-label">总计发现</div>
+            </div>
+        `;
+    }
+
+    function renderFeeWaiver(r) {
+        const fw = r.fee_waiver_details;
+        if (!fw) return;
+
+        const card = document.getElementById('fee-waiver-card');
+        card.classList.remove('hidden');
+
+        let html = '<div class="fee-grid">';
+        html += `<div class="fee-item ${fw.commission_waived ? 'waived' : ''}">
+            <span class="fee-label">佣金</span>
+            <span class="fee-value">${fw.commission_waived ? '✅ 已豁免' : '正常收取'}</span>
+        </div>`;
+        html += `<div class="fee-item ${fw.platform_fee_waived ? 'waived' : ''}">
+            <span class="fee-label">平台费</span>
+            <span class="fee-value">${fw.platform_fee_waived ? '✅ 已豁免' : '正常收取'}</span>
+        </div>`;
+        html += `<div class="fee-item">
+            <span class="fee-label">共节省费用</span>
+            <span class="fee-value">${fw.waiver_currency} ${fw.total_fees_saved.toFixed(2)}</span>
+        </div>`;
+        if (fw.has_remark) {
+            html += `<div class="fee-item full-width">
+                <span class="fee-label">备注</span>
+                <span class="fee-value">${fw.remark_text_cn || fw.remark_text}</span>
+            </div>`;
+        }
+        html += '</div>';
+        document.getElementById('fee-waiver-content').innerHTML = html;
+    }
+
+    function renderFindings(findings) {
+        document.getElementById('findings-count').textContent = findings.length;
+
+        const severityLabels = { critical: '🚨', warning: '⚠️', info: 'ℹ️' };
+        const severityClasses = { critical: 'finding-critical', warning: 'finding-warning', info: 'finding-info' };
+        const categoryLabels = {
+            fee_waiver: '费用豁免',
+            compliance: '合规检查',
+            anomaly: '异常检测',
+            data_quality: '数据质量'
+        };
+
+        document.getElementById('findings-list').innerHTML = findings.map(f => `
+            <div class="finding-item ${severityClasses[f.severity]}">
+                <div class="finding-header">
+                    <span class="finding-icon">${severityLabels[f.severity]}</span>
+                    <span class="finding-category">[${categoryLabels[f.category] || f.category}]</span>
+                    <span class="finding-title">${escapeHtml(f.title)}</span>
+                    <span class="finding-severity severity-${f.severity}">${f.severity.toUpperCase()}</span>
+                </div>
+                <div class="finding-detail">${escapeHtml(f.detail)}</div>
+                ${f.suggestion ? `<div class="finding-suggestion">💡 ${escapeHtml(f.suggestion)}</div>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function renderDataTable(data) {
+        if (!data) return;
+
+        const rows = [
+            ['客户姓名', `${data.customer_name || '-'} (${data.customer_name_cn || ''})`],
+            ['投资账户', data.account_number || '-'],
+            ['股票', `${data.stock_name || '-'} (${data.stock_code || '-'})`],
+            ['市场', data.stock_market || '-'],
+            ['交易类别', data.transaction_type || '-'],
+            ['成交日期', data.contract_date || '-'],
+            ['成交价', `${data.avg_price_currency || ''} ${data.avg_price || '-'}`],
+            ['成交股数', data.quantity || '-'],
+            ['交易金额', `${data.total_amount_currency || ''} ${data.total_amount?.toFixed(2) || '-'}`],
+            ['佣金', `${data.commission_currency || ''} ${data.commission?.toFixed(2) ?? '-'}`],
+            ['平台费', `${data.platform_fee_currency || ''} ${data.platform_fee?.toFixed(2) ?? '-'}`],
+            ['交收金额', `${data.settlement_amount_currency || ''} ${data.settlement_amount?.toFixed(2) || '-'}`],
+            ['交收日期', data.settlement_date || '-'],
+            ['交易编号', data.order_reference || '-'],
+            ['备注', data.remark_cn || data.remark || '-'],
+        ];
+
+        document.getElementById('data-table').innerHTML = `
+            <table>
+                <tbody>
+                    ${rows.map(([k, v]) => `
+                        <tr>
+                            <td class="dt-key">${k}</td>
+                            <td class="dt-value ${v && v.toString().includes('豁免') ? 'highlight-waiver' : ''}">${escapeHtml(String(v))}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    // ====== Utilities ======
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function resetAll() {
+        auditResults = [];
+        document.getElementById('results-section').classList.add('hidden');
+        document.getElementById('file-list').innerHTML = '';
+        document.getElementById('file-input').value = '';
+        document.getElementById('ai-summary-card').classList.add('hidden');
+        document.getElementById('fee-waiver-card').classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    </script>
+</body>
+</html>

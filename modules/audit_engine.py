@@ -47,7 +47,7 @@ class AuditEngine:
     """AI 审核引擎"""
 
     def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.environ.get("ANTHROPIC_API_KEY", "")
+        self.api_key = api_key or os.environ.get("OPENROUTER_API_KEY", "")
 
     def audit(self, contract: ContractData, file_name: str) -> AuditReport:
         """对成交单执行全面审核"""
@@ -72,13 +72,13 @@ class AuditEngine:
                 ))
                 ai_summary = "AI 深度审核未执行（API 连接失败），以下为规则引擎审核结果。"
         else:
-            ai_summary = "未配置 ANTHROPIC_API_KEY，仅执行规则引擎审核。设置 API Key 后可启用 AI 深度审核。"
+            ai_summary = "未配置 OPENROUTER_API_KEY，仅执行规则引擎审核。"
             findings.append(AuditFinding(
                 category="data_quality",
                 severity="info",
                 title="未启用 AI 审核",
-                detail="当前仅运行规则引擎审核。设置 ANTHROPIC_API_KEY 环境变量后可使用 Claude 进行深度分析。",
-                suggestion="export ANTHROPIC_API_KEY='your-api-key'"
+                detail="当前仅运行规则引擎审核。设置 OPENROUTER_API_KEY 环境变量后可使用 Gemma 4 进行深度分析。",
+                suggestion="在 .env 文件中设置 OPENROUTER_API_KEY"
             ))
 
         # 构建报告
@@ -241,28 +241,41 @@ class AuditEngine:
         return findings
 
     def _ai_audit(self, contract: ContractData) -> tuple[list[AuditFinding], str]:
-        """使用 Claude API 进行深度 AI 审核"""
-        import anthropic
-
-        client = anthropic.Anthropic(api_key=self.api_key)
+        """使用 OpenRouter Gemma 4 进行深度 AI 审核"""
+        import httpx
 
         prompt = self._build_audit_prompt(contract)
 
-        response = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=2048,
-            system="""你是一位专业的金融交易审核专家，擅长审查股票成交单（Contract Note）。
+        response = httpx.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "nvidia/nemotron-3-super-120b-a12b:free",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": f"""你是一位专业的金融交易审核专家，擅长审查股票成交单（Contract Note）。
 你的职责是对成交单进行深度审核，包括但不限于：
 1. 识别费用豁免/减免模式，判断是否正常
 2. 检测潜在的合规风险
 3. 发现数据异常或不一致
 4. 提供专业的改进建议
 
-请用 JSON 格式返回审核结果。""",
-            messages=[{"role": "user", "content": prompt}],
+请用 JSON 格式返回审核结果。
+
+{prompt}"""
+                    }
+                ],
+                "max_tokens": 2048,
+            },
+            timeout=60,
         )
 
-        result_text = response.content[0].text
+        response.raise_for_status()
+        result_text = response.json()["choices"][0]["message"]["content"]
 
         # 解析 AI 返回的 JSON
         try:

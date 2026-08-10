@@ -6,6 +6,8 @@ import os
 import shutil
 from pathlib import Path
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
 
 from fastapi import FastAPI, File, UploadFile, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -33,8 +35,7 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 
 # ===== 辅助函数 =====
 def get_audit_engine() -> AuditEngine:
-    """获取审核引擎实例"""
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
     return AuditEngine(api_key=api_key)
 
 
@@ -43,8 +44,7 @@ def get_audit_engine() -> AuditEngine:
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """主页 — 上传界面"""
-    return templates.TemplateResponse("index.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "index.html", {
         "title": "AI 成交单审核平台",
     })
 
@@ -162,7 +162,7 @@ async def health_check():
         "status": "ok",
         "timestamp": datetime.now().isoformat(),
         "ai_enabled": bool(api_key),
-        "ai_provider": "Anthropic Claude" if api_key else "未配置",
+        "ai_provider": "OpenRouter Gemma 4" if api_key else "未配置",
     }
 
 
@@ -171,11 +171,11 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
     print("=" * 60)
-    print("📊 AI 股票成交单审核平台")
+    print("AI 股票成交单审核平台")
     print("=" * 60)
-    api_status = "✅ AI 审核已启用 (Claude API)" if os.environ.get("ANTHROPIC_API_KEY") else "⚠️  AI 审核未启用 (规则引擎模式)"
+    api_status = "AI 审核已启用 (Claude API)" if os.environ.get("ANTHROPIC_API_KEY") else "AI 审核未启用 (规则引擎模式)"
     print(f"   {api_status}")
-    print(f"   🌐 访问地址: http://localhost:{port}")
-    print(f"   📖 API 文档: http://localhost:{port}/docs")
+    print(f"   访问地址: http://localhost:{port}")
+    print(f"   API 文档: http://localhost:{port}/docs")
     print("=" * 60)
     uvicorn.run(app, host="0.0.0.0", port=port)

@@ -151,7 +151,7 @@ async def chat(request: Request):
                 "Content-Type": "application/json",
             },
             json={
-                "model": "nvidia/nemotron-3-super-120b-a12b:free",
+                "model": "nvidia/nemotron-3-nano-30b-a3b:free",
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 512,
             },

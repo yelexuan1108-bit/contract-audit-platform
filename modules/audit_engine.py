@@ -241,10 +241,21 @@ class AuditEngine:
         return findings
 
     def _ai_audit(self, contract: ContractData) -> tuple[list[AuditFinding], str]:
-        """使用 OpenRouter Gemma 4 进行深度 AI 审核"""
+        """使用 OpenRouter 进行深度 AI 审核，返回简洁中文摘要"""
         import httpx
 
-        prompt = self._build_audit_prompt(contract)
+        c = contract
+        prompt = f"""你是一位专业的金融合规审核专家。请用简洁的中文对以下股票成交单做总结分析，直接输出3-5句话的审核摘要，不要用JSON格式，不要分点列举，只需要自然段落文字。
+
+成交单信息：
+- 客户：{c.customer_name or '未知'} {c.customer_name_cn or ''}
+- 股票：{c.stock_name or '未知'}（{c.stock_code or ''}），{c.stock_market or ''}市场
+- 交易：{c.transaction_type or '未知'}，{c.quantity or 0}股，成交价 {c.avg_price_currency or ''} {c.avg_price or 0}
+- 金额：交易金额 {c.total_amount_currency or ''} {c.total_amount or 0}，佣金 {c.commission if c.commission is not None else '未知'}，平台费 {c.platform_fee if c.platform_fee is not None else '未知'}，交收金额 {c.settlement_amount or 0}
+- 日期：成交 {c.contract_date or '未知'}，交收 {c.settlement_date or '未知'}
+- 备注：{c.remark_cn or c.remark or '无'}
+
+请重点说明：费用是否豁免、交易是否合规、有无异常。语言简洁专业，使用简体中文。"""
 
         response = httpx.post(
             "https://openrouter.ai/api/v1/chat/completions",
@@ -254,117 +265,15 @@ class AuditEngine:
             },
             json={
                 "model": "nvidia/nemotron-3-super-120b-a12b:free",
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": f"""你是一位专业的金融交易审核专家，擅长审查股票成交单（Contract Note）。
-你的职责是对成交单进行深度审核，包括但不限于：
-1. 识别费用豁免/减免模式，判断是否正常
-2. 检测潜在的合规风险
-3. 发现数据异常或不一致
-4. 提供专业的改进建议
-
-请用 JSON 格式返回审核结果。
-
-{prompt}"""
-                    }
-                ],
-                "max_tokens": 2048,
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 512,
             },
             timeout=60,
         )
 
         response.raise_for_status()
-        result_text = response.json()["choices"][0]["message"]["content"]
-
-        # 解析 AI 返回的 JSON
-        try:
-            # 提取 JSON 部分
-            json_match = result_text
-            if "```json" in result_text:
-                json_match = result_text.split("```json")[1].split("```")[0]
-            elif "```" in result_text:
-                json_match = result_text.split("```")[1].split("```")[0]
-
-            ai_result = json.loads(json_match.strip())
-
-            findings = []
-            for f in ai_result.get("findings", []):
-                findings.append(AuditFinding(
-                    category=f.get("category", "compliance"),
-                    severity=f.get("severity", "info"),
-                    title=f.get("title", ""),
-                    detail=f.get("detail", ""),
-                    suggestion=f.get("suggestion", ""),
-                ))
-
-            summary = ai_result.get("summary", "AI 审核完成。")
-            return findings, summary
-
-        except (json.JSONDecodeError, KeyError, IndexError) as e:
-            # JSON 解析失败，返回原始分析文本
-            return [
-                AuditFinding(
-                    category="compliance",
-                    severity="info",
-                    title="AI 深度分析结果",
-                    detail=result_text[:1000],
-                    suggestion=""
-                )
-            ], result_text[:500]
-
-    def _build_audit_prompt(self, c: ContractData) -> str:
-        """构建发送给 Claude 的审核提示"""
-        return f"""请审核以下股票成交单，重点关注费用豁免、合规性和异常情况。
-
-## 成交单信息
-
-| 字段 | 值 |
-|------|----|
-| 客户姓名 | {c.customer_name or '未知'} ({c.customer_name_cn or ''}) |
-| 投资账户 | {c.account_number or '未知'} |
-| 股票 | {c.stock_name or '未知'} ({c.stock_code or ''}) |
-| 市场 | {c.stock_market or '未知'} |
-| 交易类别 | {c.transaction_type or '未知'} |
-| 成交日期 | {c.contract_date or '未知'} |
-| 成交价 | {c.avg_price_currency or ''} {c.avg_price or 0} |
-| 股数 | {c.quantity or 0} |
-| 交易金额 | {c.total_amount_currency or ''} {c.total_amount or 0} |
-| 佣金 | {c.commission_currency or ''} {c.commission if c.commission is not None else '未知'} |
-| 平台费 | {c.platform_fee_currency or ''} {c.platform_fee if c.platform_fee is not None else '未知'} |
-| 交收金额 | {c.settlement_amount_currency or ''} {c.settlement_amount or 0} |
-| 交收日期 | {c.settlement_date or '未知'} |
-| 交易编号 | {c.order_reference or '未知'} |
-| 备注 | {c.remark or '无'} |
-| 备注(中文) | {c.remark_cn or '无'} |
-
-## 审核要求
-
-请从以下维度审核并返回 JSON：
-
-1. **费用豁免分析** — 佣金和平台费是否被豁免？该豁免是否正常？是否存在"股票回赠"转换为"平台费豁免"的模式？
-2. **合规性检查** — 小数股交易、跨境交易、客户适当性等是否合规？
-3. **异常检测** — 金额是否一致？日期是否合理？是否存在不寻常的交易模式？
-4. **数据质量** — 是否有缺失的关键字段？
-
-请严格按以下 JSON 格式返回（不要包含其他文字）：
-
-```json
-{{
-  "findings": [
-    {{
-      "category": "fee_waiver|compliance|anomaly|data_quality",
-      "severity": "critical|warning|info",
-      "title": "简洁的发现标题",
-      "detail": "详细分析内容",
-      "suggestion": "改进建议"
-    }}
-  ],
-  "summary": "整体审核摘要（2-3句话）"
-}}
-```
-
-备注原文: {c.raw_text[:500] if c.raw_text else '无'}"""
+        summary = response.json()["choices"][0]["message"]["content"].strip()
+        return [], summary
 
     def _analyze_fee_waiver(self, c: ContractData, findings: list[AuditFinding]) -> dict:
         """分析费用豁免详情"""

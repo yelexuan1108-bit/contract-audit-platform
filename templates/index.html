@@ -228,7 +228,7 @@
         </div>
         <div class="chat-body">
             <div class="chat-messages" id="chat-messages">
-                <div class="chat-msg hint">上传成交单后，可以在这里问我任何问题</div>
+                <div class="chat-msg hint">有任何问题都可以问我</div>
             </div>
             <div class="chat-input-row">
                 <input type="text" id="chat-input" placeholder="输入问题..." onkeydown="if(event.key==='Enter') sendChat()">
@@ -531,7 +531,13 @@ async function sendChat() {
     const q = input.value.trim(); if (!q) return;
     appendMsg(q, 'user'); input.value = '';
     document.getElementById('chat-send-btn').disabled = true;
-    if (!currentContractData) { appendMsg('请先上传一份成交单，我才能回答相关问题。', 'ai'); document.getElementById('chat-send-btn').disabled = false; return; }
+    if (!currentContractData) {
+        const prompt = `用户问题：${q}\n\n请用简洁专业的中文回答。`;
+        const data = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({question:q, contract_data:{}})}).then(r=>r.json());
+        appendMsg(data.answer, 'ai');
+        document.getElementById('chat-send-btn').disabled = false;
+        return;
+    }
     const data = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({question:q, contract_data:currentContractData})}).then(r=>r.json());
     appendMsg(data.answer, 'ai');
     document.getElementById('chat-send-btn').disabled = false;

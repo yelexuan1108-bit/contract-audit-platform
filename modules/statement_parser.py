@@ -64,28 +64,36 @@ class StatementParser:
     def _parse_hk_transactions(self, text: str) -> list[StatementTransaction]:
         transactions = []
 
-        # 匹配交易行: 日期 日期 描述 数量 单价 金额
+        # PDF 实际格式：
+        # Regular-Invest BUY 定投买入
+        # 11 Jun 2026 15 Jun 2026 40 127.2500 5,090.00
+        # 03153 CSOP NIKKEI225 南方日经２２５
+        # Commission Platform Fee ... Settlement Amount
+        # 0.00 18.00 0.00 0.14 0.01 0.21 0.29
+        # 5,108.65
+
         pattern = re.compile(
+            r'((?:Regular-Invest\s+)?(?:BUY|SELL)[^\n]*)\n'
             r'(\d{1,2}\s+\w{3}\s+\d{4})\s+(\d{1,2}\s+\w{3}\s+\d{4})\s+'
-            r'((?:Regular-Invest\s+)?(?:BUY|SELL)[^\n]*?\n[^\n]+)\s+'
-            r'([\d,]+)\s+([\d,.]+)\s+([\d,.]+)',
+            r'([\d,]+)\s+([\d,.]+)\s+([\d,.]+)\n'
+            r'(\d{5}[^\n]+)',
             re.MULTILINE
         )
 
         for m in pattern.finditer(text):
-            desc = m.group(3).replace('\n', ' ').strip()
+            desc_line = m.group(7).strip()
             stock_code = None
             stock_name = None
 
-            code_match = re.search(r'(\d{5})\s+(.+?)(?:\s{2,}|$)', desc)
+            code_match = re.match(r'(\d{5})\s+(.+)', desc_line)
             if code_match:
                 stock_code = code_match.group(1)
                 stock_name = code_match.group(2).strip()
 
             tx = StatementTransaction(
-                trade_date=m.group(1),
-                settlement_date=m.group(2),
-                description=desc,
+                trade_date=m.group(2),
+                settlement_date=m.group(3),
+                description=m.group(1).strip(),
                 stock_code=stock_code,
                 stock_name=stock_name,
                 quantity=float(m.group(4).replace(',', '')),
@@ -93,17 +101,15 @@ class StatementParser:
                 transaction_amount=float(m.group(6).replace(',', '')),
             )
 
-            # 提取费用
-            fee_block = text[m.end():m.end()+500]
-            commission_m = re.search(r'Commission[^\d]*([\d,.]+)', fee_block)
+            # 提取费用块（交易行之后的500字符内）
+            fee_block = text[m.end():m.end()+400]
+
+            commission_m = re.search(r'^([\d,.]+)\s+([\d,.]+)', fee_block, re.MULTILINE)
             if commission_m:
                 tx.commission = float(commission_m.group(1).replace(',', ''))
+                tx.platform_fee = float(commission_m.group(2).replace(',', ''))
 
-            platform_m = re.search(r'Platform Fee[^\d]*([\d,.]+)', fee_block)
-            if platform_m:
-                tx.platform_fee = float(platform_m.group(1).replace(',', ''))
-
-            settlement_m = re.search(r'Settlement\s+Amount\s+([\d,.]+)', fee_block)
+            settlement_m = re.search(r'\n([\d,]+\.\d{2})\n', fee_block)
             if settlement_m:
                 tx.settlement_amount = float(settlement_m.group(1).replace(',', ''))
 

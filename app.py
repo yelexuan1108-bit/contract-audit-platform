@@ -17,6 +17,7 @@ from fastapi.templating import Jinja2Templates
 
 from modules.pdf_parser import PDFParser, ContractData
 from modules.audit_engine import AuditEngine, AuditReport
+from modules.statement_parser import StatementParser
 
 # ===== 应用初始化 =====
 app = FastAPI(
@@ -161,6 +162,114 @@ async def chat(request: Request):
         return {"answer": answer}
     except Exception as e:
         return {"answer": f"AI 回答失败: {str(e)}"}
+
+
+@app.post("/api/compare", response_class=JSONResponse)
+async def compare_documents(
+    contract_file: UploadFile = File(...),
+    statement_file: UploadFile = File(...),
+):
+    """对比成交单和月结单"""
+    results = {"matches": [], "mismatches": [], "unmatched": []}
+
+    # 保存并解析成交单
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    contract_path = UPLOAD_DIR / f"{ts}_contract_{contract_file.filename}"
+    statement_path = UPLOAD_DIR / f"{ts}_statement_{statement_file.filename}"
+
+    with open(contract_path, "wb") as f:
+        f.write(await contract_file.read())
+    with open(statement_path, "wb") as f:
+        f.write(await statement_file.read())
+
+    contract = PDFParser().parse(str(contract_path))
+    statement = StatementParser().parse(str(statement_path))
+
+    # 构建成交单摘要
+    cn = {
+        "stock_code": contract.stock_code,
+        "stock_name": contract.stock_name,
+        "trade_date": contract.contract_date,
+        "settlement_date": contract.settlement_date,
+        "quantity": contract.quantity,
+        "unit_price": contract.avg_price,
+        "commission": contract.commission,
+        "platform_fee": contract.platform_fee,
+        "settlement_amount": contract.settlement_amount,
+        "account_number": contract.account_number,
+        "customer_name": contract.customer_name,
+    }
+
+    # 在月结单中找匹配交易
+    matched_tx = None
+    for tx in statement.transactions:
+        code_match = tx.stock_code == contract.stock_code
+        qty_match = tx.quantity == contract.quantity if tx.quantity and contract.quantity else False
+        if code_match and qty_match:
+            matched_tx = tx
+            break
+        elif code_match:
+            matched_tx = tx  # 股票代码匹配就算找到，继续比对其他字段
+
+    if not matched_tx and statement.transactions:
+        # 尝试只匹配股票代码
+        for tx in statement.transactions:
+            if tx.stock_code == contract.stock_code:
+                matched_tx = tx
+                break
+
+    def check(field, cn_val, st_val, label):
+        if cn_val is None and st_val is None:
+            return
+        if cn_val is None or st_val is None:
+            results["mismatches"].append({
+                "field": label,
+                "contract": str(cn_val) if cn_val is not None else "未提取到",
+                "statement": str(st_val) if st_val is not None else "未提取到",
+                "note": "其中一方未能提取数据"
+            })
+            return
+        if isinstance(cn_val, float) and isinstance(st_val, float):
+            ok = abs(cn_val - st_val) < 0.02
+        else:
+            ok = str(cn_val).strip() == str(st_val).strip()
+        item = {"field": label, "contract": str(cn_val), "statement": str(st_val)}
+        if ok:
+            results["matches"].append(item)
+        else:
+            results["mismatches"].append(item)
+
+    if matched_tx:
+        check("stock_code", cn["stock_code"], matched_tx.stock_code, "股票代码")
+        check("quantity", cn["quantity"], matched_tx.quantity, "成交股数")
+        check("unit_price", cn["unit_price"], matched_tx.unit_price, "成交单价")
+        check("commission", cn["commission"], matched_tx.commission, "佣金")
+        check("platform_fee", cn["platform_fee"], matched_tx.platform_fee, "平台费")
+        check("settlement_amount", cn["settlement_amount"], matched_tx.settlement_amount, "交收金额")
+    else:
+        results["unmatched"].append({
+            "note": f"月结单中未找到股票代码 {contract.stock_code} 的对应交易记录"
+        })
+
+    # 账户核对
+    if statement.account_number and contract.account_number:
+        check("account_number", cn["account_number"], statement.account_number, "账户号码")
+
+    return {
+        "success": True,
+        "contract_summary": cn,
+        "statement_summary": {
+            "account_number": statement.account_number,
+            "customer_name": statement.customer_name,
+            "period": statement.statement_period,
+            "transaction_count": len(statement.transactions),
+            "matched_transaction": matched_tx.model_dump() if matched_tx else None,
+        },
+        "matches": results["matches"],
+        "mismatches": results["mismatches"],
+        "unmatched": results["unmatched"],
+        "overall": "pass" if not results["mismatches"] and not results["unmatched"] else "fail",
+    }
 
 
 @app.get("/api/health")

@@ -141,8 +141,14 @@ async def chat(request: Request):
         return {"answer": "未配置 API Key，无法使用聊天功能。"}
 
     import httpx
-    context = json.dumps(contract_data, ensure_ascii=False)
-    prompt = f"以下是一份股票成交单的数据：\n{context}\n\n用户问题：{question}\n\n请用简洁专业的语言回答。"
+
+    has_data = bool(contract_data and any(v for v in contract_data.values() if v))
+
+    if has_data:
+        context = json.dumps(contract_data, ensure_ascii=False)
+        prompt = f"以下是一份股票成交单的数据：\n{context}\n\n用户问题：{question}\n\n请用简洁专业的语言回答，使用简体中文。"
+    else:
+        prompt = f"{question}\n\n请用简洁专业的语言回答，使用简体中文。"
 
     try:
         response = httpx.post(

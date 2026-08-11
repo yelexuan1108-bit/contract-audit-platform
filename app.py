@@ -1,8 +1,9 @@
 """
 AI 股票成交单审核平台
-FastAPI Web 应用 — 上传 PDF → 解析 → AI 审核 → 展示报告
+FastAPI Web 应用 — 上传 PDF -> 解析 -> AI 审核 -> 展示报告
 """
 import os
+import json
 import shutil
 from pathlib import Path
 from datetime import datetime
@@ -28,9 +29,11 @@ app = FastAPI(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# 上传目录
+# 目录
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
+RECORDS_DIR = Path("records")
+RECORDS_DIR.mkdir(exist_ok=True)
 
 
 # ===== 辅助函数 =====
@@ -38,12 +41,17 @@ def get_audit_engine() -> AuditEngine:
     api_key = os.environ.get("OPENROUTER_API_KEY", "")
     return AuditEngine(api_key=api_key)
 
+def save_record(data: dict):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    record_path = RECORDS_DIR / f"{timestamp}.json"
+    with open(record_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
 
 # ===== 路由 =====
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    """主页 — 上传界面"""
     return templates.TemplateResponse(request, "index.html", {
         "title": "AI 成交单审核平台",
     })
@@ -51,17 +59,9 @@ async def home(request: Request):
 
 @app.post("/api/audit", response_class=JSONResponse)
 async def audit_contract(file: UploadFile = File(...)):
-    """
-    上传 PDF 成交单并执行 AI 审核
-    """
-    # 验证文件类型
     if not file.filename or not file.filename.lower().endswith('.pdf'):
-        return JSONResponse(
-            {"error": "仅支持 PDF 文件，请上传 .pdf 格式的成交单。"},
-            status_code=400,
-        )
+        return JSONResponse({"error": "仅支持 PDF 文件"}, status_code=400)
 
-    # 保存上传文件
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     safe_name = f"{timestamp}_{file.filename}"
     file_path = UPLOAD_DIR / safe_name
@@ -71,22 +71,15 @@ async def audit_contract(file: UploadFile = File(...)):
             content = await file.read()
             f.write(content)
     except Exception as e:
-        return JSONResponse(
-            {"error": f"文件保存失败: {str(e)}"},
-            status_code=500,
-        )
+        return JSONResponse({"error": f"文件保存失败: {str(e)}"}, status_code=500)
 
     try:
-        # Step 1: PDF 解析
         parser = PDFParser()
         contract_data = parser.parse(str(file_path))
-
-        # Step 2: AI 审核
         engine = get_audit_engine()
         report = engine.audit(contract_data, file.filename)
 
-        # 构建响应
-        return {
+        result = {
             "success": True,
             "file_name": file.filename,
             "audit_time": report.audit_time,
@@ -100,82 +93,88 @@ async def audit_contract(file: UploadFile = File(...)):
             "fee_waiver_details": report.fee_waiver_details,
         }
 
+        save_record(result)
+        return result
+
     except Exception as e:
-        return JSONResponse(
-            {"error": f"审核失败: {str(e)}"},
-            status_code=500,
-        )
+        return JSONResponse({"error": f"审核失败: {str(e)}"}, status_code=500)
 
 
-@app.post("/api/audit/batch", response_class=JSONResponse)
-async def batch_audit(files: list[UploadFile] = File(...)):
-    """批量审核多个成交单"""
-    results = []
-    errors = []
-
-    for file in files:
-        if not file.filename or not file.filename.lower().endswith('.pdf'):
-            errors.append({"file": file.filename, "error": "非 PDF 文件"})
-            continue
-
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-        safe_name = f"{timestamp}_{file.filename}"
-        file_path = UPLOAD_DIR / safe_name
-
+@app.get("/api/records", response_class=JSONResponse)
+async def get_records():
+    records = []
+    for f in sorted(RECORDS_DIR.glob("*.json"), reverse=True)[:50]:
         try:
-            with open(file_path, "wb") as f:
-                content = await file.read()
-                f.write(content)
+            with open(f, "r", encoding="utf-8") as fp:
+                data = json.load(fp)
+                records.append({
+                    "id": f.stem,
+                    "file_name": data.get("file_name", ""),
+                    "audit_time": data.get("audit_time", ""),
+                    "total_findings": data.get("total_findings", 0),
+                    "critical_count": data.get("critical_count", 0),
+                    "warning_count": data.get("warning_count", 0),
+                })
+        except Exception:
+            continue
+    return {"records": records}
 
-            parser = PDFParser()
-            contract_data = parser.parse(str(file_path))
-            engine = get_audit_engine()
-            report = engine.audit(contract_data, file.filename)
 
-            results.append({
-                "file_name": file.filename,
-                "success": True,
-                "contract_data": contract_data.model_dump(),
-                "findings": [f.model_dump() for f in report.findings],
-                "total_findings": report.total_findings,
-                "critical_count": report.critical_count,
-                "fee_waiver_details": report.fee_waiver_details,
-            })
+@app.get("/api/records/{record_id}", response_class=JSONResponse)
+async def get_record(record_id: str):
+    record_path = RECORDS_DIR / f"{record_id}.json"
+    if not record_path.exists():
+        return JSONResponse({"error": "记录不存在"}, status_code=404)
+    with open(record_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-        except Exception as e:
-            errors.append({"file": file.filename, "error": str(e)})
 
-    return {
-        "success": True,
-        "total_processed": len(results),
-        "total_errors": len(errors),
-        "results": results,
-        "errors": errors,
-    }
+@app.post("/api/chat", response_class=JSONResponse)
+async def chat(request: Request):
+    body = await request.json()
+    question = body.get("question", "")
+    contract_data = body.get("contract_data", {})
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
+
+    if not api_key:
+        return {"answer": "未配置 API Key，无法使用聊天功能。"}
+
+    import httpx
+    context = json.dumps(contract_data, ensure_ascii=False)
+    prompt = f"以下是一份股票成交单的数据：\n{context}\n\n用户问题：{question}\n\n请用简洁专业的语言回答。"
+
+    try:
+        response = httpx.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "nvidia/nemotron-3-super-120b-a12b:free",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 512,
+            },
+            timeout=30,
+        )
+        answer = response.json()["choices"][0]["message"]["content"]
+        return {"answer": answer}
+    except Exception as e:
+        return {"answer": f"AI 回答失败: {str(e)}"}
 
 
 @app.get("/api/health")
 async def health_check():
-    """健康检查 — 验证服务状态和 API 连接"""
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
     return {
         "status": "ok",
         "timestamp": datetime.now().isoformat(),
         "ai_enabled": bool(api_key),
-        "ai_provider": "OpenRouter Gemma 4" if api_key else "未配置",
+        "ai_provider": "OpenRouter Nemotron" if api_key else "未配置",
     }
 
 
-# ===== 启动脚本 =====
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
-    print("=" * 60)
-    print("AI 股票成交单审核平台")
-    print("=" * 60)
-    api_status = "AI 审核已启用 (Claude API)" if os.environ.get("ANTHROPIC_API_KEY") else "AI 审核未启用 (规则引擎模式)"
-    print(f"   {api_status}")
-    print(f"   访问地址: http://localhost:{port}")
-    print(f"   API 文档: http://localhost:{port}/docs")
-    print("=" * 60)
     uvicorn.run(app, host="0.0.0.0", port=port)

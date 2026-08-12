@@ -93,6 +93,7 @@
         <div class="nav-brand">AI 审核平台</div>
         <button class="nav-btn active" onclick="showPage('audit')">成交单审核</button>
         <button class="nav-btn" onclick="showPage('compare')">对比月结单</button>
+        <button class="nav-btn" onclick="showPage('batch')">批量条款审核</button>
         <button class="nav-btn" onclick="showPage('va')">VA成交单审核</button>
         <button class="nav-btn" onclick="showPage('history')">历史记录</button>
         <div class="nav-status">
@@ -214,6 +215,59 @@
         </div>
     </div>
 
+    <!-- ===== Page: 批量条款审核 ===== -->
+    <div class="page" id="page-batch">
+        <div style="max-width:860px;margin:0 auto;">
+            <div class="page-title">批量条款审核</div>
+            <div class="page-subtitle">批量上传成交单 PDF（股票 HK/US · VA 虚拟资产），自动核查英文与中文重要提示条款是否与官方模板一致，结果导出 Excel</div>
+
+            <!-- 上传区 -->
+            <div id="batch-upload-zone" style="background:#fff;border:2px dashed #e2e8f0;border-radius:12px;padding:48px 24px;text-align:center;margin-bottom:16px;cursor:pointer;transition:border-color 0.2s;"
+                ondragover="batchDragOver(event)" ondragleave="batchDragLeave(event)" ondrop="batchDrop(event)"
+                onclick="document.getElementById('batch-file-input').click()">
+                <div style="font-size:40px;margin-bottom:12px;">📂</div>
+                <h2 style="font-size:16px;font-weight:700;margin-bottom:8px;">拖拽多个 PDF 到此处，或点击选择</h2>
+                <p style="font-size:13px;color:#64748b;margin-bottom:16px;">支持股票成交单（HK/US）、VA 虚拟资产成交单，繁体/简体自动识别</p>
+                <input type="file" id="batch-file-input" accept=".pdf" multiple hidden onchange="batchFilesSelected()">
+                <button class="btn btn-primary" style="pointer-events:none;">选择 PDF 文件（可多选）</button>
+            </div>
+
+            <!-- 文件列表 -->
+            <div id="batch-file-list" style="margin-bottom:12px;"></div>
+
+            <!-- 操作按钮 -->
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;" id="batch-action-row" class="hidden">
+                <button class="btn btn-primary" id="batch-run-btn" onclick="runBatchAudit()" style="padding:12px 32px;font-size:15px;">开始批量审核</button>
+                <button class="btn btn-secondary" onclick="clearBatch()">清空</button>
+                <span id="batch-status" style="font-size:13px;color:#64748b;"></span>
+            </div>
+
+            <!-- 进度 -->
+            <div class="hidden" id="batch-progress" style="background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;">
+                <div style="height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+                    <div id="batch-progress-fill" style="height:100%;background:#3b82f6;border-radius:3px;transition:width 0.3s;width:0;"></div>
+                </div>
+                <div id="batch-progress-text" style="font-size:13px;color:#64748b;text-align:center;">正在处理...</div>
+            </div>
+
+            <!-- 结果汇总 -->
+            <div class="hidden" id="batch-results">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                    <div style="font-size:18px;font-weight:700;">审核结果</div>
+                    <a href="/api/export/clause-audit" download>
+                        <button class="btn btn-primary" style="background:#16a34a;">⬇ 导出 Excel 报告</button>
+                    </a>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div id="batch-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;"></div>
+
+                <!-- 结果列表 -->
+                <div id="batch-result-list"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== Page: VA成交单审核 ===== -->
     <div class="page" id="page-va">
         <div class="page-title">VA 成交单审核</div>
@@ -300,6 +354,138 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.files.length > 0) handleFiles(Array.from(e.target.files));
     });
 });
+
+// ===== Batch Audit =====
+    let batchFiles = [];
+
+    function batchDragOver(e) {
+        e.preventDefault();
+        document.getElementById('batch-upload-zone').style.borderColor = '#3b82f6';
+        document.getElementById('batch-upload-zone').style.background = '#eff6ff';
+    }
+
+    function batchDragLeave(e) {
+        document.getElementById('batch-upload-zone').style.borderColor = '#e2e8f0';
+        document.getElementById('batch-upload-zone').style.background = '#fff';
+    }
+
+    function batchDrop(e) {
+        e.preventDefault();
+        batchDragLeave(e);
+        const files = Array.from(e.dataTransfer.files).filter(f => f.name.toLowerCase().endsWith('.pdf'));
+        if (files.length) addBatchFiles(files);
+    }
+
+    function batchFilesSelected() {
+        const files = Array.from(document.getElementById('batch-file-input').files);
+        addBatchFiles(files);
+    }
+
+    function addBatchFiles(files) {
+        files.forEach(f => { if (!batchFiles.find(b => b.name === f.name)) batchFiles.push(f); });
+        renderBatchFileList();
+    }
+
+    function renderBatchFileList() {
+        const list = document.getElementById('batch-file-list');
+        if (!batchFiles.length) { list.innerHTML = ''; document.getElementById('batch-action-row').classList.add('hidden'); return; }
+        list.innerHTML = batchFiles.map((f, i) => `
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:6px;">
+                <span style="font-size:18px;">📄</span>
+                <span style="flex:1;font-size:13px;color:#374151;">${escapeHtml(f.name)}</span>
+                <span style="font-size:12px;color:#9ca3af;">${(f.size/1024).toFixed(0)} KB</span>
+                <button onclick="removeBatchFile(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;">×</button>
+            </div>`).join('');
+        document.getElementById('batch-action-row').classList.remove('hidden');
+        document.getElementById('batch-status').textContent = `已选择 ${batchFiles.length} 个文件`;
+    }
+
+    function removeBatchFile(i) { batchFiles.splice(i, 1); renderBatchFileList(); }
+
+    function clearBatch() {
+        batchFiles = [];
+        document.getElementById('batch-file-input').value = '';
+        document.getElementById('batch-file-list').innerHTML = '';
+        document.getElementById('batch-action-row').classList.add('hidden');
+        document.getElementById('batch-results').classList.add('hidden');
+    }
+
+    async function runBatchAudit() {
+        if (!batchFiles.length) return;
+        document.getElementById('batch-run-btn').disabled = true;
+        document.getElementById('batch-progress').classList.remove('hidden');
+        document.getElementById('batch-results').classList.add('hidden');
+        const fd = new FormData();
+        batchFiles.forEach(f => fd.append('files', f));
+        document.getElementById('batch-progress-fill').style.width = '30%';
+        document.getElementById('batch-progress-text').textContent = `正在审核 ${batchFiles.length} 个文件...`;
+        try {
+            const resp = await fetch('/api/batch-audit', { method: 'POST', body: fd });
+            const data = await resp.json();
+            document.getElementById('batch-progress-fill').style.width = '100%';
+            document.getElementById('batch-progress-text').textContent = '审核完成！';
+            setTimeout(() => document.getElementById('batch-progress').classList.add('hidden'), 800);
+            renderBatchResults(data);
+        } catch(e) {
+            document.getElementById('batch-progress-text').textContent = '审核失败，请重试';
+        }
+        document.getElementById('batch-run-btn').disabled = false;
+    }
+
+    function renderBatchResults(data) {
+        document.getElementById('batch-results').classList.remove('hidden');
+        const results = data.results || [];
+        const passed = results.filter(r => r.overall === 'pass').length;
+        const failed = results.filter(r => r.overall === 'fail').length;
+        document.getElementById('batch-stats').innerHTML = `
+            <div style="background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+                <div style="font-size:28px;font-weight:800;color:#374151;">${results.length}</div>
+                <div style="font-size:13px;color:#64748b;">总审核文件</div>
+            </div>
+            <div style="background:#dcfce7;border-radius:12px;padding:20px;text-align:center;">
+                <div style="font-size:28px;font-weight:800;color:#16a34a;">${passed}</div>
+                <div style="font-size:13px;color:#16a34a;">条款全部通过</div>
+            </div>
+            <div style="background:#fee2e2;border-radius:12px;padding:20px;text-align:center;">
+                <div style="font-size:28px;font-weight:800;color:#dc2626;">${failed}</div>
+                <div style="font-size:13px;color:#dc2626;">发现条款问题</div>
+            </div>
+            <div style="background:#fef3c7;border-radius:12px;padding:20px;text-align:center;">
+                <div style="font-size:28px;font-weight:800;color:#d97706;">${data.errors?.length||0}</div>
+                <div style="font-size:13px;color:#d97706;">处理失败</div>
+            </div>`;
+        document.getElementById('batch-result-list').innerHTML = results.map(r => {
+            const pass = r.overall === 'pass';
+            const enFail = r.en_total - r.en_passed;
+            const zhFail = r.zh_total - r.zh_passed;
+            return `
+            <div style="background:#fff;border-radius:12px;padding:16px 20px;margin-bottom:10px;border-left:4px solid ${pass?'#16a34a':'#ef4444'};">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+                    <div>
+                        <div style="font-size:14px;font-weight:600;margin-bottom:4px;">📄 ${escapeHtml(r.file_name)}</div>
+                        <div style="font-size:12px;color:#64748b;">${r.doc_type} · ${r.language} · ${r.transaction_type} · ${r.customer_name||'-'} · 账户 ${r.account_number||'-'} · ${r.contract_date||'-'}</div>
+                    </div>
+                    <span style="background:${pass?'#dcfce7':'#fee2e2'};color:${pass?'#16a34a':'#dc2626'};padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;">
+                        ${pass ? '✅ 全部通过' : '❌ 发现问题'}
+                    </span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;">
+                    <div style="background:${enFail>0?'#fee2e2':'#f0fdf4'};padding:10px;border-radius:8px;">
+                        <div style="font-weight:600;margin-bottom:4px;">英文条款</div>
+                        <div>通过 ${r.en_passed}/${r.en_total}${enFail>0?' · <span style="color:#dc2626;">失败 '+enFail+'</span>':''}</div>
+                    </div>
+                    <div style="background:${zhFail>0?'#fee2e2':'#f0fdf4'};padding:10px;border-radius:8px;">
+                        <div style="font-weight:600;margin-bottom:4px;">中文条款</div>
+                        <div>通过 ${r.zh_passed}/${r.zh_total}${zhFail>0?' · <span style="color:#dc2626;">失败 '+zhFail+'</span>':''}</div>
+                    </div>
+                </div>
+                ${r.issues?.length?`<div style="margin-top:10px;font-size:12px;color:#dc2626;background:#fef2f2;padding:8px 12px;border-radius:6px;">⚠️ 问题条款：${escapeHtml(r.issues.join(' | '))}</div>`:''}
+            </div>`;
+        }).join('') + (data.errors?.length ? data.errors.map(e =>
+            `<div style="background:#fff;border-radius:12px;padding:14px 20px;margin-bottom:10px;border-left:4px solid #f59e0b;">
+                <div style="font-size:13px;font-weight:600;color:#92400e;">⚠️ ${escapeHtml(e.file||'')} — ${escapeHtml(e.error||'')}</div>
+            </div>`).join('') : '');
+    }
 
 // ===== Nav =====
 function showPage(name) {

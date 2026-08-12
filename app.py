@@ -19,6 +19,7 @@ from modules.pdf_parser import PDFParser, ContractData
 from modules.audit_engine import AuditEngine, AuditReport
 from modules.statement_parser import StatementParser
 from modules.va_checker import VAChecker
+from modules.contract_auditor import ContractAuditor
 
 # ===== 应用初始化 =====
 app = FastAPI(
@@ -277,6 +278,185 @@ async def compare_documents(
         "unmatched": results["unmatched"],
         "overall": "pass" if not results["mismatches"] and not results["unmatched"] else "fail",
     }
+
+
+@app.post("/api/batch-audit", response_class=JSONResponse)
+async def batch_audit_contracts(files: list[UploadFile] = File(...)):
+    """批量审核成交单重要提示条款"""
+    auditor = ContractAuditor()
+    results = []
+    errors = []
+
+    for file in files:
+        if not file.filename or not file.filename.lower().endswith('.pdf'):
+            errors.append({"file": file.filename, "error": "非 PDF 文件"})
+            continue
+
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        file_path = UPLOAD_DIR / f"{ts}_{file.filename}"
+        try:
+            with open(file_path, "wb") as f:
+                f.write(await file.read())
+            result = auditor.audit(str(file_path), file.filename)
+            data = result.model_dump()
+            save_record({"type": "clause_audit", **data})
+            results.append(data)
+        except Exception as e:
+            errors.append({"file": file.filename, "error": str(e)})
+
+    return {
+        "success": True,
+        "total": len(results),
+        "errors": errors,
+        "results": results,
+    }
+
+
+@app.get("/api/export/clause-audit", response_class=StreamingResponse)
+async def export_clause_audit():
+    """导出条款审核结果为 Excel"""
+    import openpyxl
+    from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
+    from io import BytesIO
+
+    wb = openpyxl.Workbook()
+
+    # ===== 颜色定义 =====
+    GREEN  = PatternFill("solid", fgColor="DCFCE7")
+    RED    = PatternFill("solid", fgColor="FEE2E2")
+    HEADER = PatternFill("solid", fgColor="030516")
+    HEADER_FONT = Font(bold=True, color="FFFFFF", size=11)
+    BOLD   = Font(bold=True, size=10)
+    NORMAL = Font(size=10)
+    CENTER = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    LEFT   = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    thin   = Side(style="thin", color="E5E7EB")
+    BORDER = Border(left=thin, right=thin, top=thin, bottom=thin)
+
+    def style_header(ws, row=1):
+        for cell in ws[row]:
+            cell.fill   = HEADER
+            cell.font   = HEADER_FONT
+            cell.alignment = CENTER
+            cell.border = BORDER
+
+    def style_row(ws, row_num, fill=None):
+        for cell in ws[row_num]:
+            if fill: cell.fill = fill
+            cell.font = NORMAL
+            cell.alignment = LEFT
+            cell.border = BORDER
+
+    # ===== Sheet 1: 汇总 =====
+    ws1 = wb.active
+    ws1.title = "审核汇总"
+    headers1 = [
+        "文件名", "审核时间", "文件类型", "市场", "语言", "交易类型",
+        "客户姓名", "账户号码", "成交日期",
+        "英文条款总数", "英文通过", "英文失败",
+        "中文条款总数", "中文通过", "中文失败",
+        "总体结论", "失败条款"
+    ]
+    ws1.append(headers1)
+    style_header(ws1)
+
+    # ===== Sheet 2: 英文条款详情 =====
+    ws2 = wb.create_sheet("英文条款详情")
+    headers2 = ["文件名", "客户姓名", "文件类型", "条款编号", "关键词", "结果", "备注"]
+    ws2.append(headers2)
+    style_header(ws2)
+
+    # ===== Sheet 3: 中文条款详情 =====
+    ws3 = wb.create_sheet("中文条款详情")
+    headers3 = ["文件名", "客户姓名", "文件类型", "条款编号", "关键词", "结果", "备注"]
+    ws3.append(headers3)
+    style_header(ws3)
+
+    # 读取所有条款审核记录
+    for f in sorted(RECORDS_DIR.glob("*.json"), reverse=True)[:500]:
+        try:
+            with open(f, "r", encoding="utf-8") as fp:
+                d = json.load(fp)
+            if d.get("type") != "clause_audit":
+                continue
+
+            pass_fill = GREEN if d.get("overall") == "pass" else RED
+
+            # 汇总行
+            row1 = [
+                d.get("file_name", ""),
+                d.get("audit_time", ""),
+                d.get("doc_type", ""),
+                "HK" if "HK" in d.get("doc_type","") else ("US" if "US" in d.get("doc_type","") else d.get("doc_type","")),
+                d.get("language", ""),
+                d.get("transaction_type", ""),
+                d.get("customer_name", ""),
+                d.get("account_number", ""),
+                d.get("contract_date", ""),
+                d.get("en_total", 0),
+                d.get("en_passed", 0),
+                d.get("en_total", 0) - d.get("en_passed", 0),
+                d.get("zh_total", 0),
+                d.get("zh_passed", 0),
+                d.get("zh_total", 0) - d.get("zh_passed", 0),
+                "通过" if d.get("overall") == "pass" else "失败",
+                "; ".join(d.get("issues", [])),
+            ]
+            ws1.append(row1)
+            style_row(ws1, ws1.max_row, pass_fill)
+
+            # 英文条款行
+            for c in d.get("en_clauses", []):
+                r_fill = GREEN if c.get("result") == "pass" else RED
+                ws2.append([
+                    d.get("file_name",""),
+                    d.get("customer_name",""),
+                    d.get("doc_type",""),
+                    c.get("clause_num",""),
+                    c.get("keyword","")[:80],
+                    "通过" if c.get("result") == "pass" else "失败",
+                    c.get("note",""),
+                ])
+                style_row(ws2, ws2.max_row, r_fill)
+
+            # 中文条款行
+            for c in d.get("zh_clauses", []):
+                r_fill = GREEN if c.get("result") == "pass" else RED
+                ws3.append([
+                    d.get("file_name",""),
+                    d.get("customer_name",""),
+                    d.get("doc_type",""),
+                    c.get("clause_num",""),
+                    c.get("keyword","")[:80],
+                    "通过" if c.get("result") == "pass" else "失败",
+                    c.get("note",""),
+                ])
+                style_row(ws3, ws3.max_row, r_fill)
+
+        except Exception:
+            continue
+
+    # 调整列宽
+    col_widths = {
+        ws1: [30,18,10,6,6,8,18,14,12,8,8,8,8,8,8,8,40],
+        ws2: [30,18,10,10,60,6,40],
+        ws3: [30,18,10,10,60,6,40],
+    }
+    for ws, widths in col_widths.items():
+        for i, w in enumerate(widths, 1):
+            ws.column_dimensions[openpyxl.utils.get_column_letter(i)].width = w
+        ws.row_dimensions[1].height = 30
+        ws.freeze_panes = "A2"
+
+    buf = BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    return StreamingResponse(
+        buf,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=clause_audit_report.xlsx"}
+    )
 
 
 @app.post("/api/va-audit", response_class=JSONResponse)

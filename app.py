@@ -11,13 +11,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI, File, UploadFile, Request, Form
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from modules.pdf_parser import PDFParser, ContractData
 from modules.audit_engine import AuditEngine, AuditReport
 from modules.statement_parser import StatementParser
+from modules.va_checker import VAChecker
 
 # ===== 应用初始化 =====
 app = FastAPI(
@@ -276,6 +277,154 @@ async def compare_documents(
         "unmatched": results["unmatched"],
         "overall": "pass" if not results["mismatches"] and not results["unmatched"] else "fail",
     }
+
+
+@app.post("/api/va-audit", response_class=JSONResponse)
+async def va_audit(file: UploadFile = File(...)):
+    """VA成交单审核"""
+    if not file.filename or not file.filename.lower().endswith('.pdf'):
+        return JSONResponse({"error": "仅支持 PDF 文件"}, status_code=400)
+
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    file_path = UPLOAD_DIR / f"{ts}_{file.filename}"
+    with open(file_path, "wb") as f:
+        f.write(await file.read())
+
+    try:
+        checker = VAChecker()
+        result = checker.check(str(file_path), file.filename)
+        data = result.model_dump()
+        save_record({"type": "va", **data})
+        return {"success": True, **data}
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
+@app.get("/api/export/excel", response_class=StreamingResponse)
+async def export_excel():
+    """导出所有审核记录为 Excel"""
+    import openpyxl
+    from openpyxl.styles import PatternFill, Font, Alignment
+    from io import BytesIO
+
+    wb = openpyxl.Workbook()
+
+    # ===== Sheet 1: 成交单审核汇总 =====
+    ws1 = wb.active
+    ws1.title = "成交单审核"
+    headers1 = ["文件名", "审核时间", "客户姓名", "账户号码", "股票", "成交日期",
+                "严重问题", "警告", "信息", "总计", "AI摘要"]
+    ws1.append(headers1)
+    for cell in ws1[1]:
+        cell.font = Font(bold=True)
+        cell.fill = PatternFill("solid", fgColor="4F46E5")
+        cell.font = Font(bold=True, color="FFFFFF")
+        cell.alignment = Alignment(horizontal="center")
+
+    # ===== Sheet 2: VA审核汇总 =====
+    ws2 = wb.create_sheet("VA成交单审核")
+    headers2 = ["文件名", "审核时间", "客户姓名", "账户号码", "资产名称", "资产代码",
+                "语言", "交易类型", "成交日期", "总检查项", "通过", "失败", "总体结论"]
+    ws2.append(headers2)
+    for cell in ws2[1]:
+        cell.font = Font(bold=True, color="FFFFFF")
+        cell.fill = PatternFill("solid", fgColor="4F46E5")
+        cell.alignment = Alignment(horizontal="center")
+
+    # ===== Sheet 3: VA详细检查项 =====
+    ws3 = wb.create_sheet("VA详细检查项")
+    headers3 = ["文件名", "客户姓名", "检查类别", "检查项目", "结果", "详情"]
+    ws3.append(headers3)
+    for cell in ws3[1]:
+        cell.font = Font(bold=True, color="FFFFFF")
+        cell.fill = PatternFill("solid", fgColor="4F46E5")
+        cell.alignment = Alignment(horizontal="center")
+
+    # 读取所有记录
+    pass_fill = PatternFill("solid", fgColor="DCFCE7")
+    fail_fill = PatternFill("solid", fgColor="FEE2E2")
+    warn_fill = PatternFill("solid", fgColor="FEF3C7")
+
+    for f in sorted(RECORDS_DIR.glob("*.json"), reverse=True)[:200]:
+        try:
+            with open(f, "r", encoding="utf-8") as fp:
+                data = json.load(fp)
+
+            if data.get("type") == "va":
+                row = [
+                    data.get("file_name", ""),
+                    data.get("audit_time", ""),
+                    data.get("customer_name", ""),
+                    data.get("account_number", ""),
+                    data.get("asset_name", ""),
+                    data.get("asset_code", ""),
+                    data.get("language", ""),
+                    data.get("transaction_type", ""),
+                    data.get("contract_date", ""),
+                    data.get("total", 0),
+                    data.get("passed", 0),
+                    data.get("failed", 0),
+                    "通过" if data.get("overall") == "pass" else "失败",
+                ]
+                r = ws2.append(row)
+                last = ws2.max_row
+                fill = pass_fill if data.get("overall") == "pass" else fail_fill
+                for cell in ws2[last]:
+                    cell.fill = fill
+
+                # 写详细检查项
+                for check in data.get("checks", []):
+                    ws3.append([
+                        data.get("file_name", ""),
+                        data.get("customer_name", ""),
+                        check.get("category", ""),
+                        check.get("item", ""),
+                        check.get("result", ""),
+                        check.get("detail", ""),
+                    ])
+                    last3 = ws3.max_row
+                    r = check.get("result", "")
+                    f3 = pass_fill if r == "pass" else (fail_fill if r == "fail" else warn_fill)
+                    ws3[last3][4].fill = f3
+
+            elif data.get("success"):
+                cd = data.get("contract_data", {})
+                row = [
+                    data.get("file_name", ""),
+                    data.get("audit_time", ""),
+                    f"{cd.get('customer_name','')} {cd.get('customer_name_cn','')}".strip(),
+                    cd.get("account_number", ""),
+                    f"{cd.get('stock_name','')} ({cd.get('stock_code','')})".strip(),
+                    cd.get("contract_date", ""),
+                    data.get("critical_count", 0),
+                    data.get("warning_count", 0),
+                    data.get("info_count", 0),
+                    data.get("total_findings", 0),
+                    data.get("ai_summary", "")[:100],
+                ]
+                ws1.append(row)
+                last = ws1.max_row
+                fill = pass_fill if data.get("critical_count", 0) == 0 else fail_fill
+                for cell in ws1[last]:
+                    cell.fill = fill
+        except Exception:
+            continue
+
+    # 调整列宽
+    for ws in [ws1, ws2, ws3]:
+        for col in ws.columns:
+            max_len = max((len(str(cell.value or "")) for cell in col), default=10)
+            ws.column_dimensions[col[0].column_letter].width = min(max_len + 4, 50)
+
+    buf = BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    return StreamingResponse(
+        buf,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=audit_report.xlsx"}
+    )
 
 
 @app.get("/api/health")

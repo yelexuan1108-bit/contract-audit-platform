@@ -93,6 +93,7 @@
         <div class="nav-brand">AI 审核平台</div>
         <button class="nav-btn active" onclick="showPage('audit')">成交单审核</button>
         <button class="nav-btn" onclick="showPage('compare')">对比月结单</button>
+        <button class="nav-btn" onclick="showPage('va')">VA成交单审核</button>
         <button class="nav-btn" onclick="showPage('history')">历史记录</button>
         <div class="nav-status">
             <span class="header-badge" id="ai-status" style="font-size:12px;padding:4px 10px;">检测中...</span>
@@ -213,10 +214,61 @@
         </div>
     </div>
 
+    <!-- ===== Page: VA成交单审核 ===== -->
+    <div class="page" id="page-va">
+        <div class="page-title">VA 成交单审核</div>
+        <div class="page-subtitle">上传虚拟资产成交单 PDF，自动识别语言和交易类型，对照官方模板逐条检查条款</div>
+
+        <div style="border:2px dashed #d1d5db;border-radius:12px;padding:40px;text-align:center;background:#fff;margin-bottom:16px;" id="va-upload-zone">
+            <div style="font-size:40px;margin-bottom:12px;">🔐</div>
+            <h2 style="font-size:16px;margin-bottom:8px;">上传 VA 成交单 PDF</h2>
+            <p style="color:#9ca3af;font-size:13px;margin-bottom:16px;">支持繁体/简体，买入/卖出自动识别</p>
+            <input type="file" id="va-file-input" accept=".pdf" hidden>
+            <button class="btn btn-primary" onclick="document.getElementById('va-file-input').click()">选择 PDF 文件</button>
+        </div>
+
+        <div class="hidden" id="va-loading" style="text-align:center;padding:30px;color:#6b7280;">正在审核中，请稍候...</div>
+
+        <div class="hidden" id="va-results">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <div class="section-title">VA 审核报告</div>
+                <button class="btn btn-secondary" onclick="resetVA()">审核新文件</button>
+            </div>
+
+            <!-- 基本信息 -->
+            <div class="card" style="margin-bottom:16px;">
+                <div class="section-title">文件信息</div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="va-info"></div>
+            </div>
+
+            <!-- 总体结论 -->
+            <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center;">
+                <div class="result-badge" id="va-overall-badge"></div>
+                <div style="font-size:13px;color:#6b7280;" id="va-overall-note"></div>
+            </div>
+
+            <!-- 统计 -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;" id="va-stats"></div>
+
+            <!-- 检查详情 -->
+            <div class="card">
+                <div class="section-title">逐条检查结果</div>
+                <div id="va-checks"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== Page: 历史记录 ===== -->
     <div class="page" id="page-history">
-        <div class="page-title">历史记录</div>
-        <div class="page-subtitle">所有历史审核报告，点击查看详情</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div>
+                <div class="page-title">历史记录</div>
+                <div class="page-subtitle">所有历史审核报告，点击查看详情</div>
+            </div>
+            <a href="/api/export/excel" download>
+                <button class="btn btn-primary" style="background:#16a34a;">⬇ 导出 Excel</button>
+            </a>
+        </div>
         <div id="history-list-content"></div>
     </div>
 
@@ -517,6 +569,88 @@ async function loadRecord(id) {
         document.querySelectorAll('.nav-btn')[2].classList.remove('active');
         renderAuditResults(data);
     }
+}
+
+// ===== VA Audit =====
+document.getElementById('va-file-input').addEventListener('change', async e => {
+    if (!e.target.files.length) return;
+    const file = e.target.files[0];
+    document.getElementById('va-loading').classList.remove('hidden');
+    document.getElementById('va-results').classList.add('hidden');
+
+    const fd = new FormData(); fd.append('file', file);
+    const data = await fetch('/api/va-audit', {method:'POST', body:fd}).then(r=>r.json());
+    document.getElementById('va-loading').classList.add('hidden');
+
+    if (!data.success) { alert('审核失败: ' + data.error); return; }
+
+    // 基本信息
+    const infoItems = [
+        ['文件名', data.file_name], ['审核时间', data.audit_time],
+        ['客户姓名', data.customer_name||'-'], ['账户号码', data.account_number||'-'],
+        ['资产名称', data.asset_name||'-'], ['资产代码', data.asset_code||'-'],
+        ['交易平台', data.platform||'-'], ['成交日期', data.contract_date||'-'],
+        ['语言', data.language], ['交易类型', data.transaction_type],
+    ];
+    document.getElementById('va-info').innerHTML = infoItems.map(([k,v]) => `
+        <div style="background:#f9fafb;border-radius:8px;padding:10px;">
+            <div style="font-size:11px;color:#6b7280;">${k}</div>
+            <div style="font-size:13px;font-weight:600;margin-top:2px;">${escapeHtml(String(v))}</div>
+        </div>`).join('');
+
+    // 总体结论
+    const pass = data.overall === 'pass';
+    document.getElementById('va-overall-badge').textContent = pass ? '✅ 审核通过' : '❌ 审核未通过';
+    document.getElementById('va-overall-badge').className = 'result-badge ' + (pass ? 'pass' : 'fail');
+    document.getElementById('va-overall-note').textContent = pass
+        ? `所有 ${data.total} 项检查均通过`
+        : `${data.failed} 项检查未通过，请核查`;
+
+    // 统计
+    document.getElementById('va-stats').innerHTML = `
+        <div style="background:#dcfce7;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:700;color:#16a34a;">${data.passed}</div>
+            <div style="font-size:12px;color:#16a34a;">通过</div>
+        </div>
+        <div style="background:#fee2e2;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:700;color:#dc2626;">${data.failed}</div>
+            <div style="font-size:12px;color:#dc2626;">失败</div>
+        </div>
+        <div style="background:#f3f4f6;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:700;color:#374151;">${data.total}</div>
+            <div style="font-size:12px;color:#374151;">总计</div>
+        </div>`;
+
+    // 按类别分组显示
+    const groups = {};
+    for (const c of data.checks) {
+        if (!groups[c.category]) groups[c.category] = [];
+        groups[c.category].push(c);
+    }
+    const resultColor = {pass:'#16a34a', fail:'#dc2626', warning:'#d97706'};
+    const resultBg = {pass:'#dcfce7', fail:'#fee2e2', warning:'#fef3c7'};
+    const resultLabel = {pass:'通过', fail:'失败', warning:'警告'};
+    document.getElementById('va-checks').innerHTML = Object.entries(groups).map(([cat, items]) => `
+        <div style="margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">${cat}</div>
+            ${items.map(c => `
+                <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6;">
+                    <span style="background:${resultBg[c.result]};color:${resultColor[c.result]};padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;white-space:nowrap;">${resultLabel[c.result]||c.result}</span>
+                    <div>
+                        <div style="font-size:13px;font-weight:500;">${escapeHtml(c.item)}</div>
+                        <div style="font-size:12px;color:#6b7280;margin-top:2px;">${escapeHtml(c.detail)}</div>
+                    </div>
+                </div>`).join('')}
+        </div>`).join('');
+
+    document.getElementById('va-results').classList.remove('hidden');
+    document.getElementById('va-results').scrollIntoView({behavior:'smooth'});
+});
+
+function resetVA() {
+    document.getElementById('va-file-input').value = '';
+    document.getElementById('va-results').classList.add('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ===== Chat =====

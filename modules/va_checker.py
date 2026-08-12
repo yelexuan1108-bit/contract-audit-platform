@@ -11,46 +11,46 @@ import pdfplumber
 
 
 # ===== 官方模板条款 =====
-# 英文条款（买卖相同）
+# 英文条款（用短唯一关键词匹配，避免PDF换行截断）
 EN_CLAUSES = [
-    "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date.",
-    "All virtual asset transactions are executed by third-party virtual asset trading platform operator(s) licensed by the Securities and Futures Commission.",
-    "For the avoidance of doubt, this document also serves as a receipt for client virtual assets received by the Bank on your behalf",
-    "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction",
-    "Client virtual assets may not enjoy the same protection as that conferred on",
-    "You may consider saving an electronic copy of this document",
-    "ZA Bank acts as agent in handling this transaction.",
-    "For details of applicable fees and charges, please refer to the fee schedule",
-    "In the event of discrepancies between the Chinese and English versions, the English version shall prevail.",
-    "You confirm that all your personal information with the Bank is accurate and updated.",
+    ("条款1 - 90天报告期限", "reported to the Bank within 90 days from the issue date"),
+    ("条款2 - SFC持牌平台执行", "executed by third-party virtual asset trading platform operator"),
+    ("条款3 - 收据用途声明", "also serves as a receipt for client virtual assets received by the Bank"),
+    ("条款4 - 境外资产保障", "received or held outside Hong Kong are subject to the applicable laws"),
+    ("条款5 - 虚拟资产保障声明", "Client virtual assets may not enjoy the same protection"),
+    ("条款6 - 电子副本建议", "saving an electronic copy of this document"),
+    ("条款7 - 代理人声明", "ZA Bank acts as agent in handling this transaction"),
+    ("条款8 - 费率表参考", "refer to the fee schedule in the Bank"),
+    ("条款9 - 英文版本优先", "the English version shall prevail"),
+    ("条款10 - 个人资料确认", "all your personal information with the Bank is accurate"),
 ]
 
 # 繁体中文条款
 ZH_HK_CLAUSES = [
-    "如此文件有任何錯漏或不符，須於此文件發出後90日內通知本行",
-    "所有虛擬資產的交易均是由獲證監會發牌的第三方虛擬資產交易平台進行",
-    "為免生疑問，本文件亦作本行代閣下收取的任何有關本文件列明之虛擬資產",
-    "在香港以外地方收取或持有的客戶資產",
-    "客戶虛擬資產可能不會享有在《證券及期貨條例》",
-    "閣下可考慮將此文件的電子副本儲存於個人存儲裝置",
-    "眾安銀行以代理人的身份處理此交易",
-    "有關適用的費用和收費，請參見本行網站上的費率表",
-    "若中文版本與英文版本有異，一概以英文版本為準",
-    "閣下確認向本行提供的個人資料為準確及最新",
+    ("条款1 - 90天通知期", "須於此文件發出後90日內通知本行"),
+    ("条款2 - SFC持牌平台", "由獲證監會發牌的第三方虛擬資產交易平台進行"),
+    ("条款3 - 收据声明", "本文件亦作本行代閣下收取的任何有關本文件列明之虛擬資產"),
+    ("条款4 - 境外资产", "在香港以外地方收取或持有的客戶資產"),
+    ("条款5 - 虚拟资产保障", "客戶虛擬資產可能不會享有在《證券及期貨條例》"),
+    ("条款6 - 电子副本", "閣下可考慮將此文件的電子副本儲存於個人存儲裝置"),
+    ("条款7 - 代理人", "眾安銀行以代理人的身份處理此交易"),
+    ("条款8 - 费率表", "有關適用的費用和收費，請參見本行網站上的費率表"),
+    ("条款9 - 英文优先", "若中文版本與英文版本有異，一概以英文版本為準"),
+    ("条款10 - 个人资料", "閣下確認向本行提供的個人資料為準確及最新"),
 ]
 
 # 简体中文条款
 ZH_CN_CLAUSES = [
-    "如此文件有任何错漏或不符，须于此文件发出后90日内通知本行",
-    "所有虚拟资产的交易均是由获证监会发牌的第三方虚拟资产交易平台进行",
-    "为免生疑问，本文件亦作本行代阁下收取的任何有关本文件列明之虚拟资产",
-    "在香港以外地方收取或持有的客户资产",
-    "客户虚拟资产可能不会享有在《证券及期货条例》",
-    "阁下可考虑将此文件的电子副本储存于个人存储装置",
-    "众安银行以代理人的身份处理此交易",
-    "有关适用的费用和收费，请参见本行网站上的费率表",
-    "若中文版本与英文版本有异，一概以英文版本为准",
-    "阁下确认向本行提供的个人资料为准确及最新",
+    ("条款1 - 90天通知期", "须于此文件发出后90日内通知本行"),
+    ("条款2 - SFC持牌平台", "由获证监会发牌的第三方虚拟资产交易平台进行"),
+    ("条款3 - 收据声明", "本文件亦作本行代阁下收取的任何有关本文件列明之虚拟资产"),
+    ("条款4 - 境外资产", "在香港以外地方收取或持有的客户资产"),
+    ("条款5 - 虚拟资产保障", "客户虚拟资产可能不会享有在《证券及期货条例》"),
+    ("条款6 - 电子副本", "阁下可考虑将此文件的电子副本储存于个人存储装置"),
+    ("条款7 - 代理人", "众安银行以代理人的身份处理此交易"),
+    ("条款8 - 费率表", "有关适用的费用和收费，请参见本行网站上的费率表"),
+    ("条款9 - 英文优先", "若中文版本与英文版本有异，一概以英文版本为准"),
+    ("条款10 - 个人资料", "阁下确认向本行提供的个人资料为准确及最新"),
 ]
 
 # 必须存在的字段标签（繁体）
@@ -166,26 +166,24 @@ class VAChecker:
             ))
 
         # 5. 检查英文条款
-        for i, clause in enumerate(EN_CLAUSES):
-            key = clause[:40]
-            found = key in raw_text
+        for name, keyword in EN_CLAUSES:
+            found = keyword in raw_text
             checks.append(VACheckItem(
                 category="英文条款",
-                item=f"条款 {i+1}",
+                item=name,
                 result="pass" if found else "fail",
-                detail=f"{'✓ 存在' if found else '✗ 缺失'}: {clause[:60]}..."
+                detail=f"{'✓ 存在' if found else '✗ 缺失'}: {keyword[:60]}..."
             ))
 
         # 6. 检查中文条款
         cn_clauses = ZH_HK_CLAUSES if language == "繁体" else ZH_CN_CLAUSES
-        for i, clause in enumerate(cn_clauses):
-            key = clause[:15]
-            found = key in raw_text
+        for name, keyword in cn_clauses:
+            found = keyword in raw_text
             checks.append(VACheckItem(
                 category="中文条款",
-                item=f"条款 {i+1}",
+                item=name,
                 result="pass" if found else "fail",
-                detail=f"{'✓ 存在' if found else '✗ 缺失'}: {clause[:40]}..."
+                detail=f"{'✓ 存在' if found else '✗ 缺失'}: {keyword[:40]}..."
             ))
 
         # 7. 金额一致性校验

@@ -1,584 +1,693 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZA 审核平台</title>
-<link rel="stylesheet" href="/static/style.css">
-<style>
-  /* inline overrides only for things not in CSS */
-  .results-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
-  .compare-result-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-  #overall-note { font-size:13px; color:rgba(3,5,22,0.5); }
-  .export-btn { background:#00B880; color:#fff; border:none; border-radius:8px; padding:0 18px; height:38px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-flex; align-items:center; gap:5px; }
-  .export-btn:hover { opacity:0.85; }
-  .page-header-row { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:28px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 成交单审核平台</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* ===== Nav ===== */
+        .nav { background: #1e1b4b; padding: 0 32px; display: flex; align-items: center; gap: 0; }
+        .nav-brand { color: #fff; font-weight: 700; font-size: 16px; padding: 16px 24px 16px 0; border-right: 1px solid #312e81; margin-right: 8px; }
+        .nav-btn { color: #a5b4fc; padding: 16px 20px; cursor: pointer; font-size: 14px; border: none; background: none; transition: all 0.15s; border-bottom: 3px solid transparent; }
+        .nav-btn:hover { color: #fff; }
+        .nav-btn.active { color: #fff; border-bottom-color: #818cf8; }
+        .nav-status { margin-left: auto; font-size: 12px; }
+
+        /* ===== Pages ===== */
+        .page { display: none; padding: 24px 32px; max-width: 1000px; margin: 0 auto; }
+        .page.active { display: block; }
+
+        /* ===== Compare Page ===== */
+        .compare-upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .compare-upload-box { border: 2px dashed #d1d5db; border-radius: 12px; padding: 24px; text-align: center; background: #fafafa; }
+        .compare-upload-box h3 { font-size: 14px; color: #4f46e5; margin-bottom: 8px; }
+        .compare-upload-box p { font-size: 12px; color: #9ca3af; margin-bottom: 12px; }
+        .compare-upload-box.has-file { border-color: #4f46e5; background: #f0f4ff; }
+        .file-label { font-size: 12px; color: #6b7280; margin-top: 8px; }
+
+        /* ===== Compare Results ===== */
+        .compare-result-header { display: flex; gap: 12px; margin-bottom: 20px; }
+        .result-badge { padding: 8px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; }
+        .result-badge.pass { background: #dcfce7; color: #16a34a; }
+        .result-badge.fail { background: #fee2e2; color: #dc2626; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .compare-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+        .compare-card h4 { font-size: 13px; color: #6b7280; margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .compare-card .kv { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f3f4f6; }
+        .compare-card .kv:last-child { border: none; }
+        .compare-card .kv .key { color: #6b7280; }
+        .compare-card .kv .val { font-weight: 500; color: #111; }
+
+        .match-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .match-table th { background: #f3f4f6; padding: 8px 12px; text-align: left; font-weight: 600; color: #374151; }
+        .match-table td { padding: 8px 12px; border-bottom: 1px solid #f3f4f6; }
+        .match-table tr.match-ok td { background: #f0fdf4; }
+        .match-table tr.match-fail td { background: #fff1f2; }
+        .match-icon { font-size: 16px; }
+
+        /* ===== History Page ===== */
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 8px; background: #fff; cursor: pointer; }
+        .history-item:hover { background: #f9fafb; }
+        .hi-name { font-weight: 500; font-size: 14px; }
+        .hi-time { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+        .hi-badges { display: flex; gap: 6px; }
+        .badge-critical { background: #fee2e2; color: #dc2626; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
+        .badge-warning { background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
+        .badge-ok { background: #dcfce7; color: #16a34a; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
+
+        /* ===== Chat Box ===== */
+        .chat-box { position: fixed; bottom: 24px; right: 24px; width: 360px; background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 1000; display: flex; flex-direction: column; overflow: hidden; }
+        .chat-header { background: #4f46e5; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .chat-header h4 { margin: 0; font-size: 14px; }
+        .chat-toggle-btn { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
+        .chat-body { display: flex; flex-direction: column; height: 340px; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .chat-msg { padding: 8px 12px; border-radius: 10px; font-size: 13px; max-width: 85%; line-height: 1.5; }
+        .chat-msg.user { background: #4f46e5; color: #fff; align-self: flex-end; }
+        .chat-msg.ai { background: #f3f4f6; color: #111; align-self: flex-start; }
+        .chat-msg.hint { background: #fef9c3; color: #92400e; align-self: center; font-size: 12px; text-align: center; }
+        .chat-input-row { display: flex; border-top: 1px solid #e5e7eb; padding: 8px; gap: 6px; }
+        .chat-input-row input { flex: 1; border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 10px; font-size: 13px; outline: none; }
+        .chat-input-row input:focus { border-color: #4f46e5; }
+        .chat-send-btn { background: #4f46e5; color: #fff; border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13px; }
+        .chat-send-btn:disabled { background: #a5b4fc; }
+        .chat-collapsed .chat-body { display: none; }
+
+        /* ===== Misc ===== */
+        .page-title { font-size: 20px; font-weight: 700; color: #1e1b4b; margin-bottom: 4px; }
+        .page-subtitle { font-size: 13px; color: #6b7280; margin-bottom: 24px; }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 500; }
+        .btn-primary { background: #4f46e5; color: #fff; }
+        .btn-primary:hover { background: #4338ca; }
+        .btn-secondary { background: #f3f4f6; color: #374151; }
+        .hidden { display: none !important; }
+        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+        .section-title { font-size: 15px; font-weight: 600; color: #1e1b4b; margin-bottom: 12px; }
+    </style>
 </head>
-<body>
+<body style="margin:0;background:#f8f9ff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
 
-<!-- NAV -->
-<nav>
-  <span class="nav-brand">ZA 审核平台</span>
-  <button class="nav-btn active" onclick="showPage('audit',this)">成交单审核</button>
-  <button class="nav-btn" onclick="showPage('compare',this)">对比月结单</button>
-  <button class="nav-btn" onclick="showPage('va',this)">VA 审核</button>
-  <button class="nav-btn" onclick="showPage('history',this)">历史记录</button>
-  <span id="ai-status">检测中...</span>
-</nav>
+    <!-- ===== Nav ===== -->
+    <nav class="nav">
+        <div class="nav-brand">AI 审核平台</div>
+        <button class="nav-btn active" onclick="showPage('audit')">成交单审核</button>
+        <button class="nav-btn" onclick="showPage('compare')">对比月结单</button>
+        <button class="nav-btn" onclick="showPage('va')">VA成交单审核</button>
+        <button class="nav-btn" onclick="showPage('history')">历史记录</button>
+        <div class="nav-status">
+            <span class="header-badge" id="ai-status" style="font-size:12px;padding:4px 10px;">检测中...</span>
+        </div>
+    </nav>
 
-<!-- ============================================================ PAGE: 成交单审核 -->
-<div class="page active" id="page-audit">
-<div class="page-wrap">
-  <div class="page-title">成交单审核</div>
-  <div class="page-sub">上传 PDF，AI 自动识别费用豁免、合规检查、异常检测</div>
+    <!-- ===== Page: 成交单审核 ===== -->
+    <div class="page active" id="page-audit">
+        <div style="max-width:800px;margin:0 auto;">
+            <div class="page-title">成交单审核</div>
+            <div class="page-subtitle">上传股票成交单 PDF，AI 自动识别费用豁免、合规检查、异常检测</div>
 
-  <div class="upload-zone" id="upload-zone">
-    <div class="uz-icon">📄</div>
-    <h2>拖拽 PDF 到此处，或点击上传</h2>
-    <p>支持 ZA Bank 股票成交单 PDF</p>
-    <input type="file" id="file-input" accept=".pdf" hidden>
-    <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">选择文件</button>
-  </div>
+            <div class="upload-zone" id="upload-zone" style="border:2px dashed #d1d5db;border-radius:12px;padding:40px;text-align:center;background:#fff;margin-bottom:16px;">
+                <div style="font-size:40px;margin-bottom:12px;">📄</div>
+                <h2 style="font-size:16px;margin-bottom:8px;">拖拽 PDF 文件到此处，或点击上传</h2>
+                <p style="color:#9ca3af;font-size:13px;margin-bottom:16px;">支持 ZA Bank 股票成交单 PDF</p>
+                <input type="file" id="file-input" accept=".pdf" hidden>
+                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">选择 PDF 文件</button>
+            </div>
 
-  <div id="file-list"></div>
+            <div id="file-list" style="margin-bottom:12px;"></div>
+            <div class="hidden" id="progress-container" style="margin-bottom:16px;">
+                <div style="background:#e5e7eb;border-radius:8px;height:8px;overflow:hidden;">
+                    <div id="progress-fill" style="background:#4f46e5;height:100%;width:0;transition:width 0.3s;"></div>
+                </div>
+                <p id="progress-text" style="font-size:13px;color:#6b7280;margin-top:6px;">正在处理...</p>
+            </div>
 
-  <div class="progress-wrap hidden" id="progress-container">
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-    <div class="progress-text" id="progress-text">正在处理...</div>
-  </div>
-
-  <div class="hidden" id="results-section">
-    <div class="results-header">
-      <div style="font-size:16px;font-weight:700;">审核报告</div>
-      <button class="btn btn-ghost" onclick="resetAudit()">重新上传</button>
+            <div class="hidden" id="results-section">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                    <div class="section-title">审核报告</div>
+                    <button class="btn btn-secondary" onclick="resetAudit()">审核新文件</button>
+                </div>
+                <div id="summary-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;"></div>
+                <div class="card hidden" id="ai-summary-card">
+                    <div class="section-title">AI 审核摘要</div>
+                    <p id="ai-summary-text" style="font-size:14px;line-height:1.7;color:#374151;"></p>
+                </div>
+                <div class="card hidden" id="fee-waiver-card">
+                    <div class="section-title">费用豁免详情</div>
+                    <div id="fee-waiver-content"></div>
+                </div>
+                <div class="card">
+                    <div class="section-title">审核发现 (<span id="findings-count">0</span>)</div>
+                    <div id="findings-list"></div>
+                </div>
+                <div class="card">
+                    <div class="section-title">提取的成交单数据</div>
+                    <div id="data-table"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="stats-row" id="summary-cards"></div>
+    <!-- ===== Page: 对比月结单 ===== -->
+    <div class="page" id="page-compare">
+        <div class="page-title">成交单 vs 月结单对比</div>
+        <div class="page-subtitle">上传成交单和对应月结单，自动比对是否体现同一笔交易</div>
 
-    <div class="card hidden" id="ai-summary-card">
-      <div class="card-title">AI 审核摘要</div>
-      <div class="ai-summary" id="ai-summary-text"></div>
+        <div class="compare-upload-grid">
+            <div class="compare-upload-box" id="contract-box">
+                <h3>成交单 Contract Note</h3>
+                <p>Stock Contract Note PDF</p>
+                <input type="file" id="contract-input" accept=".pdf" hidden onchange="onContractSelected()">
+                <button class="btn btn-primary" style="font-size:13px;padding:8px 16px;" onclick="document.getElementById('contract-input').click()">选择成交单</button>
+                <div class="file-label" id="contract-label"></div>
+            </div>
+            <div class="compare-upload-box" id="statement-box">
+                <h3>月结单 Monthly Statement</h3>
+                <p>Investment Account Monthly Statement PDF</p>
+                <input type="file" id="statement-input" accept=".pdf" hidden onchange="onStatementSelected()">
+                <button class="btn btn-secondary" style="font-size:13px;padding:8px 16px;" onclick="document.getElementById('statement-input').click()">选择月结单</button>
+                <div class="file-label" id="statement-label"></div>
+            </div>
+        </div>
+
+        <div style="text-align:center;margin-bottom:24px;">
+            <button class="btn btn-primary" id="compare-btn" onclick="runCompare()" disabled style="padding:12px 32px;font-size:15px;">开始对比</button>
+        </div>
+
+        <div class="hidden" id="compare-loading" style="text-align:center;padding:40px;color:#6b7280;">
+            正在解析文件并对比中，请稍候...
+        </div>
+
+        <div class="hidden" id="compare-results">
+            <div class="compare-result-header">
+                <div class="result-badge" id="overall-badge"></div>
+                <div style="font-size:13px;color:#6b7280;align-self:center;" id="overall-note"></div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4>成交单</h4>
+                    <div id="contract-summary"></div>
+                </div>
+                <div class="compare-card">
+                    <h4>月结单（匹配交易）</h4>
+                    <div id="statement-summary"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-title">字段对比结果</div>
+                <table class="match-table">
+                    <thead><tr><th>字段</th><th>成交单</th><th>月结单</th><th>结果</th></tr></thead>
+                    <tbody id="match-table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="hidden card" id="unmatched-card" style="background:#fff7ed;border-color:#fed7aa;">
+                <div class="section-title" style="color:#c2410c;">未找到对应交易</div>
+                <div id="unmatched-content" style="font-size:13px;color:#9a3412;"></div>
+            </div>
+
+            <div style="text-align:center;margin-top:16px;">
+                <button class="btn btn-secondary" onclick="resetCompare()">重新对比</button>
+            </div>
+        </div>
     </div>
 
-    <div class="card hidden" id="fee-waiver-card">
-      <div class="card-title">费用豁免</div>
-      <div class="fee-row" id="fee-waiver-content"></div>
+    <!-- ===== Page: VA成交单审核 ===== -->
+    <div class="page" id="page-va">
+        <div class="page-title">VA 成交单审核</div>
+        <div class="page-subtitle">上传虚拟资产成交单 PDF，自动识别语言和交易类型，对照官方模板逐条检查条款</div>
+
+        <div style="border:2px dashed #d1d5db;border-radius:12px;padding:40px;text-align:center;background:#fff;margin-bottom:16px;" id="va-upload-zone">
+            <div style="font-size:40px;margin-bottom:12px;">🔐</div>
+            <h2 style="font-size:16px;margin-bottom:8px;">上传 VA 成交单 PDF</h2>
+            <p style="color:#9ca3af;font-size:13px;margin-bottom:16px;">支持繁体/简体，买入/卖出自动识别</p>
+            <input type="file" id="va-file-input" accept=".pdf" hidden>
+            <button class="btn btn-primary" onclick="document.getElementById('va-file-input').click()">选择 PDF 文件</button>
+        </div>
+
+        <div class="hidden" id="va-loading" style="text-align:center;padding:30px;color:#6b7280;">正在审核中，请稍候...</div>
+
+        <div class="hidden" id="va-results">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <div class="section-title">VA 审核报告</div>
+                <button class="btn btn-secondary" onclick="resetVA()">审核新文件</button>
+            </div>
+
+            <!-- 基本信息 -->
+            <div class="card" style="margin-bottom:16px;">
+                <div class="section-title">文件信息</div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="va-info"></div>
+            </div>
+
+            <!-- 总体结论 -->
+            <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center;">
+                <div class="result-badge" id="va-overall-badge"></div>
+                <div style="font-size:13px;color:#6b7280;" id="va-overall-note"></div>
+            </div>
+
+            <!-- 统计 -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;" id="va-stats"></div>
+
+            <!-- 检查详情 -->
+            <div class="card">
+                <div class="section-title">逐条检查结果</div>
+                <div id="va-checks"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">审核发现 · <span id="findings-count">0</span> 项</div>
-      <div id="findings-list"></div>
+    <!-- ===== Page: 历史记录 ===== -->
+    <div class="page" id="page-history">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div>
+                <div class="page-title">历史记录</div>
+                <div class="page-subtitle">所有历史审核报告，点击查看详情</div>
+            </div>
+            <a href="/api/export/excel" download>
+                <button class="btn btn-primary" style="background:#16a34a;">⬇ 导出 Excel</button>
+            </a>
+        </div>
+        <div id="history-list-content"></div>
     </div>
 
-    <div class="card">
-      <div class="card-title">成交单数据</div>
-      <table class="dt" id="data-table"></table>
+    <!-- ===== Chat Box ===== -->
+    <div class="chat-box" id="chat-box">
+        <div class="chat-header" onclick="toggleChat()">
+            <h4>AI 助手</h4>
+            <button class="chat-toggle-btn" id="chat-toggle-icon">−</button>
+        </div>
+        <div class="chat-body">
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-msg hint">有任何问题都可以问我</div>
+            </div>
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="输入问题..." onkeydown="if(event.key==='Enter') sendChat()">
+                <button class="chat-send-btn" id="chat-send-btn" onclick="sendChat()">发送</button>
+            </div>
+        </div>
     </div>
-
-    <div class="card">
-      <details>
-        <summary>原始 PDF 文本</summary>
-        <pre id="raw-text"></pre>
-      </details>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================ PAGE: 对比月结单 -->
-<div class="page" id="page-compare">
-<div class="page-wrap">
-  <div class="page-title">成交单 vs 月结单</div>
-  <div class="page-sub">上传两份文件，自动比对是否体现同一笔交易</div>
-
-  <div class="two-col">
-    <div class="upload-box" id="contract-box">
-      <h3>成交单</h3>
-      <p>Stock Contract Note PDF</p>
-      <input type="file" id="contract-input" accept=".pdf" hidden onchange="onContractSelected()">
-      <button class="btn btn-primary" style="font-size:13px;height:36px;padding:0 16px;" onclick="document.getElementById('contract-input').click()">选择成交单</button>
-      <div class="file-name" id="contract-label"></div>
-    </div>
-    <div class="upload-box" id="statement-box">
-      <h3>月结单</h3>
-      <p>Investment Account Monthly Statement PDF</p>
-      <input type="file" id="statement-input" accept=".pdf" hidden onchange="onStatementSelected()">
-      <button class="btn btn-ghost" style="font-size:13px;height:36px;padding:0 16px;" onclick="document.getElementById('statement-input').click()">选择月结单</button>
-      <div class="file-name" id="statement-label"></div>
-    </div>
-  </div>
-
-  <div style="text-align:center;margin-bottom:24px;">
-    <button class="btn btn-primary" id="compare-btn" onclick="runCompare()" disabled style="padding:0 32px;height:44px;font-size:15px;">开始对比</button>
-  </div>
-
-  <div class="hidden" id="compare-loading" style="text-align:center;padding:40px;color:rgba(3,5,22,0.5);font-size:14px;">正在解析对比中...</div>
-
-  <div class="hidden" id="compare-results">
-    <div class="compare-result-row">
-      <div class="verdict" id="overall-badge"></div>
-      <div id="overall-note"></div>
-    </div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="card-title">成交单</div>
-        <div class="kv-list" id="contract-summary"></div>
-      </div>
-      <div class="card">
-        <div class="card-title">月结单（匹配交易）</div>
-        <div class="kv-list" id="statement-summary"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">字段对比</div>
-      <table class="mt">
-        <thead><tr><th>字段</th><th>成交单</th><th>月结单</th><th>结果</th></tr></thead>
-        <tbody id="match-table-body"></tbody>
-      </table>
-    </div>
-
-    <div class="card hidden" id="unmatched-card" style="background:rgba(252,96,91,0.04);">
-      <div class="card-title" style="color:#FC605B;">未找到对应交易</div>
-      <div id="unmatched-content" style="font-size:13px;color:#FC605B;"></div>
-    </div>
-
-    <div style="text-align:center;margin-top:14px;">
-      <button class="btn btn-ghost" onclick="resetCompare()">重新对比</button>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================ PAGE: VA审核 -->
-<div class="page" id="page-va">
-<div class="page-wrap">
-  <div class="page-title">VA 成交单审核</div>
-  <div class="page-sub">自动识别语言与交易类型，对照官方模板逐条核查</div>
-
-  <div class="upload-zone" id="va-upload-zone">
-    <div class="uz-icon">🔐</div>
-    <h2>上传 VA 成交单 PDF</h2>
-    <p>繁体 / 简体，买入 / 卖出自动识别</p>
-    <input type="file" id="va-file-input" accept=".pdf" hidden>
-    <button class="btn btn-primary" onclick="document.getElementById('va-file-input').click()">选择文件</button>
-  </div>
-
-  <div class="hidden" id="va-loading" style="text-align:center;padding:32px;color:rgba(3,5,22,0.5);font-size:14px;">审核中，请稍候...</div>
-
-  <div class="hidden" id="va-results">
-    <div class="results-header">
-      <div style="font-size:16px;font-weight:700;">VA 审核报告</div>
-      <button class="btn btn-ghost" onclick="resetVA()">重新上传</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">文件信息</div>
-      <div class="va-info-grid" id="va-info"></div>
-    </div>
-
-    <div style="margin-bottom:16px;">
-      <div class="verdict" id="va-overall-badge" style="margin-bottom:4px;"></div>
-      <div style="font-size:13px;color:rgba(3,5,22,0.5);" id="va-overall-note"></div>
-    </div>
-
-    <div class="stats-row" style="grid-template-columns:repeat(3,1fr);" id="va-stats"></div>
-
-    <div class="card">
-      <div class="card-title">逐条检查</div>
-      <div id="va-checks"></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============================================================ PAGE: 历史记录 -->
-<div class="page" id="page-history">
-<div class="page-wrap">
-  <div class="page-header-row">
-    <div>
-      <div class="page-title">历史记录</div>
-      <div class="page-sub" style="margin-bottom:0;">点击记录查看详情</div>
-    </div>
-    <a href="/api/export/excel" download><button class="export-btn">⬇ 导出 Excel</button></a>
-  </div>
-  <div id="history-list-content"></div>
-</div>
-</div>
-
-<!-- CHAT -->
-<div class="chat-box" id="chat-box">
-  <div class="chat-head" onclick="toggleChat()">
-    <h4>AI 助手</h4>
-    <button id="chat-toggle-icon">−</button>
-  </div>
-  <div class="chat-msgs" id="chat-messages">
-    <div class="msg tip">有任何问题都可以问我</div>
-  </div>
-  <div class="chat-foot">
-    <input type="text" id="chat-input" placeholder="输入问题..." onkeydown="if(event.key==='Enter')sendChat()">
-    <button id="chat-send-btn" onclick="sendChat()">发送</button>
-  </div>
-</div>
 
 <script>
-let auditResults = [], currentContractData = null;
+let auditResults = [];
+let currentContractData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  checkHealth();
-  setupDragDrop();
-  document.getElementById('file-input').addEventListener('change', e => {
-    if (e.target.files.length) handleFiles(Array.from(e.target.files));
-  });
-  document.getElementById('va-file-input').addEventListener('change', e => {
-    if (e.target.files.length) runVAAudit(e.target.files[0]);
-  });
+    checkHealth();
+    setupDragDrop();
+    document.getElementById('file-input').addEventListener('change', e => {
+        if (e.target.files.length > 0) handleFiles(Array.from(e.target.files));
+    });
 });
 
-// ===== NAV =====
-function showPage(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (name === 'history') loadHistory();
+// ===== Nav =====
+function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    event.target.classList.add('active');
+    if (name === 'history') loadHistory();
 }
 
-// ===== HEALTH =====
+// ===== Health =====
 async function checkHealth() {
-  try {
-    const d = await fetch('/api/health').then(r => r.json());
-    const el = document.getElementById('ai-status');
-    if (d.ai_enabled) {
-      el.textContent = 'AI 已启用';
-      el.style.cssText = 'background:rgba(57,229,177,0.15);color:#00B880;';
-    } else {
-      el.textContent = '规则模式';
-      el.style.cssText = 'background:rgba(233,147,0,0.12);color:#E99300;';
-    }
-  } catch(e) {}
+    try {
+        const data = await fetch('/api/health').then(r => r.json());
+        const badge = document.getElementById('ai-status');
+        badge.textContent = data.ai_enabled ? 'AI 已启用' : '规则引擎模式';
+        badge.style.background = data.ai_enabled ? '#dcfce7' : '#fef3c7';
+        badge.style.color = data.ai_enabled ? '#16a34a' : '#d97706';
+        badge.style.borderRadius = '20px';
+        badge.style.padding = '4px 10px';
+    } catch(e) {}
 }
 
-// ===== AUDIT PAGE =====
+// ===== Audit Page =====
 function setupDragDrop() {
-  const z = document.getElementById('upload-zone');
-  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag-over'); });
-  z.addEventListener('dragleave', () => z.classList.remove('drag-over'));
-  z.addEventListener('drop', e => {
-    e.preventDefault(); z.classList.remove('drag-over');
-    const files = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.pdf'));
-    if (files.length) handleFiles(files);
-  });
+    const zone = document.getElementById('upload-zone');
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor='#4f46e5'; zone.style.background='#f0f4ff'; });
+    zone.addEventListener('dragleave', () => { zone.style.borderColor='#d1d5db'; zone.style.background='#fff'; });
+    zone.addEventListener('drop', e => {
+        e.preventDefault(); zone.style.borderColor='#d1d5db'; zone.style.background='#fff';
+        const files = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.pdf'));
+        if (files.length) handleFiles(files);
+    });
 }
 
 function handleFiles(files) {
-  document.getElementById('file-list').innerHTML = files.map(f =>
-    `<div style="font-size:13px;color:rgba(3,5,22,0.6);padding:6px 0;">📄 ${f.name}</div>`
-  ).join('');
-  uploadFiles(files);
+    document.getElementById('file-list').innerHTML = files.map(f =>
+        `<div style="font-size:13px;color:#374151;padding:6px 0;">📄 ${f.name}</div>`
+    ).join('');
+    uploadFiles(files);
 }
 
 async function uploadFiles(files) {
-  document.getElementById('progress-container').classList.remove('hidden');
-  auditResults = [];
-  for (let i = 0; i < files.length; i++) {
-    document.getElementById('progress-fill').style.width = (i/files.length*100)+'%';
-    document.getElementById('progress-text').textContent = `正在处理 ${i+1}/${files.length}：${files[i].name}`;
-    const fd = new FormData(); fd.append('file', files[i]);
-    const d = await fetch('/api/audit', {method:'POST', body:fd}).then(r=>r.json());
-    if (d.success) { auditResults.push(d); currentContractData = d.contract_data; }
-  }
-  document.getElementById('progress-fill').style.width = '100%';
-  document.getElementById('progress-text').textContent = '审核完成';
-  setTimeout(() => document.getElementById('progress-container').classList.add('hidden'), 800);
-  if (auditResults.length) renderAudit(auditResults[0]);
+    document.getElementById('progress-container').classList.remove('hidden');
+    auditResults = [];
+    for (let i = 0; i < files.length; i++) {
+        document.getElementById('progress-fill').style.width = (i/files.length*100) + '%';
+        document.getElementById('progress-text').textContent = `正在处理 ${i+1}/${files.length}: ${files[i].name}`;
+        const fd = new FormData(); fd.append('file', files[i]);
+        const data = await fetch('/api/audit', {method:'POST', body:fd}).then(r=>r.json());
+        if (data.success) { auditResults.push(data); currentContractData = data.contract_data; }
+    }
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('progress-text').textContent = '审核完成！';
+    setTimeout(() => document.getElementById('progress-container').classList.add('hidden'), 1000);
+    if (auditResults.length) renderAuditResults(auditResults[0]);
 }
 
-function renderAudit(r) {
-  document.getElementById('results-section').classList.remove('hidden');
+function renderAuditResults(r) {
+    document.getElementById('results-section').classList.remove('hidden');
+    const cards = [
+        {n: r.critical_count, label:'严重问题', bg:'#fee2e2', color:'#dc2626'},
+        {n: r.warning_count, label:'警告', bg:'#fef3c7', color:'#d97706'},
+        {n: r.info_count, label:'信息', bg:'#eff6ff', color:'#2563eb'},
+        {n: r.total_findings, label:'总计', bg:'#f3f4f6', color:'#374151'},
+    ];
+    document.getElementById('summary-cards').innerHTML = cards.map(c => `
+        <div style="background:${c.bg};border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:700;color:${c.color};">${c.n}</div>
+            <div style="font-size:12px;color:${c.color};margin-top:4px;">${c.label}</div>
+        </div>`).join('');
 
-  // Stats
-  const stats = [
-    {n:r.critical_count, label:'严重问题', cls:'stat-critical'},
-    {n:r.warning_count,  label:'警告',    cls:'stat-warn'},
-    {n:r.info_count,     label:'信息',    cls:'stat-info'},
-    {n:r.total_findings, label:'总计',    cls:'stat-total'},
-  ];
-  document.getElementById('summary-cards').innerHTML = stats.map(s =>
-    `<div class="stat-card ${s.cls}"><div class="stat-num">${s.n}</div><div class="stat-label">${s.label}</div></div>`
-  ).join('');
+    if (r.ai_summary) {
+        document.getElementById('ai-summary-card').classList.remove('hidden');
+        document.getElementById('ai-summary-text').textContent = r.ai_summary;
+    }
 
-  // AI Summary
-  if (r.ai_summary) {
-    document.getElementById('ai-summary-card').classList.remove('hidden');
-    document.getElementById('ai-summary-text').textContent = r.ai_summary;
-  }
+    const fw = r.fee_waiver_details;
+    if (fw) {
+        document.getElementById('fee-waiver-card').classList.remove('hidden');
+        document.getElementById('fee-waiver-content').innerHTML = `
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:13px;">
+                <div style="padding:10px;background:${fw.commission_waived?'#dcfce7':'#f9fafb'};border-radius:8px;">
+                    <div style="color:#6b7280;">佣金</div>
+                    <div style="font-weight:600;color:${fw.commission_waived?'#16a34a':'#374151'};">${fw.commission_waived?'已豁免':'正常收取'}</div>
+                </div>
+                <div style="padding:10px;background:${fw.platform_fee_waived?'#dcfce7':'#f9fafb'};border-radius:8px;">
+                    <div style="color:#6b7280;">平台费</div>
+                    <div style="font-weight:600;color:${fw.platform_fee_waived?'#16a34a':'#374151'};">${fw.platform_fee_waived?'已豁免':'正常收取'}</div>
+                </div>
+                <div style="padding:10px;background:#f9fafb;border-radius:8px;">
+                    <div style="color:#6b7280;">共节省</div>
+                    <div style="font-weight:600;">${fw.waiver_currency} ${fw.total_fees_saved.toFixed(2)}</div>
+                </div>
+            </div>
+            ${fw.has_remark ? `<div style="margin-top:10px;font-size:13px;color:#6b7280;">备注：${fw.remark_text_cn||fw.remark_text}</div>` : ''}`;
+    }
 
-  // Fee waiver
-  const fw = r.fee_waiver_details;
-  if (fw) {
-    document.getElementById('fee-waiver-card').classList.remove('hidden');
-    document.getElementById('fee-waiver-content').innerHTML = `
-      <div class="fee-cell ${fw.commission_waived?'waived':''}">
-        <div class="fee-key">佣金</div>
-        <div class="fee-val">${fw.commission_waived?'已豁免':'正常收取'}</div>
-      </div>
-      <div class="fee-cell ${fw.platform_fee_waived?'waived':''}">
-        <div class="fee-key">平台费</div>
-        <div class="fee-val">${fw.platform_fee_waived?'已豁免':'正常收取'}</div>
-      </div>
-      <div class="fee-cell">
-        <div class="fee-key">共节省</div>
-        <div class="fee-val">${fw.waiver_currency} ${fw.total_fees_saved.toFixed(2)}</div>
-      </div>
-      ${fw.has_remark?`<div class="fee-cell full"><div class="fee-key">备注</div><div class="fee-val">${e(fw.remark_text_cn||fw.remark_text)}</div></div>`:''}
-    `;
-  }
+    const sev = {critical:'#fee2e2', warning:'#fef9c3', info:'#eff6ff'};
+    const sevC = {critical:'#dc2626', warning:'#d97706', info:'#2563eb'};
+    const cat = {fee_waiver:'费用豁免', compliance:'合规检查', anomaly:'异常检测', data_quality:'数据质量'};
+    document.getElementById('findings-count').textContent = r.findings.length;
+    document.getElementById('findings-list').innerHTML = r.findings.map(f => `
+        <div style="background:${sev[f.severity]||'#f9fafb'};border-radius:8px;padding:12px;margin-bottom:8px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span style="font-size:11px;background:#fff;color:${sevC[f.severity]||'#374151'};padding:2px 8px;border-radius:12px;font-weight:600;">${f.severity.toUpperCase()}</span>
+                <span style="font-size:11px;color:#6b7280;">[${cat[f.category]||f.category}]</span>
+                <span style="font-size:13px;font-weight:600;color:#111;">${escapeHtml(f.title)}</span>
+            </div>
+            <div style="font-size:13px;color:#374151;">${escapeHtml(f.detail)}</div>
+            ${f.suggestion ? `<div style="font-size:12px;color:#6b7280;margin-top:6px;">💡 ${escapeHtml(f.suggestion)}</div>` : ''}
+        </div>`).join('');
 
-  // Findings
-  document.getElementById('findings-count').textContent = r.findings.length;
-  const catLabel = {fee_waiver:'费用豁免', compliance:'合规检查', anomaly:'异常检测', data_quality:'数据质量'};
-  document.getElementById('findings-list').innerHTML = r.findings.map(f => `
-    <div class="finding finding-${f.severity}">
-      <div class="finding-head">
-        <span class="tag tag-${f.severity}">${f.severity.toUpperCase()}</span>
-        <span class="tag tag-cat">${catLabel[f.category]||f.category}</span>
-        <span class="finding-title">${e(f.title)}</span>
-      </div>
-      <div class="finding-detail">${e(f.detail)}</div>
-      ${f.suggestion?`<div class="finding-tip">${e(f.suggestion)}</div>`:''}
-    </div>`).join('');
+    const d = r.contract_data;
+    const rows = [
+        ['客户', `${d.customer_name||'-'} ${d.customer_name_cn||''}`],
+        ['账户', d.account_number||'-'],
+        ['股票', `${d.stock_name||'-'} (${d.stock_code||'-'})`],
+        ['市场', d.stock_market||'-'],
+        ['类型', d.transaction_type||'-'],
+        ['成交日期', d.contract_date||'-'],
+        ['成交价', `${d.avg_price_currency||''} ${d.avg_price||'-'}`],
+        ['股数', d.quantity||'-'],
+        ['交易金额', `${d.total_amount_currency||''} ${d.total_amount?.toFixed(2)||'-'}`],
+        ['佣金', `${d.commission_currency||''} ${d.commission?.toFixed(2)??'-'}`],
+        ['平台费', `${d.platform_fee_currency||''} ${d.platform_fee?.toFixed(2)??'-'}`],
+        ['交收金额', `${d.settlement_amount_currency||''} ${d.settlement_amount?.toFixed(2)||'-'}`],
+        ['交收日期', d.settlement_date||'-'],
+        ['交易编号', d.order_reference||'-'],
+    ];
+    document.getElementById('data-table').innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <tbody>${rows.map(([k,v])=>`<tr><td style="padding:6px 8px;color:#6b7280;width:120px;">${k}</td><td style="padding:6px 8px;font-weight:500;">${escapeHtml(String(v))}</td></tr>`).join('')}</tbody></table>`;
 
-  // Data table
-  const d = r.contract_data;
-  const rows = [
-    ['客户', `${d.customer_name||'-'} ${d.customer_name_cn||''}`],
-    ['账户', d.account_number||'-'],
-    ['股票', `${d.stock_name||'-'} (${d.stock_code||'-'})`],
-    ['市场', d.stock_market||'-'],
-    ['类型', d.transaction_type||'-'],
-    ['成交日期', d.contract_date||'-'],
-    ['成交价', `${d.avg_price_currency||''} ${d.avg_price||'-'}`],
-    ['股数', d.quantity||'-'],
-    ['交易金额', `${d.total_amount_currency||''} ${d.total_amount?.toFixed(2)||'-'}`],
-    ['佣金', `${d.commission_currency||''} ${d.commission?.toFixed(2)??'-'}`],
-    ['平台费', `${d.platform_fee_currency||''} ${d.platform_fee?.toFixed(2)??'-'}`],
-    ['交收金额', `${d.settlement_amount_currency||''} ${d.settlement_amount?.toFixed(2)||'-'}`],
-    ['交收日期', d.settlement_date||'-'],
-    ['交易编号', d.order_reference||'-'],
-  ];
-  document.getElementById('data-table').innerHTML = rows.map(([k,v]) =>
-    `<tr><td class="dk">${k}</td><td class="dv">${e(String(v))}</td></tr>`
-  ).join('');
-
-  document.getElementById('raw-text').textContent = d.raw_text||'无';
-  document.getElementById('results-section').scrollIntoView({behavior:'smooth'});
+    document.getElementById('results-section').scrollIntoView({behavior:'smooth'});
 }
 
 function resetAudit() {
-  auditResults = []; currentContractData = null;
-  document.getElementById('results-section').classList.add('hidden');
-  document.getElementById('file-list').innerHTML = '';
-  document.getElementById('file-input').value = '';
-  document.getElementById('ai-summary-card').classList.add('hidden');
-  document.getElementById('fee-waiver-card').classList.add('hidden');
-  window.scrollTo({top:0,behavior:'smooth'});
+    auditResults = []; currentContractData = null;
+    document.getElementById('results-section').classList.add('hidden');
+    document.getElementById('file-list').innerHTML = '';
+    document.getElementById('file-input').value = '';
+    document.getElementById('ai-summary-card').classList.add('hidden');
+    document.getElementById('fee-waiver-card').classList.add('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ===== COMPARE PAGE =====
+// ===== Compare Page =====
 let contractFile = null, statementFile = null;
 
 function onContractSelected() {
-  contractFile = document.getElementById('contract-input').files[0];
-  document.getElementById('contract-label').textContent = contractFile?.name||'';
-  document.getElementById('contract-box').classList.toggle('filled', !!contractFile);
-  updateCompareBtn();
+    contractFile = document.getElementById('contract-input').files[0];
+    document.getElementById('contract-label').textContent = contractFile ? contractFile.name : '';
+    document.getElementById('contract-box').classList.toggle('has-file', !!contractFile);
+    updateCompareBtn();
 }
 
 function onStatementSelected() {
-  statementFile = document.getElementById('statement-input').files[0];
-  document.getElementById('statement-label').textContent = statementFile?.name||'';
-  document.getElementById('statement-box').classList.toggle('filled', !!statementFile);
-  updateCompareBtn();
+    statementFile = document.getElementById('statement-input').files[0];
+    document.getElementById('statement-label').textContent = statementFile ? statementFile.name : '';
+    document.getElementById('statement-box').classList.toggle('has-file', !!statementFile);
+    updateCompareBtn();
 }
 
 function updateCompareBtn() {
-  document.getElementById('compare-btn').disabled = !(contractFile && statementFile);
+    document.getElementById('compare-btn').disabled = !(contractFile && statementFile);
 }
 
 async function runCompare() {
-  document.getElementById('compare-results').classList.add('hidden');
-  document.getElementById('compare-loading').classList.remove('hidden');
-  const fd = new FormData();
-  fd.append('contract_file', contractFile);
-  fd.append('statement_file', statementFile);
-  const d = await fetch('/api/compare', {method:'POST', body:fd}).then(r=>r.json());
-  document.getElementById('compare-loading').classList.add('hidden');
-  if (!d.success) { alert('对比失败，请重试'); return; }
+    document.getElementById('compare-results').classList.add('hidden');
+    document.getElementById('compare-loading').classList.remove('hidden');
 
-  const pass = d.overall === 'pass';
-  document.getElementById('overall-badge').textContent = pass ? '✓  对比通过' : '✕  发现不一致';
-  document.getElementById('overall-badge').className = 'verdict ' + (pass?'pass':'fail');
-  document.getElementById('overall-note').textContent = pass
-    ? '所有字段一致，成交单与月结单体现同一笔交易'
-    : `发现 ${d.mismatches.length} 处不一致，请核查`;
+    const fd = new FormData();
+    fd.append('contract_file', contractFile);
+    fd.append('statement_file', statementFile);
 
-  const cn = d.contract_summary;
-  document.getElementById('contract-summary').innerHTML = [
-    ['股票代码', cn.stock_code], ['成交日期', cn.trade_date],
-    ['股数', cn.quantity], ['单价', cn.unit_price],
-    ['佣金', cn.commission], ['平台费', cn.platform_fee],
-    ['交收金额', cn.settlement_amount], ['账户', cn.account_number],
-  ].map(([k,v]) => `<div class="kv"><span class="k">${k}</span><span class="v">${v??'-'}</span></div>`).join('');
+    const data = await fetch('/api/compare', {method:'POST', body:fd}).then(r=>r.json());
+    document.getElementById('compare-loading').classList.add('hidden');
 
-  const st = d.statement_summary, tx = st.matched_transaction;
-  document.getElementById('statement-summary').innerHTML = [
-    ['结单期间', st.period], ['账户', st.account_number],
-    ['交易笔数', st.transaction_count],
-    tx ? ['匹配日期', tx.trade_date] : ['匹配状态', '未找到'],
-    tx ? ['股数', tx.quantity] : null,
-    tx ? ['单价', tx.unit_price] : null,
-    tx ? ['交收金额', tx.settlement_amount] : null,
-  ].filter(Boolean).map(([k,v]) => `<div class="kv"><span class="k">${k}</span><span class="v">${v??'-'}</span></div>`).join('');
+    if (!data.success) { alert('对比失败，请重试'); return; }
 
-  const all = [...d.matches.map(f=>({...f,ok:true})), ...d.mismatches.map(f=>({...f,ok:false}))];
-  document.getElementById('match-table-body').innerHTML = all.map(f =>
-    `<tr class="${f.ok?'ok':'no'}"><td>${f.field}</td><td>${f.contract}</td><td>${f.statement}</td><td>${f.ok?'✓':'✕'}</td></tr>`
-  ).join('');
+    // Overall badge
+    const pass = data.overall === 'pass';
+    document.getElementById('overall-badge').textContent = pass ? '✅ 对比通过' : '❌ 发现不一致';
+    document.getElementById('overall-badge').className = 'result-badge ' + (pass ? 'pass' : 'fail');
+    document.getElementById('overall-note').textContent = pass
+        ? `所有字段一致，成交单与月结单体现同一笔交易`
+        : `发现 ${data.mismatches.length} 处不一致，请核查`;
 
-  if (d.unmatched.length) {
-    document.getElementById('unmatched-card').classList.remove('hidden');
-    document.getElementById('unmatched-content').innerHTML = d.unmatched.map(u=>u.note).join('<br>');
-  }
-  document.getElementById('compare-results').classList.remove('hidden');
+    // Contract summary
+    const cn = data.contract_summary;
+    document.getElementById('contract-summary').innerHTML = [
+        ['股票代码', cn.stock_code], ['成交日期', cn.trade_date],
+        ['股数', cn.quantity], ['单价', cn.unit_price],
+        ['佣金', cn.commission], ['平台费', cn.platform_fee],
+        ['交收金额', cn.settlement_amount], ['账户', cn.account_number],
+    ].map(([k,v]) => `<div class="kv"><span class="key">${k}</span><span class="val">${v??'-'}</span></div>`).join('');
+
+    // Statement summary
+    const st = data.statement_summary;
+    const stx = st.matched_transaction;
+    document.getElementById('statement-summary').innerHTML = [
+        ['结单期间', st.period], ['账户', st.account_number],
+        ['交易笔数', st.transaction_count],
+        stx ? ['匹配交易日期', stx.trade_date] : ['匹配状态', '未找到'],
+        stx ? ['股数', stx.quantity] : null,
+        stx ? ['单价', stx.unit_price] : null,
+        stx ? ['交收金额', stx.settlement_amount] : null,
+    ].filter(Boolean).map(([k,v]) => `<div class="kv"><span class="key">${k}</span><span class="val">${v??'-'}</span></div>`).join('');
+
+    // Match table
+    const allFields = [...data.matches.map(f=>({...f,ok:true})), ...data.mismatches.map(f=>({...f,ok:false}))];
+    document.getElementById('match-table-body').innerHTML = allFields.map(f => `
+        <tr class="${f.ok?'match-ok':'match-fail'}">
+            <td>${f.field}</td>
+            <td>${f.contract}</td>
+            <td>${f.statement}</td>
+            <td class="match-icon">${f.ok ? '✅' : '❌'}</td>
+        </tr>`).join('');
+
+    // Unmatched
+    if (data.unmatched.length) {
+        document.getElementById('unmatched-card').classList.remove('hidden');
+        document.getElementById('unmatched-content').innerHTML = data.unmatched.map(u => u.note).join('<br>');
+    }
+
+    document.getElementById('compare-results').classList.remove('hidden');
 }
 
 function resetCompare() {
-  contractFile = null; statementFile = null;
-  ['contract-input','statement-input'].forEach(id => document.getElementById(id).value='');
-  ['contract-label','statement-label'].forEach(id => document.getElementById(id).textContent='');
-  ['contract-box','statement-box'].forEach(id => document.getElementById(id).classList.remove('filled'));
-  document.getElementById('compare-btn').disabled = true;
-  document.getElementById('compare-results').classList.add('hidden');
-  document.getElementById('unmatched-card').classList.add('hidden');
+    contractFile = null; statementFile = null;
+    document.getElementById('contract-input').value = '';
+    document.getElementById('statement-input').value = '';
+    document.getElementById('contract-label').textContent = '';
+    document.getElementById('statement-label').textContent = '';
+    document.getElementById('contract-box').classList.remove('has-file');
+    document.getElementById('statement-box').classList.remove('has-file');
+    document.getElementById('compare-btn').disabled = true;
+    document.getElementById('compare-results').classList.add('hidden');
+    document.getElementById('unmatched-card').classList.add('hidden');
 }
 
-// ===== VA PAGE =====
-async function runVAAudit(file) {
-  document.getElementById('va-loading').classList.remove('hidden');
-  document.getElementById('va-results').classList.add('hidden');
-  const fd = new FormData(); fd.append('file', file);
-  const d = await fetch('/api/va-audit', {method:'POST', body:fd}).then(r=>r.json());
-  document.getElementById('va-loading').classList.add('hidden');
-  if (!d.success) { alert('审核失败: '+d.error); return; }
-
-  document.getElementById('va-info').innerHTML = [
-    ['文件名', d.file_name], ['审核时间', d.audit_time],
-    ['客户姓名', d.customer_name||'-'], ['账户号码', d.account_number||'-'],
-    ['资产名称', d.asset_name||'-'], ['资产代码', d.asset_code||'-'],
-    ['交易平台', d.platform||'-'], ['成交日期', d.contract_date||'-'],
-    ['语言', d.language], ['交易类型', d.transaction_type],
-  ].map(([k,v]) => `<div class="va-info-cell"><div class="va-info-key">${k}</div><div class="va-info-val">${e(String(v))}</div></div>`).join('');
-
-  const pass = d.overall === 'pass';
-  document.getElementById('va-overall-badge').textContent = pass ? '✓  审核通过' : '✕  审核未通过';
-  document.getElementById('va-overall-badge').className = 'verdict ' + (pass?'pass':'fail');
-  document.getElementById('va-overall-note').textContent = pass
-    ? `全部 ${d.total} 项检查通过`
-    : `${d.failed} 项未通过，请核查`;
-
-  document.getElementById('va-stats').innerHTML = `
-    <div class="stat-card stat-info"><div class="stat-num" style="color:#00B880;">${d.passed}</div><div class="stat-label">通过</div></div>
-    <div class="stat-card stat-critical"><div class="stat-num">${d.failed}</div><div class="stat-label">失败</div></div>
-    <div class="stat-card stat-total"><div class="stat-num">${d.total}</div><div class="stat-label">总计</div></div>`;
-
-  const groups = {};
-  d.checks.forEach(c => { if (!groups[c.category]) groups[c.category]=[]; groups[c.category].push(c); });
-  document.getElementById('va-checks').innerHTML = Object.entries(groups).map(([cat, items]) => `
-    <div class="va-group-title">${cat}</div>
-    ${items.map(c => `
-      <div class="va-check">
-        <div class="va-dot ${c.result}"></div>
-        <div>
-          <div class="va-check-name">${e(c.item)}</div>
-          <div class="va-check-detail">${e(c.detail)}</div>
-        </div>
-      </div>`).join('')}`).join('');
-
-  document.getElementById('va-results').classList.remove('hidden');
-  document.getElementById('va-results').scrollIntoView({behavior:'smooth'});
-}
-
-function resetVA() {
-  document.getElementById('va-file-input').value='';
-  document.getElementById('va-results').classList.add('hidden');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ===== HISTORY =====
+// ===== History Page =====
 async function loadHistory() {
-  const d = await fetch('/api/records').then(r=>r.json());
-  const el = document.getElementById('history-list-content');
-  if (!d.records.length) { el.innerHTML='<div style="color:rgba(3,5,22,0.3);font-size:14px;padding:20px 0;">暂无历史记录</div>'; return; }
-  el.innerHTML = d.records.map(r => `
-    <div class="h-item" onclick="loadRecord('${r.id}')">
-      <div class="h-left">
-        <div class="h-name">${e(r.file_name)}</div>
-        <div class="h-time">${r.audit_time}</div>
-      </div>
-      <div class="h-badges">
-        ${r.critical_count>0?`<span class="badge badge-err">严重 ${r.critical_count}</span>`:''}
-        ${r.warning_count>0?`<span class="badge badge-wrn">警告 ${r.warning_count}</span>`:''}
-        ${!r.critical_count&&!r.warning_count?`<span class="badge badge-ok">正常</span>`:''}
-      </div>
-    </div>`).join('');
+    const data = await fetch('/api/records').then(r=>r.json());
+    const list = document.getElementById('history-list-content');
+    if (!data.records.length) { list.innerHTML = '<div style="color:#9ca3af;font-size:14px;padding:20px;">暂无历史记录</div>'; return; }
+    list.innerHTML = data.records.map(r => `
+        <div class="history-item" onclick="loadRecord('${r.id}')">
+            <div>
+                <div class="hi-name">📄 ${escapeHtml(r.file_name)}</div>
+                <div class="hi-time">${r.audit_time}</div>
+            </div>
+            <div class="hi-badges">
+                ${r.critical_count>0 ? `<span class="badge-critical">严重 ${r.critical_count}</span>` : ''}
+                ${r.warning_count>0 ? `<span class="badge-warning">警告 ${r.warning_count}</span>` : ''}
+                ${!r.critical_count && !r.warning_count ? `<span class="badge-ok">正常</span>` : ''}
+            </div>
+        </div>`).join('');
 }
 
 async function loadRecord(id) {
-  const d = await fetch(`/api/records/${id}`).then(r=>r.json());
-  if (d.success) {
-    currentContractData = d.contract_data;
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.nav-btn')[0].classList.add('active');
-    showPage('audit', null);
-    renderAudit(d);
-  }
+    const data = await fetch(`/api/records/${id}`).then(r=>r.json());
+    if (data.success) {
+        currentContractData = data.contract_data;
+        showPage('audit');
+        document.querySelectorAll('.nav-btn')[0].classList.add('active');
+        document.querySelectorAll('.nav-btn')[2].classList.remove('active');
+        renderAuditResults(data);
+    }
 }
 
-// ===== CHAT =====
+// ===== VA Audit =====
+document.getElementById('va-file-input').addEventListener('change', async e => {
+    if (!e.target.files.length) return;
+    const file = e.target.files[0];
+    document.getElementById('va-loading').classList.remove('hidden');
+    document.getElementById('va-results').classList.add('hidden');
+
+    const fd = new FormData(); fd.append('file', file);
+    const data = await fetch('/api/va-audit', {method:'POST', body:fd}).then(r=>r.json());
+    document.getElementById('va-loading').classList.add('hidden');
+
+    if (!data.success) { alert('审核失败: ' + data.error); return; }
+
+    // 基本信息
+    const infoItems = [
+        ['文件名', data.file_name], ['审核时间', data.audit_time],
+        ['客户姓名', data.customer_name||'-'], ['账户号码', data.account_number||'-'],
+        ['资产名称', data.asset_name||'-'], ['资产代码', data.asset_code||'-'],
+        ['交易平台', data.platform||'-'], ['成交日期', data.contract_date||'-'],
+        ['语言', data.language], ['交易类型', data.transaction_type],
+    ];
+    document.getElementById('va-info').innerHTML = infoItems.map(([k,v]) => `
+        <div style="background:#f9fafb;border-radius:8px;padding:10px;">
+            <div style="font-size:11px;color:#6b7280;">${k}</div>
+            <div style="font-size:13px;font-weight:600;margin-top:2px;">${escapeHtml(String(v))}</div>
+        </div>`).join('');
+
+    // 总体结论
+    const pass = data.overall === 'pass';
+    document.getElementById('va-overall-badge').textContent = pass ? '✅ 审核通过' : '❌ 审核未通过';
+    document.getElementById('va-overall-badge').className = 'result-badge ' + (pass ? 'pass' : 'fail');
+    document.getElementById('va-overall-note').textContent = pass
+        ? `所有 ${data.total} 项检查均通过`
+        : `${data.failed} 项检查未通过，请核查`;
+
+    // 统计
+    document.getElementById('va-stats').innerHTML = `
+        <div style="background:#dcfce7;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:700;color:#16a34a;">${data.passed}</div>
+            <div style="font-size:12px;color:#16a34a;">通过</div>
+        </div>
+        <div style="background:#fee2e2;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:700;color:#dc2626;">${data.failed}</div>
+            <div style="font-size:12px;color:#dc2626;">失败</div>
+        </div>
+        <div style="background:#f3f4f6;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-size:28px;font-weight:700;color:#374151;">${data.total}</div>
+            <div style="font-size:12px;color:#374151;">总计</div>
+        </div>`;
+
+    // 按类别分组显示
+    const groups = {};
+    for (const c of data.checks) {
+        if (!groups[c.category]) groups[c.category] = [];
+        groups[c.category].push(c);
+    }
+    const resultColor = {pass:'#16a34a', fail:'#dc2626', warning:'#d97706'};
+    const resultBg = {pass:'#dcfce7', fail:'#fee2e2', warning:'#fef3c7'};
+    const resultLabel = {pass:'通过', fail:'失败', warning:'警告'};
+    document.getElementById('va-checks').innerHTML = Object.entries(groups).map(([cat, items]) => `
+        <div style="margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">${cat}</div>
+            ${items.map(c => `
+                <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6;">
+                    <span style="background:${resultBg[c.result]};color:${resultColor[c.result]};padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;white-space:nowrap;">${resultLabel[c.result]||c.result}</span>
+                    <div>
+                        <div style="font-size:13px;font-weight:500;">${escapeHtml(c.item)}</div>
+                        <div style="font-size:12px;color:#6b7280;margin-top:2px;">${escapeHtml(c.detail)}</div>
+                    </div>
+                </div>`).join('')}
+        </div>`).join('');
+
+    document.getElementById('va-results').classList.remove('hidden');
+    document.getElementById('va-results').scrollIntoView({behavior:'smooth'});
+});
+
+function resetVA() {
+    document.getElementById('va-file-input').value = '';
+    document.getElementById('va-results').classList.add('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== Chat =====
 function toggleChat() {
-  document.getElementById('chat-box').classList.toggle('chat-collapsed');
-  document.getElementById('chat-toggle-icon').textContent =
-    document.getElementById('chat-box').classList.contains('chat-collapsed') ? '+' : '−';
+    document.getElementById('chat-box').classList.toggle('chat-collapsed');
+    document.getElementById('chat-toggle-icon').textContent =
+        document.getElementById('chat-box').classList.contains('chat-collapsed') ? '+' : '−';
 }
 
 async function sendChat() {
-  const input = document.getElementById('chat-input');
-  const q = input.value.trim(); if (!q) return;
-  addMsg(q,'me'); input.value='';
-  document.getElementById('chat-send-btn').disabled = true;
-  const d = await fetch('/api/chat', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({question:q, contract_data: currentContractData||{}})
-  }).then(r=>r.json());
-  addMsg(d.answer,'ai');
-  document.getElementById('chat-send-btn').disabled = false;
+    const input = document.getElementById('chat-input');
+    const q = input.value.trim(); if (!q) return;
+    appendMsg(q, 'user'); input.value = '';
+    document.getElementById('chat-send-btn').disabled = true;
+    if (!currentContractData) {
+        const prompt = `用户问题：${q}\n\n请用简洁专业的中文回答。`;
+        const data = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({question:q, contract_data:{}})}).then(r=>r.json());
+        appendMsg(data.answer, 'ai');
+        document.getElementById('chat-send-btn').disabled = false;
+        return;
+    }
+    const data = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({question:q, contract_data:currentContractData})}).then(r=>r.json());
+    appendMsg(data.answer, 'ai');
+    document.getElementById('chat-send-btn').disabled = false;
 }
 
-function addMsg(text, role) {
-  const el = document.getElementById('chat-messages');
-  const d = document.createElement('div');
-  d.className = 'msg ' + role;
-  d.textContent = text;
-  el.appendChild(d);
-  el.scrollTop = el.scrollHeight;
+function appendMsg(text, role) {
+    const msgs = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = `chat-msg ${role}`;
+    div.textContent = text;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
 }
 
-function e(t) {
-  const d = document.createElement('div'); d.textContent = t; return d.innerHTML;
+function escapeHtml(text) {
+    const d = document.createElement('div'); d.textContent = text; return d.innerHTML;
 }
 </script>
 </body>

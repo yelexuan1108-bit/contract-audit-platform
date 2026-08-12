@@ -229,7 +229,11 @@
                 <h2 style="font-size:16px;font-weight:700;margin-bottom:8px;">拖拽多个 PDF 到此处，或点击选择</h2>
                 <p style="font-size:13px;color:#64748b;margin-bottom:16px;">支持股票成交单（HK/US）、VA 虚拟资产成交单，繁体/简体自动识别</p>
                 <input type="file" id="batch-file-input" accept=".pdf" multiple hidden onchange="batchFilesSelected()">
-                <button class="btn btn-primary" style="pointer-events:none;">选择 PDF 文件（可多选）</button>
+                <input type="file" id="batch-folder-input" webkitdirectory multiple hidden onchange="batchFolderSelected()">
+                <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="document.getElementById('batch-file-input').click()">选择多个 PDF 文件</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('batch-folder-input').click()">选择整个文件夹</button>
+                </div>
             </div>
 
             <!-- 文件列表 -->
@@ -372,12 +376,55 @@ document.addEventListener('DOMContentLoaded', () => {
     function batchDrop(e) {
         e.preventDefault();
         batchDragLeave(e);
-        const files = Array.from(e.dataTransfer.files).filter(f => f.name.toLowerCase().endsWith('.pdf'));
-        if (files.length) addBatchFiles(files);
+        const items = Array.from(e.dataTransfer.items || []);
+        if (items.length && items[0].webkitGetAsEntry) {
+            // 支持拖拽文件夹
+            const filePromises = [];
+            items.forEach(item => {
+                const entry = item.webkitGetAsEntry();
+                if (entry) filePromises.push(readEntry(entry));
+            });
+            Promise.all(filePromises).then(results => {
+                const files = results.flat().filter(f => f.name.toLowerCase().endsWith('.pdf'));
+                if (files.length) addBatchFiles(files);
+            });
+        } else {
+            const files = Array.from(e.dataTransfer.files).filter(f => f.name.toLowerCase().endsWith('.pdf'));
+            if (files.length) addBatchFiles(files);
+        }
+    }
+
+    function readEntry(entry) {
+        if (entry.isFile) {
+            return new Promise(resolve => entry.file(f => resolve([f])));
+        } else if (entry.isDirectory) {
+            const reader = entry.createReader();
+            return new Promise(resolve => {
+                const allEntries = [];
+                function readAll() {
+                    reader.readEntries(entries => {
+                        if (!entries.length) {
+                            Promise.all(allEntries.map(readEntry)).then(r => resolve(r.flat()));
+                        } else {
+                            allEntries.push(...entries);
+                            readAll();
+                        }
+                    });
+                }
+                readAll();
+            });
+        }
+        return Promise.resolve([]);
     }
 
     function batchFilesSelected() {
         const files = Array.from(document.getElementById('batch-file-input').files);
+        addBatchFiles(files);
+    }
+
+    function batchFolderSelected() {
+        const files = Array.from(document.getElementById('batch-folder-input').files)
+            .filter(f => f.name.toLowerCase().endsWith('.pdf'));
         addBatchFiles(files);
     }
 

@@ -1,0 +1,4263 @@
+{
+  "Stock": {
+    "order": {
+      "en": [
+        [
+          "条款1",
+          "reported to the Bank within 90 days from the issue date"
+        ],
+        [
+          "条款2",
+          "saving an electronic copy of this document in your own storage or printing a hard copy"
+        ],
+        [
+          "条款3",
+          "ZA Bank acts as agent in handling this transaction"
+        ],
+        [
+          "条款4",
+          "relevant handling fees will be charged on the same date as the effective date of the relevant corporate action"
+        ],
+        [
+          "条款5",
+          "securities in your account are held in the name or to the order of ZA Bank Limited on behalf of you"
+        ],
+        [
+          "条款6",
+          "All U.S. securities transactions are executed by third party execution brokers"
+        ],
+        [
+          "条款7",
+          "unit price of the HK securities transaction or the U.S. securities transactions"
+        ],
+        [
+          "条款8",
+          "[For HK Stock] The Bank confirms that the stamp duty has been or will be paid"
+        ],
+        [
+          "条款9",
+          "[For Corporate action] The above corporate action is subject to the conditions"
+        ],
+        [
+          "条款10",
+          "fee schedule in ZA Bank website https://bank.za.group"
+        ]
+      ],
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Contract Note 股票成交單"
+        ],
+        [
+          "条款6",
+          "Issue Date 發出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投資賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名稱"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代碼"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市場"
+        ],
+        [
+          "条款11",
+          "Transaction Type\n交易類別"
+        ],
+        [
+          "条款12",
+          "Contract Date\n成交日期"
+        ],
+        [
+          "条款13",
+          "Average Execution Price (Per Unit) \n平均成交價（每單位）"
+        ],
+        [
+          "条款14",
+          "Execution Quantities\n成交股數"
+        ],
+        [
+          "条款15",
+          "Total Consideration Amount\n交易金額"
+        ],
+        [
+          "条款16",
+          "Commission\n佣金金額"
+        ],
+        [
+          "条款17",
+          "Platform Fee\n平台費"
+        ],
+        [
+          "条款18",
+          "FINRA Fee\n交易費用"
+        ],
+        [
+          "条款19",
+          "SEC Fee\n監管費用"
+        ],
+        [
+          "条款20",
+          "Settlement Date\n交收日期"
+        ],
+        [
+          "条款21",
+          "Settlement Amount\n交收金額"
+        ],
+        [
+          "条款22",
+          "Order Reference\n交易編號"
+        ],
+        [
+          "条款23",
+          "Remark\n備註"
+        ],
+        [
+          "条款24",
+          "Remark\n備註"
+        ],
+        [
+          "条款25",
+          "Market市場"
+        ],
+        [
+          "条款26",
+          "Sell/賣出"
+        ],
+        [
+          "条款27",
+          "Commission waived. (ZA Bank will first credit the redeemable amount and related fees into the USD savings account, then deduct the same amount for settlement.)佣金已豁免 (ZA Bank 會先存入兌換金額及相關費用至美元活期賬戶，再扣除同等金額以作交收)"
+        ],
+        [
+          "条款28",
+          "Platform Fee waived. (ZA Bank will first credit the redeemable amount and related fees into the USD savings account, then deduct the same amount for settlement.)平台費已豁免 (ZA Bank 會先存入兌換金額及相關費用至美元活期賬戶，再扣除同等金額以作交收)"
+        ],
+        [
+          "条款29",
+          "Partial Execution quantity 部分成交股數"
+        ],
+        [
+          "条款30",
+          "Price Per Unit of Securities 每單位價格"
+        ],
+        [
+          "条款31",
+          "Partial Consideration Amount 部分成交金額"
+        ],
+        [
+          "条款32",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款33",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details/exercise of right issue (if applicable), please contact us at +852 3665 3665."
+        ],
+        [
+          "条款34",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款35",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款36",
+          "The relevant handling fees will be charged on the same date as the effective date of the relevant corporate action (if applicable)."
+        ],
+        [
+          "条款37",
+          "The securities in your account are held in the name or to the order of ZA Bank Limited on behalf of you."
+        ],
+        [
+          "条款38",
+          "All U.S. securities transactions are executed by third party execution brokers as an agent through NYSE, NASDAQ or other stock exchange. All HK securities transactions are executed by third-party execution brokers as an agent through The Stock Exchange of Hong Kong Limited."
+        ],
+        [
+          "条款39",
+          "The unit price of the HK securities transaction or the U.S. securities transactions (as the case may be) in this document is the weighted average unit price."
+        ],
+        [
+          "条款40",
+          "[For HK Stock] The Bank confirms that the stamp duty has been or will be paid through the Stock Exchange of Hong Kong Limited. Where the Total Consideration Amount is denominated in a currency other than Hong Kong dollars, the stamp duty paid or to be paid will be the Hong Kong dollar equivalent of the Total Consideration Amount calculated at the rate of exchange prescribed by the Stamp Duty Ordinance (Cap. 117)."
+        ],
+        [
+          "条款41",
+          "[For Corporate action] The above corporate action is subject to the conditions as set out in the company’s announcement."
+        ],
+        [
+          "条款42",
+          "For details of account fees and charges, please refer to the fee schedule in ZA Bank website https://bank.za.group"
+        ],
+        [
+          "条款43",
+          "如此文件有任何錯漏或不符，須於此文件發出後90 日內通知本行。如本行未有在上述時間內收到你的查詢，一切賬項均作實論。查詢賬戶詳情/需行使供股權 (如適用)，請致電 +852 3665 3665。"
+        ],
+        [
+          "条款44",
+          "你可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款45",
+          "ZA Bank以代理人的身份處理此交易。"
+        ],
+        [
+          "条款46",
+          "有關手續費會在相關公司行動生效當日同日收取 (如適用)。"
+        ],
+        [
+          "条款47",
+          "你的戶口内之證券以眾安銀行有限公司的名義或按其指示代你持有。"
+        ],
+        [
+          "条款48",
+          "所有美國證券交易均由第三方證券經紀商以代理人名義透過紐約證券交易所、納斯達克證券交易所或其他證券交易所執行。 所有香港證券交易均由第三方證券經紀商以代理人名義透過香港聯合交易所有限公司執行。"
+        ],
+        [
+          "条款49",
+          "此文件內的香港證券交易或美國證券交易(視情況而定)之單位價格乃加權平均單位價格。"
+        ],
+        [
+          "条款50",
+          "[港股適用] 本行確認已/將付印花稅予香港聯合交易所有限公司。如交易金額為港幣以外的貨幣計價，印花稅將按交易金額以《印花稅條例》（第117章）訂明的匯率折算為港幣的金額計算。"
+        ],
+        [
+          "条款51",
+          "[公司行動適用]上述公司行動受限於公司公告中規定的條款。"
+        ],
+        [
+          "条款52",
+          "有關適用的費用和收費，請參見本行網站上的費率表 https://bank.za.group"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Contract Note股票成交单"
+        ],
+        [
+          "条款6",
+          "Issue Date 发出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投资账户号码"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名称"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代码"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市场"
+        ],
+        [
+          "条款11",
+          "Transaction Type\n交易类别"
+        ],
+        [
+          "条款12",
+          "Contract Date\n成交日期"
+        ],
+        [
+          "条款13",
+          "Average Execution Price (Per Unit) \n平均成交价（每单位）"
+        ],
+        [
+          "条款14",
+          "Execution Quantities\n成交股数"
+        ],
+        [
+          "条款15",
+          "Total Consideration Amount\n交易金额"
+        ],
+        [
+          "条款16",
+          "Commission\n佣金金额"
+        ],
+        [
+          "条款17",
+          "Platform Fee\n平台费"
+        ],
+        [
+          "条款18",
+          "FINRA Fee\n交易费用"
+        ],
+        [
+          "条款19",
+          "SEC Fee\n监管费用"
+        ],
+        [
+          "条款20",
+          "Settlement Date\n交收日期"
+        ],
+        [
+          "条款21",
+          "Settlement Amount\n交收金额"
+        ],
+        [
+          "条款22",
+          "Order Reference\n交易编号"
+        ],
+        [
+          "条款23",
+          "Remark\n备注"
+        ],
+        [
+          "条款24",
+          "Remark\n备注"
+        ],
+        [
+          "条款25",
+          "Market市场"
+        ],
+        [
+          "条款26",
+          "Sell/卖出"
+        ],
+        [
+          "条款27",
+          "Commission waived. (ZA Bank will first credit the redeemable amount and related fees into the USD savings account, then deduct the same amount for settlement.)佣金已豁免 (ZA Bank 会先存入兑换金额及相关费用至美元活期账户，再扣除同等金额以作交收)"
+        ],
+        [
+          "条款28",
+          "Platform Fee waived. (ZA Bank will first credit the redeemable amount and related fees into the USD savings account, then deduct the same amount for settlement.)平台费已豁免 (ZA Bank 会先存入兑换金额及相关费用至美元活期账户，再扣除同等金额以作交收)"
+        ],
+        [
+          "条款29",
+          "Partial Execution quantity 部分成交股数"
+        ],
+        [
+          "条款30",
+          "Price Per Unit of Securities 每单位价格"
+        ],
+        [
+          "条款31",
+          "Partial Consideration Amount 部分成交金额"
+        ],
+        [
+          "条款32",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款33",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details/exercise of right issue (if applicable), please contact us at +852 3665 3665."
+        ],
+        [
+          "条款34",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款35",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款36",
+          "The relevant handling fees will be charged on the same date as the effective date of the relevant corporate action (if applicable)."
+        ],
+        [
+          "条款37",
+          "The securities in your account are held in the name or to the order of ZA Bank Limited on behalf of you."
+        ],
+        [
+          "条款38",
+          "All U.S. securities transactions are executed by third party execution brokers as an agent through NYSE, NASDAQ or other stock exchange. All HK securities transactions are executed by third-party execution brokers as an agent through The Stock Exchange of Hong Kong Limited."
+        ],
+        [
+          "条款39",
+          "The unit price of the HK securities transaction or the U.S. securities transactions (as the case may be) in this document is the weighted average unit price."
+        ],
+        [
+          "条款40",
+          "[For HK Stock] The Bank confirms that the stamp duty has been or will be paid through the Stock Exchange of Hong Kong Limited. Where the Total Consideration Amount is denominated in a currency other than Hong Kong dollars, the stamp duty paid or to be paid will be the Hong Kong dollar equivalent of the Total Consideration Amount calculated at the rate of exchange prescribed by the Stamp Duty Ordinance (Cap. 117)."
+        ],
+        [
+          "条款41",
+          "[For Corporate action] The above corporate action is subject to the conditions as set out in the company’s announcement."
+        ],
+        [
+          "条款42",
+          "For details of account fees and charges, please refer to the fee schedule in ZA Bank website https://bank.za.group"
+        ],
+        [
+          "条款43",
+          "如文件有任何错漏或不符，需在此文件发出后90日内通知本行。如果本行在上述时间内未收到你的查询，则一切账项均作实论 。查询账户详情/需行使供股权(如适用)，请致电+852 3665 3665。"
+        ],
+        [
+          "条款44",
+          "你可考虑将此文件的电子副本存储于 个人存储设备上，或备存一份打印本,以作日后参考。"
+        ],
+        [
+          "条款45",
+          "众安银行 以代理人的身份处理此交易。"
+        ],
+        [
+          "条款46",
+          "有关手续费会在相关公司行动生效当日同日收取 (如适用)。"
+        ],
+        [
+          "条款47",
+          "你的户口内的证券以众安银行有限公司的名义或按其指示代你持有。"
+        ],
+        [
+          "条款48",
+          "所有美国证券交易均由第三方证券经纪商以代理人名义通过纽约证券交易所、纳斯达克证券交易所或其他证券交易所执行。所有香港证券交易均由第三方证券经纪商以代理人名义透过香港联合交易所有限公司执行。"
+        ],
+        [
+          "条款49",
+          "此文件内的香港证券交易或美国证券交易(视情况而定)之单位价格乃加权平均单位价格。"
+        ],
+        [
+          "条款50",
+          "[港股适用] 本行确认已/将支付印花税给香港联合交易所有限公司。如交易金额为港币以外的货币计价，印花税将按照交易金额以《印花税条例》（第117章）规定的汇率折算为港币的金额计算。"
+        ],
+        [
+          "条款51",
+          "[公司行动适用]上述公司行动受限于公司公告中规定的条款。"
+        ],
+        [
+          "条款52",
+          "有关适用的费用和收费，请参见本行网站上的费率表 https://bank.za.group"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "2026-01-27 v1"
+        },
+        "zh_cn": {
+          "version": "2026-01-27 v1"
+        }
+      }
+    },
+    "orderHk": {
+      "en": [],
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Contract Note 股票成交單"
+        ],
+        [
+          "条款6",
+          "Issue Date 發出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投資賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名稱"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代碼"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市場"
+        ],
+        [
+          "条款11",
+          "Transaction Type\n交易類別"
+        ],
+        [
+          "条款12",
+          "Contract Date\n成交日期"
+        ],
+        [
+          "条款13",
+          "Average Execution Price (Per Unit) \n平均成交價（每單位）"
+        ],
+        [
+          "条款14",
+          "Execution Quantities\n成交股數"
+        ],
+        [
+          "条款15",
+          "Settlement Amount\n交收金額"
+        ],
+        [
+          "条款16",
+          "Settlement Date\n交收日期"
+        ],
+        [
+          "条款17",
+          "Total Consideration Amount\n交易金額"
+        ],
+        [
+          "条款18",
+          "Commission\n佣金金額"
+        ],
+        [
+          "条款19",
+          "Platform Fee\n平台費"
+        ],
+        [
+          "条款20",
+          "Stamp Duty\n印花稅"
+        ],
+        [
+          "条款21",
+          "SFC Transaction Levy\n證監會交易徵費"
+        ],
+        [
+          "条款22",
+          "AFRC Transaction Levy\n會財局交易徵費"
+        ],
+        [
+          "条款23",
+          "HKEX Settlement Fee\n交易所結算交收費"
+        ],
+        [
+          "条款24",
+          "HKEX Trading Fee\n交易所交易費"
+        ],
+        [
+          "条款25",
+          "Order Reference\n交易編號"
+        ],
+        [
+          "条款26",
+          "Remark\n備註"
+        ],
+        [
+          "条款27",
+          "Remark\n備註"
+        ],
+        [
+          "条款28",
+          "HK Market 香港市場"
+        ],
+        [
+          "条款29",
+          "Sell/賣出"
+        ],
+        [
+          "条款30",
+          "Commission waived. (ZA Bank will first credit the redeemable amount and related fees into the USD savings account, then deduct the same amount for settlement.)佣金已豁免 (ZA Bank 會先存入兌換金額及相關費用至美元活期賬戶，再扣除同等金額以作交收)"
+        ],
+        [
+          "条款31",
+          "Platform Fee waived. (ZA Bank will first credit the redeemable amount and related fees into the USD savings account, then deduct the same amount for settlement.)平台費已豁免 (ZA Bank 會先存入兌換金額及相關費用至美元活期賬戶，再扣除同等金額以作交收)"
+        ],
+        [
+          "条款32",
+          "Partial Execution quantity 部分成交股數"
+        ],
+        [
+          "条款33",
+          "Price Per Unit of Securities 每單位價格"
+        ],
+        [
+          "条款34",
+          "Partial Consideration Amount 部分成交金額"
+        ],
+        [
+          "条款35",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款36",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details/exercise of right issue (if applicable), please contact us at +852 3665 3665."
+        ],
+        [
+          "条款37",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款38",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款39",
+          "The relevant handling fees will be charged on the same date as the effective date of the relevant corporate action (if applicable)."
+        ],
+        [
+          "条款40",
+          "The securities in your account are held in the name or to the order of ZA Bank Limited on behalf of you."
+        ],
+        [
+          "条款41",
+          "All U.S. securities transactions are executed by third party execution brokers as an agent through NYSE, NASDAQ or other stock exchange. All HK securities transactions are executed by third-party execution brokers as an agent through The Stock Exchange of Hong Kong Limited."
+        ],
+        [
+          "条款42",
+          "The unit price of the HK securities transaction or the U.S. securities transactions (as the case may be) in this document is the weighted average unit price."
+        ],
+        [
+          "条款43",
+          "[For HK Stock] The Bank confirms that the stamp duty has been or will be paid through the Stock Exchange of Hong Kong Limited. Where the Total Consideration Amount is denominated in a currency other than Hong Kong dollars, the stamp duty paid or to be paid will be the Hong Kong dollar equivalent of the Total Consideration Amount calculated at the rate of exchange prescribed by the Stamp Duty Ordinance (Cap. 117)."
+        ],
+        [
+          "条款44",
+          "[For Corporate action] The above corporate action is subject to the conditions as set out in the company’s announcement."
+        ],
+        [
+          "条款45",
+          "For details of account fees and charges, please refer to the fee schedule in ZA Bank website https://bank.za.group"
+        ],
+        [
+          "条款46",
+          "如此文件有任何錯漏或不符，須於此文件發出後90 日內通知本行。如本行未有在上述時間內收到你的查詢，一切賬項均作實論。查詢賬戶詳情/需行使供股權 (如適用)，請致電 +852 3665 3665。"
+        ],
+        [
+          "条款47",
+          "你可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款48",
+          "ZA Bank以代理人的身份處理此交易。"
+        ],
+        [
+          "条款49",
+          "有關手續費會在相關公司行動生效當日同日收取 (如適用)。"
+        ],
+        [
+          "条款50",
+          "你的戶口内之證券以眾安銀行有限公司的名義或按其指示代你持有。"
+        ],
+        [
+          "条款51",
+          "所有美國證券交易均由第三方證券經紀商以代理人名義透過紐約證券交易所、納斯達克證券交易所或其他證券交易所執行。 所有香港證券交易均由第三方證券經紀商以代理人名義透過香港聯合交易所有限公司執行。"
+        ],
+        [
+          "条款52",
+          "此文件內的香港證券交易或美國證券交易(視情況而定)之單位價格乃加權平均單位價格。"
+        ],
+        [
+          "条款53",
+          "[港股適用] 本行確認已/將付印花稅予香港聯合交易所有限公司。如交易金額為港幣以外的貨幣計價，印花稅將按交易金額以《印花稅條例》（第117章）訂明的匯率折算為港幣的金額計算。"
+        ],
+        [
+          "条款54",
+          "[公司行動適用]上述公司行動受限於公司公告中規定的條款。"
+        ],
+        [
+          "条款55",
+          "有關適用的費用和收費，請參見本行網站上的費率表 https://bank.za.group"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Contract Note股票成交单"
+        ],
+        [
+          "条款6",
+          "Issue Date 发出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投资账户号码"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名称"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代码"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市场"
+        ],
+        [
+          "条款11",
+          "Transaction Type\n交易类别"
+        ],
+        [
+          "条款12",
+          "Contract Date\n成交日期"
+        ],
+        [
+          "条款13",
+          "Average Execution Price (Per Unit) \n平均成交价（每单位）"
+        ],
+        [
+          "条款14",
+          "Execution Quantities\n成交股数"
+        ],
+        [
+          "条款15",
+          "Settlement Amount\n交收金额"
+        ],
+        [
+          "条款16",
+          "Settlement Date\n交收日期"
+        ],
+        [
+          "条款17",
+          "Total Consideration Amount\n交易金额"
+        ],
+        [
+          "条款18",
+          "Commission\n佣金金额"
+        ],
+        [
+          "条款19",
+          "Platform Fee\n平台费"
+        ],
+        [
+          "条款20",
+          "Stamp Duty\n印花税"
+        ],
+        [
+          "条款21",
+          "SFC Transaction Levy\n证监会交易征费"
+        ],
+        [
+          "条款22",
+          "AFRC Transaction Levy\n会财局交易征费"
+        ],
+        [
+          "条款23",
+          "HKEX Settlement Fee\n交易所结算交收费"
+        ],
+        [
+          "条款24",
+          "HKEX Trading Fee\n交易所交易费"
+        ],
+        [
+          "条款25",
+          "Order Reference\n交易编号"
+        ],
+        [
+          "条款26",
+          "Remark\n備註"
+        ],
+        [
+          "条款27",
+          "Remark\n備註"
+        ],
+        [
+          "条款28",
+          "HK Market 香港市场"
+        ],
+        [
+          "条款29",
+          "Sell/卖出"
+        ],
+        [
+          "条款30",
+          "Commission waived. (ZA Bank will first credit the redeemable amount and related fees into the USD savings account, then deduct the same amount for settlement.)佣金已豁免 (ZA Bank 会先存入兑换金额及相关费用至美元活期账户，再扣除同等金额以作交收)"
+        ],
+        [
+          "条款31",
+          "Platform Fee waived. (ZA Bank will first credit the redeemable amount and related fees into the USD savings account, then deduct the same amount for settlement.)平台费已豁免 (ZA Bank 会先存入兑换金额及相关费用至美元活期账户，再扣除同等金额以作交收)"
+        ],
+        [
+          "条款32",
+          "Partial Execution quantity 部分成交股数"
+        ],
+        [
+          "条款33",
+          "Price Per Unit of Securities 每单位价格"
+        ],
+        [
+          "条款34",
+          "Partial Consideration Amount 部分成交金额"
+        ],
+        [
+          "条款35",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款36",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details/exercise of right issue (if applicable), please contact us at +852 3665 3665."
+        ],
+        [
+          "条款37",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款38",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款39",
+          "The relevant handling fees will be charged on the same date as the effective date of the relevant corporate action (if applicable)."
+        ],
+        [
+          "条款40",
+          "The securities in your account are held in the name or to the order of ZA Bank Limited on behalf of you."
+        ],
+        [
+          "条款41",
+          "All U.S. securities transactions are executed by third party execution brokers as an agent through NYSE, NASDAQ or other stock exchange. All HK securities transactions are executed by third-party execution brokers as an agent through The Stock Exchange of Hong Kong Limited."
+        ],
+        [
+          "条款42",
+          "The unit price of the HK securities transaction or the U.S. securities transactions (as the case may be) in this document is the weighted average unit price."
+        ],
+        [
+          "条款43",
+          "[For HK Stock] The Bank confirms that the stamp duty has been or will be paid through the Stock Exchange of Hong Kong Limited. Where the Total Consideration Amount is denominated in a currency other than Hong Kong dollars, the stamp duty paid or to be paid will be the Hong Kong dollar equivalent of the Total Consideration Amount calculated at the rate of exchange prescribed by the Stamp Duty Ordinance (Cap. 117)."
+        ],
+        [
+          "条款44",
+          "[For Corporate action] The above corporate action is subject to the conditions as set out in the company’s announcement."
+        ],
+        [
+          "条款45",
+          "For details of account fees and charges, please refer to the fee schedule in ZA Bank website https://bank.za.group"
+        ],
+        [
+          "条款46",
+          "如文件有任何错漏或不符，需在此文件发出后90日内通知本行。如果本行在上述时间内未收到你的查询，则一切账项均作实论 。查询账户详情/需行使供股权(如适用)，请致电+852 3665 3665。"
+        ],
+        [
+          "条款47",
+          "你可考虑将此文件的电子副本存储于 个人存储设备上，或备存一份打印本,以作日后参考。"
+        ],
+        [
+          "条款48",
+          "众安银行以代理人的身份处理此交易。"
+        ],
+        [
+          "条款49",
+          "有关手续费会在相关公司行动生效当日同日收取 (如适用)。"
+        ],
+        [
+          "条款50",
+          "你的户口内的证券以众安银行有限公司的名义或按其指示代你持有。"
+        ],
+        [
+          "条款51",
+          "所有美国证券交易均由第三方证券经纪商以代理人名义通过纽约证券交易所、纳斯达克证券交易所或其他证券交易所执行。所有香港证券交易均由第三方证券经纪商以代理人名义透过香港联合交易所有限公司执行。"
+        ],
+        [
+          "条款52",
+          "此文件内的香港证券交易或美国证券交易(视情况而定)之单位价格乃加权平均单位价格。"
+        ],
+        [
+          "条款53",
+          "[港股适用] 本行确认已/将支付印花税给香港联合交易所有限公司。如交易金额为港币以外的货币计价，印花税将按照交易金额以《印花税条例》（第117章）规定的汇率折算为港币的金额计算。"
+        ],
+        [
+          "条款54",
+          "[公司行动适用]上述公司行动受限于公司公告中规定的条款。"
+        ],
+        [
+          "条款55",
+          "有关适用的费用和收费，请参见本行网站上的费率表 https://bank.za.group"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "2026-01-27 v1"
+        },
+        "zh_cn": {
+          "version": "2026-01-27 v1"
+        }
+      }
+    },
+    "companyAction": {
+      "en": [],
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Corporate Action Advice  股票公司行動通知書"
+        ],
+        [
+          "条款6",
+          "Issue Date 發出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投資賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名稱"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代碼"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市場"
+        ],
+        [
+          "条款11",
+          "Event Type\n行動類別"
+        ],
+        [
+          "条款12",
+          "Effective Date\n執行日"
+        ],
+        [
+          "条款13",
+          "Conversion Ratio\n轉換比例"
+        ],
+        [
+          "条款14",
+          "Holdings before Conversion\n轉換前持倉"
+        ],
+        [
+          "条款15",
+          "Holdings after Conversion\n轉換後持倉"
+        ],
+        [
+          "条款16",
+          "Handling Fee\n手續費"
+        ],
+        [
+          "条款17",
+          "Remark\n說明"
+        ],
+        [
+          "条款18",
+          "Market市場"
+        ],
+        [
+          "条款19",
+          "Stock Split 股票分拆"
+        ],
+        [
+          "条款20",
+          "EXISTING [[]] TONEW [[]] /拆股"
+        ],
+        [
+          "条款21",
+          "[[]] /股"
+        ],
+        [
+          "条款22",
+          "[[]] /股"
+        ],
+        [
+          "条款23",
+          "The arrangement in relation to fractional shares following the corporate action is set out as follows:shares were sold onat USD. If there is any remaining shares, it will be sold at a later stage. All proceeds will be credited to your ZA Bank account in a single payment.公司行動後餘下小數股之安排：其中股已於以USD賣出， 若有剩餘部份將會於稍後賣出，相關金額一併存入至你的ZA Bank銀行帳戶。"
+        ],
+        [
+          "条款24",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款25",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details/exercise of right issue, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款26",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款27",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款28",
+          "The relevant handling fees will be charged on the same date as the effective date of the relevant corporate action (if applicable)."
+        ],
+        [
+          "条款29",
+          "The securities in your account are held in the name or to the order of ZA Bank Limited on behalf of the Client."
+        ],
+        [
+          "条款30",
+          "[For US Stock] All U.S. securities transactions are executed by third party execution brokers as an agent through NYSE, NASDAQ or other stock exchange."
+        ],
+        [
+          "条款31",
+          "[For US Stock] The unit price of U.S. securities transaction in this document is the weighted average unit price."
+        ],
+        [
+          "条款32",
+          "[For HK Stock] The Bank confirms that the stamp duty has been or will be paid through the Stock Exchange of Hong Kong Limited. Where the consideration is in a foreign currency, the stamp paid or to be paid will be based on the Hong Kong dollar equivalent of the consideration at the rate of exchange prescribed by the Stamp Duty Ordinance (Cap. 117)."
+        ],
+        [
+          "条款33",
+          "[For Corporate action] The above corporate action is subject to the conditions as set out in the company’s announcement."
+        ],
+        [
+          "条款34",
+          "For details of account fees and charges, please refer to the fee schedule in ZA Bank website https://bank.za.group"
+        ],
+        [
+          "条款35",
+          "如此文件有任何錯漏或不符，須於此文件發出後90 日內通知本行。如本行未有在上述時間內收到閣下的查詢，一切賬項均作實論。查詢賬戶詳情/需行使供股權，請致電 +852 3665 3665"
+        ],
+        [
+          "条款36",
+          "閣下可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款37",
+          "ZA Bank 以代理人的身份處理此交易。"
+        ],
+        [
+          "条款38",
+          "有關手續費會在相關公司行動生效當日同日收取（如適用）。"
+        ],
+        [
+          "条款39",
+          "閣下戶口内之證券以眾安銀行有限公司的名義或按其指示代閣下持有。"
+        ],
+        [
+          "条款40",
+          "[美股適用] 所有美國證券交易均由第三方證券經紀商以代理人名義透過紐約證券交易所、納斯達克證券交易所或其他證券交易所執行。"
+        ],
+        [
+          "条款41",
+          "[美股適用] 此文件內的美國證券交易之單位價格乃加權平均單位價格。"
+        ],
+        [
+          "条款42",
+          "[港股適用] 本行確認已/將付印花稅予香港聯合交易所。如交易金額為外幣，印花稅將按交易金額以《印花稅條例》（第117章）訂明的匯率折算為港幣的金額計算。"
+        ],
+        [
+          "条款43",
+          "[公司行動適用]上述公司行動受限於公司公告中規定的條款。"
+        ],
+        [
+          "条款44",
+          "有關適用的費用和收費，請參見本行網站上的費率表 https://bank.za.group"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Corporate Action Advice 股票公司行动通知书"
+        ],
+        [
+          "条款6",
+          "Issue Date 发出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投资账户号码"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名称"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代码"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市场"
+        ],
+        [
+          "条款11",
+          "Event Type\n行动类别"
+        ],
+        [
+          "条款12",
+          "Effective Date\n执行日"
+        ],
+        [
+          "条款13",
+          "Conversion Ratio\n转换比例"
+        ],
+        [
+          "条款14",
+          "Holdings before Conversion\n转换前持仓"
+        ],
+        [
+          "条款15",
+          "Holdings after Conversion\n转换后持仓"
+        ],
+        [
+          "条款16",
+          "Handling Fee\n手续费"
+        ],
+        [
+          "条款17",
+          "Remark\n说明"
+        ],
+        [
+          "条款18",
+          "Market市场"
+        ],
+        [
+          "条款19",
+          "Stock Split 股票分拆"
+        ],
+        [
+          "条款20",
+          "EXISTING [[]] TONEW [[]] /拆股"
+        ],
+        [
+          "条款21",
+          "[[]] /股"
+        ],
+        [
+          "条款22",
+          "[[]] /股"
+        ],
+        [
+          "条款23",
+          "The arrangement in relation to fractional shares following the corporate action is set out as follows:shares were sold onat USD. If there is any remaining shares, it will be sold at a later stage. All proceeds will be credited to your ZA Bank account in a single payment.公司行动后余下小数股之安排：其中股已于以USD卖出，若有剩余部分将会于稍后卖出，相关金额会一并存入至你的ZA Bank银行账户。"
+        ],
+        [
+          "条款24",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款25",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details/exercise of right issue, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款26",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款27",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款28",
+          "The relevant handling fees will be charged on the same date as the effective date of the relevant corporate action (if applicable)."
+        ],
+        [
+          "条款29",
+          "The securities in your account are held in the name or to the order of ZA Bank Limited on behalf of the Client."
+        ],
+        [
+          "条款30",
+          "[For US Stock] All U.S. securities transactions are executed by third party execution brokers as an agent through NYSE, NASDAQ or other stock exchange."
+        ],
+        [
+          "条款31",
+          "[For US Stock] The unit price of U.S. securities transaction in this document is the weighted average unit price."
+        ],
+        [
+          "条款32",
+          "[For HK Stock] The Bank confirms that the stamp duty has been or will be paid through the Stock Exchange of Hong Kong Limited. Where the consideration is in a foreign currency, the stamp paid or to be paid will be based on the Hong Kong dollar equivalent of the consideration at the rate of exchange prescribed by the Stamp Duty Ordinance (Cap. 117)."
+        ],
+        [
+          "条款33",
+          "[For Corporate action] The above corporate action is subject to the conditions as set out in the company’s announcement."
+        ],
+        [
+          "条款34",
+          "For details of account fees and charges, please refer to the fee schedule in ZA Bank website https://bank.za.group"
+        ],
+        [
+          "条款35",
+          "如此文件有任何错漏或不符，须于此文件发出后90日内通知本行。如本行未有在上述时间内收到阁下的查询，一切账项均作实论。查询账户详情/需行使供股权，请致电 +852 3665 3665。"
+        ],
+        [
+          "条款36",
+          "阁下可考虑将此文件的电子副本储存于个人存储装置，或备存一份打印本，以作日后参考。"
+        ],
+        [
+          "条款37",
+          "ZA Bank 以代理人的身份处理此交易。"
+        ],
+        [
+          "条款38",
+          "有关手续费会在相关公司行动生效当日同日收取（如适用）。"
+        ],
+        [
+          "条款39",
+          "阁下户口内之证券以众安银行有限公司的名义或按其指示代阁下持有。"
+        ],
+        [
+          "条款40",
+          "[美股适用] 所有美国证券交易均由第三方证券经纪商以代理人名义透过纽约证券交易所、纳斯达克证券交易所或其他证券交易所执行。"
+        ],
+        [
+          "条款41",
+          "[美股适用] 此文件内的美国证券交易之单位价格乃加权平均单位价格。"
+        ],
+        [
+          "条款42",
+          "[港股适用] 本行确认已/将付印花税予香港联合交易所。如交易金额为外币，印花税将按交易金额以《印花税条例》（第117章）订明的汇率折算为港币的金额计算。"
+        ],
+        [
+          "条款43",
+          "[公司行动适用]上述公司行动受限于公司公告中规定的条款。"
+        ],
+        [
+          "条款44",
+          "有关适用的费用和收费，请参见本行网站上的费率表 https://bank.za.group"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "2025-03-12 v1"
+        },
+        "zh_cn": {
+          "version": "2025-03-12 v1"
+        }
+      }
+    },
+    "companyActionHk": {
+      "en": [],
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Corporate Action Advice  股票公司行動通知書"
+        ],
+        [
+          "条款6",
+          "Issue Date 發出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投資賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名稱"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代碼"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市場"
+        ],
+        [
+          "条款11",
+          "Event Type\n行動類別"
+        ],
+        [
+          "条款12",
+          "Conversion Ratio\n轉換比例"
+        ],
+        [
+          "条款13",
+          "Holdings Before Conversion\n轉換前持倉"
+        ],
+        [
+          "条款14",
+          "Holdings After Conversion\n轉換後持倉"
+        ],
+        [
+          "条款15",
+          "Handling Fee\n手續費"
+        ],
+        [
+          "条款16",
+          "Effective Date\n執行日"
+        ],
+        [
+          "条款17",
+          "Market市場"
+        ],
+        [
+          "条款18",
+          "Stock Split 股票分拆"
+        ],
+        [
+          "条款19",
+          "Existing [[]] ToNew [[]] /  每股拆成股"
+        ],
+        [
+          "条款20",
+          "[[]] /股"
+        ],
+        [
+          "条款21",
+          "[[]] /股"
+        ],
+        [
+          "条款22",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款23",
+          "All errors or discrepancies on this document should be reported to the Bank as soon as practicable. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款24",
+          "You may consider saving an electronic copy of this document in your own storage or print a hard copy for future reference."
+        ],
+        [
+          "条款25",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款26",
+          "In case you have opted to receive scrip dividend, the Reinvestment Price (per share) will be the scrip reference price of the relevant Share as announced by the issuer."
+        ],
+        [
+          "条款27",
+          "The corporate action specified in this document is subject to the terms and conditions as set out in the issuer's announcement(s) and/or notices (if any)."
+        ],
+        [
+          "条款28",
+          "The relevant fees of exercise of Rights Issues/ Open Offer/ Preferential Offer will be deducted from your account on the Withdrawal Date/Payment Date."
+        ],
+        [
+          "条款29",
+          "The relevant fees of Cash Offer will be deducted from your account on the (Expected) Payment Date."
+        ],
+        [
+          "条款30",
+          "The relevant fees of Cash Dividend will be deducted from your account on the Payment Date."
+        ],
+        [
+          "条款31",
+          "The relevant fees of stock consolidation / stock split / stock conversion will be deducted from your account on the Effective Date."
+        ],
+        [
+          "条款32",
+          "The relevant fees of rights subscription/rights issue will be deducted from your account on the Withdrawal Date."
+        ],
+        [
+          "条款33",
+          "The residual value (if any) of warrants/CBBC will be paid into your account in accordance with the terms and conditions of the warrants/CBBC on the settlement date."
+        ],
+        [
+          "条款34",
+          "如此文件有任何錯漏，請盡快通知本行。查詢賬項詳情，請致電 +852 3665 3665。"
+        ],
+        [
+          "条款35",
+          "你可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款36",
+          "ZA Bank以代理人的身份處理此交易。"
+        ],
+        [
+          "条款37",
+          "如你選擇以股代息，再投資價格（每股）將會是發行人宣佈的相關股份的代息股份參考價。"
+        ],
+        [
+          "条款38",
+          "本文件中所述的公司行動受限於發行人公告和/或通知(如有)中規定的條款和條件。"
+        ],
+        [
+          "条款39",
+          "代供股/公開發售/優先發售的相關費用將於扣款日/分派日從你的賬戶扣除。"
+        ],
+        [
+          "条款40",
+          "現金要約的相關費用將於(預計)支付日期從你的賬戶扣除。"
+        ],
+        [
+          "条款41",
+          "現金股息的相關費用將於分派日從你的賬戶扣除。"
+        ],
+        [
+          "条款42",
+          "股票合併/股票分拆/股票換股的相關費用將於執行日從你的賬戶扣除。"
+        ],
+        [
+          "条款43",
+          "認購供股權/派送供股權的相關費用將於扣款日從你的賬戶扣除。"
+        ],
+        [
+          "条款44",
+          "認股證/牛熊證的剩餘價值(如有)將按照認股證/牛熊證的條款及條件於結算日期存入你的賬戶。"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Corporate Action Advice 股票公司行动通知书"
+        ],
+        [
+          "条款6",
+          "Issue Date 发出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投资账户号码"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名称"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代码"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市场"
+        ],
+        [
+          "条款11",
+          "Event Type\n行动类别"
+        ],
+        [
+          "条款12",
+          "Conversion Ratio\n转换比例"
+        ],
+        [
+          "条款13",
+          "Holdings Before Conversion\n转换前持仓"
+        ],
+        [
+          "条款14",
+          "Holdings After Conversion\n转换后持仓"
+        ],
+        [
+          "条款15",
+          "Handling Fee\n手续费"
+        ],
+        [
+          "条款16",
+          "Effective Date\n执行日"
+        ],
+        [
+          "条款17",
+          "Market市场"
+        ],
+        [
+          "条款18",
+          "Stock Split 股票分拆"
+        ],
+        [
+          "条款19",
+          "Existing [[]] ToNew [[]] /  每股拆成股"
+        ],
+        [
+          "条款20",
+          "[[]] /股"
+        ],
+        [
+          "条款21",
+          "[[]] /股"
+        ],
+        [
+          "条款22",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款23",
+          "All errors or discrepancies on this document should be reported to the Bank as soon as practicable. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款24",
+          "You may consider saving an electronic copy of this document in your own storage or print a hard copy for future reference."
+        ],
+        [
+          "条款25",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款26",
+          "In case you have opted to receive scrip dividend, the Reinvestment Price (per share) will be the scrip reference price of the relevant Share as announced by the issuer."
+        ],
+        [
+          "条款27",
+          "The corporate action specified in this document is subject to the terms and conditions as set out in the issuer's announcement(s) and/or notices (if any)."
+        ],
+        [
+          "条款28",
+          "The relevant fees of exercise of Rights Issues/ Open Offer/ Preferential Offer will be deducted from your account on the Withdrawal Date/Payment Date."
+        ],
+        [
+          "条款29",
+          "The relevant fees of Cash Offer will be deducted from your account on the (Expected) Payment Date."
+        ],
+        [
+          "条款30",
+          "The relevant fees of Cash Dividend will be deducted from your account on the Payment Date."
+        ],
+        [
+          "条款31",
+          "The relevant fees of stock consolidation / stock split / stock conversion will be deducted from your account on the Effective Date."
+        ],
+        [
+          "条款32",
+          "The relevant fees of rights subscription/rights issue will be deducted from your account on the Withdrawal Date."
+        ],
+        [
+          "条款33",
+          "The residual value (if any) of warrants/CBBC will be paid into your account in accordance with the terms and conditions of the warrants/CBBC on the settlement date."
+        ],
+        [
+          "条款34",
+          "如此文件有任何错漏，请尽快通知本行。查询账项详情，请致电 +852 3665 3665。"
+        ],
+        [
+          "条款35",
+          "你可考虑将此文件的电子副本储存于个人存储装置，或备存一份列印本，以作日后参考。"
+        ],
+        [
+          "条款36",
+          "众安银行以代理人的身份处理此交易。"
+        ],
+        [
+          "条款37",
+          "如你选择以股代息，再投资价格（每股）将会是发行人宣布的相关股份的代息股份参考价。"
+        ],
+        [
+          "条款38",
+          "本文件中所述的公司行动受限于发行人公告和/或通知(如有)中规定的条款和条件。"
+        ],
+        [
+          "条款39",
+          "代供股/公开发售/优先发售的相关费用将于扣款日/分派日从你的账户扣除。"
+        ],
+        [
+          "条款40",
+          "现金要约的相关费用将于(预计)支付日期从你的账户扣除。"
+        ],
+        [
+          "条款41",
+          "现金股息的相关费用将于分派日从你的账户扣除。"
+        ],
+        [
+          "条款42",
+          "股票合并/股票分拆/股票换股的相关费用将于执行日从你的账户扣除。"
+        ],
+        [
+          "条款43",
+          "认购供股权/派送供股权的相关费用将于扣款日从你的账户扣除。"
+        ],
+        [
+          "条款44",
+          "认股证/牛熊证的剩余价值（如有）将按照认股证/牛熊证的条款及条件于结算日期存入你的账户。"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "2025-09-09 v1"
+        },
+        "zh_cn": {
+          "version": "2025-09-09 v1"
+        }
+      }
+    },
+    "business": {
+      "en": [],
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Movement Advice 股票股份變動通知書"
+        ],
+        [
+          "条款6",
+          "Issue Date 發出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投資賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名稱"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代碼"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市場"
+        ],
+        [
+          "条款11",
+          "Event Type\n行動類別"
+        ],
+        [
+          "条款12",
+          "Out/In\n提出/存入"
+        ],
+        [
+          "条款13",
+          "Shares\n股份"
+        ],
+        [
+          "条款14",
+          "Effective Date\n執行日"
+        ],
+        [
+          "条款15",
+          "Reference\n交易編號"
+        ],
+        [
+          "条款16",
+          "Market市場"
+        ],
+        [
+          "条款17",
+          "Stock Movement/股份變動"
+        ],
+        [
+          "条款18",
+          "[[]] /股"
+        ],
+        [
+          "条款19",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款20",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details/exercise of right issue, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款21",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款22",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款23",
+          "The relevant handling fees will be charged on the same date as the effective date of the relevant corporate action (if applicable)."
+        ],
+        [
+          "条款24",
+          "The securities in your account are held in the name or to the order of ZA Bank Limited on behalf of the Client."
+        ],
+        [
+          "条款25",
+          "[For US Stock] All U.S. securities transactions are executed by third party execution brokers as an agent through NYSE, NASDAQ or other stock exchange."
+        ],
+        [
+          "条款26",
+          "[For US Stock] The unit price of U.S. securities transaction in this document is the weighted average unit price."
+        ],
+        [
+          "条款27",
+          "[For HK Stock] The Bank confirms that the stamp duty has been or will be paid through the Stock Exchange of Hong Kong Limited. Where the consideration is in a foreign currency, the stamp paid or to be paid will be based on the Hong Kong dollar equivalent of the consideration at the rate of exchange prescribed by the Stamp Duty Ordinance (Cap. 117)."
+        ],
+        [
+          "条款28",
+          "[For Corporate action] The above corporate action is subject to the conditions as set out in the company’s announcement."
+        ],
+        [
+          "条款29",
+          "For details of account fees and charges, please refer to the fee schedule in ZA Bank website https://bank.za.group"
+        ],
+        [
+          "条款30",
+          "如此文件有任何錯漏或不符，須於此文件發出後90 日內通知本行。如本行未有在上述時間內收到閣下的查詢，一切賬項均作實論。查詢賬戶詳情/需行使供股權，請致電 +852 3665 3665"
+        ],
+        [
+          "条款31",
+          "閣下可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款32",
+          "ZA Bank 以代理人的身份處理此交易。"
+        ],
+        [
+          "条款33",
+          "有關手續費會在相關公司行動生效當日同日收取（如適用）。"
+        ],
+        [
+          "条款34",
+          "閣下戶口内之證券以眾安銀行有限公司的名義或按其指示代閣下持有。"
+        ],
+        [
+          "条款35",
+          "[美股適用] 所有美國證券交易均由第三方證券經紀商以代理人名義透過紐約證券交易所、納斯達克證券交易所或其他證券交易所執行。"
+        ],
+        [
+          "条款36",
+          "[美股適用] 此文件內的美國證券交易之單位價格乃加權平均單位價格。"
+        ],
+        [
+          "条款37",
+          "[港股適用] 本行確認已/將付印花稅予香港聯合交易所。如交易金額為外幣，印花稅將按交易金額以《印花稅條例》（第117章）訂明的匯率折算為港幣的金額計算。"
+        ],
+        [
+          "条款38",
+          "[公司行動適用]上述公司行動受限於公司公告中規定的條款。"
+        ],
+        [
+          "条款39",
+          "有關適用的費用和收費，請參見本行網站上的費率表 https://bank.za.group"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Stock Movement Advice 股票股份变动通知书"
+        ],
+        [
+          "条款6",
+          "Issue Date 发出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投资账户号码"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名称"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代码"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市场"
+        ],
+        [
+          "条款11",
+          "Event Type\n行动类别"
+        ],
+        [
+          "条款12",
+          "Out/In\n提出/存入"
+        ],
+        [
+          "条款13",
+          "Shares \n股份"
+        ],
+        [
+          "条款14",
+          "Effective Date\n执行日"
+        ],
+        [
+          "条款15",
+          "Reference\n交易编号"
+        ],
+        [
+          "条款16",
+          "Market市场"
+        ],
+        [
+          "条款17",
+          "Stock Movement/股份变动"
+        ],
+        [
+          "条款18",
+          "[[]] /股"
+        ],
+        [
+          "条款19",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款20",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details/exercise of right issue, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款21",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款22",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款23",
+          "The relevant handling fees will be charged on the same date as the effective date of the relevant corporate action (if applicable)."
+        ],
+        [
+          "条款24",
+          "The securities in your account are held in the name or to the order of ZA Bank Limited on behalf of the Client."
+        ],
+        [
+          "条款25",
+          "[For US Stock] All U.S. securities transactions are executed by third party execution brokers as an agent through NYSE, NASDAQ or other stock exchange."
+        ],
+        [
+          "条款26",
+          "[For US Stock] The unit price of U.S. securities transaction in this document is the weighted average unit price."
+        ],
+        [
+          "条款27",
+          "[For HK Stock] The Bank confirms that the stamp duty has been or will be paid through the Stock Exchange of Hong Kong Limited. Where the consideration is in a foreign currency, the stamp paid or to be paid will be based on the Hong Kong dollar equivalent of the consideration at the rate of exchange prescribed by the Stamp Duty Ordinance (Cap. 117)."
+        ],
+        [
+          "条款28",
+          "[For Corporate action] The above corporate action is subject to the conditions as set out in the company’s announcement."
+        ],
+        [
+          "条款29",
+          "For details of account fees and charges, please refer to the fee schedule in ZA Bank website https://bank.za.group"
+        ],
+        [
+          "条款30",
+          "如此文件有任何错漏或不符，须于此文件发出后90日内通知本行。如本行未有在上述时间内收到阁下的查询，一切账项均作实论。查询账户详情/需行使供股权，请致电 +852 3665 3665。"
+        ],
+        [
+          "条款31",
+          "阁下可考虑将此文件的电子副本储存于个人存储装置，或备存一份打印本，以作日后参考。"
+        ],
+        [
+          "条款32",
+          "ZA Bank 以代理人的身份处理此交易。"
+        ],
+        [
+          "条款33",
+          "有关手续费会在相关公司行动生效当日同日收取（如适用）。"
+        ],
+        [
+          "条款34",
+          "阁下户口内之证券以众安银行有限公司的名义或按其指示代阁下持有。"
+        ],
+        [
+          "条款35",
+          "[美股适用] 所有美国证券交易均由第三方证券经纪商以代理人名义透过纽约证券交易所、纳斯达克证券交易所或其他证券交易所执行。"
+        ],
+        [
+          "条款36",
+          "[美股适用] 此文件内的美国证券交易之单位价格乃加权平均单位价格。"
+        ],
+        [
+          "条款37",
+          "[港股适用] 本行确认已/将付印花税予香港联合交易所。如交易金额为外币，印花税将按交易金额以《印花税条例》（第117章）订明的汇率折算为港币的金额计算。"
+        ],
+        [
+          "条款38",
+          "[公司行动适用]上述公司行动受限于公司公告中规定的条款。"
+        ],
+        [
+          "条款39",
+          "有关适用的费用和收费，请参见本行网站上的费率表 https://bank.za.group"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "2025-03-12 v1"
+        },
+        "zh_cn": {
+          "version": "2025-03-12 v1"
+        }
+      }
+    },
+    "businessHk": {
+      "en": [],
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "IPO Subscription Advice 新股認購通知書"
+        ],
+        [
+          "条款6",
+          "Issue Date 發出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投資賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名稱"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代碼"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市場"
+        ],
+        [
+          "条款11",
+          "Type\n類別"
+        ],
+        [
+          "条款12",
+          "Subscription Quantity\n認購數量"
+        ],
+        [
+          "条款13",
+          "Subscription Price (per share) \n認購價格(每股)"
+        ],
+        [
+          "条款14",
+          "Subscription Amount  \n認購金額"
+        ],
+        [
+          "条款15",
+          "Subscription Commission\n認購佣金"
+        ],
+        [
+          "条款16",
+          "HKEX Trading Fee\n交易所交易費"
+        ],
+        [
+          "条款17",
+          "AFRC Transaction Levy\n會財局交易徵費"
+        ],
+        [
+          "条款18",
+          "SFC Transaction Levy\n證監會交易徵費"
+        ],
+        [
+          "条款19",
+          "IPO Handling Fee\nIPO 認購手續費"
+        ],
+        [
+          "条款20",
+          "Withdrawal Date\n扣款日"
+        ],
+        [
+          "条款21",
+          "Remark\n說明"
+        ],
+        [
+          "条款22",
+          "Market市場"
+        ],
+        [
+          "条款23",
+          "IPO Subscription 認購新股"
+        ],
+        [
+          "条款24",
+          "[[]] /股"
+        ],
+        [
+          "条款25",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款26",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款27",
+          "You may consider saving an electronic copy of this document in your own storage or print a hard copy for future reference."
+        ],
+        [
+          "条款28",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款29",
+          "The relevant handling fees and applicable levies of IPO application will be deducted from your account on the Amount Deduction Date."
+        ],
+        [
+          "条款30",
+          "The relevant fees will be deducted from your account on the Allotment and/or Refund Date."
+        ],
+        [
+          "条款31",
+          "如此文件有任何錯漏或不符，須於此文件發出後90日內通知本行。如本行未有在上述時間內收到閣下的查詢，此文件將被視為正確無誤且一切賬項均作實論。查詢賬項詳情，請致電 +852 3665 3665。"
+        ],
+        [
+          "条款32",
+          "你可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款33",
+          "ZA Bank以代理人的身份處理此交易。"
+        ],
+        [
+          "条款34",
+          "新股認購的相關手續費及適用徵費將於扣款日從你的賬戶扣除。"
+        ],
+        [
+          "条款35",
+          "相關費用將於分派及/或退款日從你的賬戶扣除。"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "IPO Subscription Advice 新股认购通知书"
+        ],
+        [
+          "条款6",
+          "Issue Date 发出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投资账户号码"
+        ],
+        [
+          "条款8",
+          "Stock Name\n股票名称"
+        ],
+        [
+          "条款9",
+          "Stock Code\n股票代码"
+        ],
+        [
+          "条款10",
+          "Stock Market\n股票市场"
+        ],
+        [
+          "条款11",
+          "Type\n类别"
+        ],
+        [
+          "条款12",
+          "Subscription Quantity\n认购数量"
+        ],
+        [
+          "条款13",
+          "Subscription Price (per share) \n认购价格（每股）"
+        ],
+        [
+          "条款14",
+          "Subscription Amount  \n认购金额"
+        ],
+        [
+          "条款15",
+          "Subscription Commission\n认购佣金"
+        ],
+        [
+          "条款16",
+          "HKEX Trading Fee\n交易所交易费"
+        ],
+        [
+          "条款17",
+          "AFRC Transaction Levy\n会财局交易征费"
+        ],
+        [
+          "条款18",
+          "SFC Transaction Levy\n证监会交易征费"
+        ],
+        [
+          "条款19",
+          "IPO Handling Fee\nIPO 认购手续费"
+        ],
+        [
+          "条款20",
+          "Withdrawal Date\n扣款日"
+        ],
+        [
+          "条款21",
+          "Remark\n说明"
+        ],
+        [
+          "条款22",
+          "Market市场"
+        ],
+        [
+          "条款23",
+          "IPO Subscription 认购新股"
+        ],
+        [
+          "条款24",
+          "[[]] /股"
+        ],
+        [
+          "条款25",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款26",
+          "All errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款27",
+          "You may consider saving an electronic copy of this document in your own storage or print a hard copy for future reference."
+        ],
+        [
+          "条款28",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款29",
+          "The relevant handling fees and applicable levies of IPO application will be deducted from your account on the Amount Deduction Date."
+        ],
+        [
+          "条款30",
+          "The relevant fees will be deducted from your account on the Allotment and/or Refund Date."
+        ],
+        [
+          "条款31",
+          "如此文件有任何错漏或不符，须于此文件发出后90日内通知本行。如本行未有在上述时间内收到阁下的查询，此文件将被视为正确无误且一切账项均作实论。查询账项详情，请致电 +852 3665 3665。"
+        ],
+        [
+          "条款32",
+          "你可考虑将此文件的电子副本储存于个人存储装置，或备存一份列印本，以作日后参考。"
+        ],
+        [
+          "条款33",
+          "众安银行以代理人的身份处理此交易。"
+        ],
+        [
+          "条款34",
+          "新股认购的相关手续费及适用徵费将於扣款日从你的账户扣除。"
+        ],
+        [
+          "条款35",
+          "相关费用将于分派及/或退款日从你的账户扣除。"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "2025-08-19 v1"
+        },
+        "zh_cn": {
+          "version": "2026-04-14 v1"
+        }
+      }
+    }
+  },
+  "Fund": {
+    "zh_hk": [
+      [
+        "条款1",
+        "ZA Bank Limited 眾安銀行有限公司"
+      ],
+      [
+        "条款2",
+        "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+      ],
+      [
+        "条款3",
+        "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+      ],
+      [
+        "条款4",
+        "bank.za.group"
+      ],
+      [
+        "条款5",
+        "Investment Fund Withdrawal Advice 基金提取通知"
+      ],
+      [
+        "条款6",
+        "Issue Date  發出日期"
+      ],
+      [
+        "条款7",
+        "Account Number 賬戶號碼"
+      ]
+    ],
+    "zh_cn": [
+      [
+        "条款1",
+        "ZA Bank Limited 眾安銀行有限公司"
+      ],
+      [
+        "条款2",
+        "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+      ],
+      [
+        "条款3",
+        "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+      ],
+      [
+        "条款4",
+        "bank.za.group"
+      ],
+      [
+        "条款5",
+        "Investment Fund Withdrawal Advice 基金提取通知"
+      ],
+      [
+        "条款6",
+        "Issue Date  发出日期"
+      ],
+      [
+        "条款7",
+        "Account Number 账户号码"
+      ]
+    ],
+    "_meta": {
+      "zh_hk": {
+        "version": "2024-09-10 v1"
+      },
+      "zh_cn": {
+        "version": "2024-09-10 v1"
+      }
+    }
+  },
+  "VA": {
+    "buy": {
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Virtual Asset Contract Note 虛擬資產成交單"
+        ],
+        [
+          "条款6",
+          "Issue Date 發出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投資賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Virtual Asset Name\n虛擬資產名稱"
+        ],
+        [
+          "条款9",
+          "Virtual Asset Code\n虛擬資產代碼"
+        ],
+        [
+          "条款10",
+          "SFC-Licensed Virtual Asset Trading Platform\n證監會持牌虛擬資產交易平台"
+        ],
+        [
+          "条款11",
+          "Transaction Type\n交易類別"
+        ],
+        [
+          "条款12",
+          "Contract Date\n成交日期"
+        ],
+        [
+          "条款13",
+          "Average Execution Price (Per Unit of Virtual Asset) \n平均成交價（每單位）"
+        ],
+        [
+          "条款14",
+          "Execution Quantities\n成交數量"
+        ],
+        [
+          "条款15",
+          "Total Consideration Amount\n交易金額"
+        ],
+        [
+          "条款16",
+          "Commission\n佣金金額"
+        ],
+        [
+          "条款17",
+          "Platform Fee\n平台費"
+        ],
+        [
+          "条款18",
+          "Settlement Amount\n交收金額"
+        ],
+        [
+          "条款19",
+          "Settlement Date\n交收日期"
+        ],
+        [
+          "条款20",
+          "Order Reference\n交易編號"
+        ],
+        [
+          "条款21",
+          "Buy/買入"
+        ],
+        [
+          "条款22",
+          "Partial Execution quantities 部分成交數量"
+        ],
+        [
+          "条款23",
+          "Price Per Unit of Virtual Asset 每單位價格"
+        ],
+        [
+          "条款24",
+          "Partial Consideration Amount 部分成交金額"
+        ],
+        [
+          "条款25",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款26",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive.\n    Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款27",
+          "All virtual asset transactions are executed by third-party virtual asset trading platform operator(s) licensed by the Securities and Futures Commission."
+        ],
+        [
+          "条款28",
+          "For the avoidance of doubt, this document also serves as a receipt for client virtual assets received by the Bank on your behalf in respect of the virtual asset transactions specified herein."
+        ],
+        [
+          "条款29",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder. Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款30",
+          "Client virtual assets may not enjoy the same protection as that conferred on “securities” under the Securities and Futures Ordinance (Cap. 571), the Securities and Futures (Client Securities) Rules (Cap. 571H) and the Securities and Futures (Client Money) Rules (Cap. 571I)."
+        ],
+        [
+          "条款31",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款32",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款33",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank’s website https://bank.za.group/en."
+        ],
+        [
+          "条款34",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款35",
+          "You confirm that all your personal information with the Bank is accurate and updated. You should inform us of any changes on your personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款36",
+          "如此文件有任何錯漏或不符，須於此文件發出後90日內通知本行。如本行未有在上述時間內收到閣下的查詢，此文件將被視為正確無誤且一切賬項均作實論。\n    請留意不時適用於閣下戶口之條款及細則。查詢賬戶詳情，請致電 +852 3665 3665。"
+        ],
+        [
+          "条款37",
+          "所有虛擬資產的交易均是由獲證監會發牌的第三方虛擬資產交易平台進行。"
+        ],
+        [
+          "条款38",
+          "為免生疑問，本文件亦作本行代閣下收取的任何有關本文件列明之虛擬資產的交易客戶虛擬資產的收據用途。"
+        ],
+        [
+          "条款39",
+          "在香港以外地方收取或持有的客戶資產，是受到有關海外司法管轄區的適用法律及規例所監管的。這些法律及規例與《證券及期貨條例》(第571章)及根據該條例制訂的規則可能有所不同。因此，有關客戶資產將可能不會享有賦予在香港收取或持有的客戶資產的相同保障。"
+        ],
+        [
+          "条款40",
+          "客戶虛擬資產可能不會享有在《證券及期貨條例》(第571章)、《證券及期貨（客戶證券）規則》（第571H章）及《證券及期貨（客戶款項）規則》（第571I章）下賦予“證券”的相同保障。"
+        ],
+        [
+          "条款41",
+          "閣下可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款42",
+          "眾安銀行以代理人的身份處理此交易。"
+        ],
+        [
+          "条款43",
+          "有關適用的費用和收費，請參見本行網站上的費率表：https://bank.za.group/hk。"
+        ],
+        [
+          "条款44",
+          "若中文版本與英文版本有異，一概以英文版本為準。"
+        ],
+        [
+          "条款45",
+          "閣下確認向本行提供的個人資料為準確及最新。如閣下的個人資料日後有所變更，請通知本行並提供閣下的最新資料。"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Virtual Asset Contract Note 虚拟资产成交单"
+        ],
+        [
+          "条款6",
+          "Issue Date 发出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投资账户号码"
+        ],
+        [
+          "条款8",
+          "Virtual Asset Name\n虚拟资产名称"
+        ],
+        [
+          "条款9",
+          "Virtual Asset Code\n虚拟资产代码"
+        ],
+        [
+          "条款10",
+          "SFC-Licensed Virtual Asset Trading Platform\n证监会持牌虚拟资产交易平台"
+        ],
+        [
+          "条款11",
+          "Transaction Type\n交易类别"
+        ],
+        [
+          "条款12",
+          "Contract Date\n成交日期"
+        ],
+        [
+          "条款13",
+          "Average Execution Price (Per Unit of Virtual Asset) \n平均成交价（每单位）"
+        ],
+        [
+          "条款14",
+          "Execution Quantities\n成交数量"
+        ],
+        [
+          "条款15",
+          "Total Consideration Amount\n交易金额"
+        ],
+        [
+          "条款16",
+          "Commission\n佣金金额"
+        ],
+        [
+          "条款17",
+          "Platform Fee\n平台费"
+        ],
+        [
+          "条款18",
+          "Settlement Amount\n交收金额"
+        ],
+        [
+          "条款19",
+          "Settlement Date\n交收日期"
+        ],
+        [
+          "条款20",
+          "Order Reference\n交易编号"
+        ],
+        [
+          "条款21",
+          "Buy/买入"
+        ],
+        [
+          "条款22",
+          "Partial Execution quantities 部分成交数量"
+        ],
+        [
+          "条款23",
+          "Price Per Unit of Virtual Asset 每单位价格"
+        ],
+        [
+          "条款24",
+          "Partial Consideration Amount 部分成交金额"
+        ],
+        [
+          "条款25",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款26",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive.\n    Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款27",
+          "All virtual asset transactions are executed by third-party virtual asset trading platform operator(s) licensed by the Securities and Futures Commission."
+        ],
+        [
+          "条款28",
+          "For the avoidance of doubt, this document also serves as a receipt for client virtual assets received by the Bank on your behalf in respect of the virtual asset transactions specified herein."
+        ],
+        [
+          "条款29",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder. Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款30",
+          "Client virtual assets may not enjoy the same protection as that conferred on “securities” under the Securities and Futures Ordinance (Cap. 571), the Securities and Futures (Client Securities) Rules (Cap. 571H) and the Securities and Futures (Client Money) Rules (Cap. 571I)."
+        ],
+        [
+          "条款31",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款32",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款33",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank’s website https://bank.za.group/en."
+        ],
+        [
+          "条款34",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款35",
+          "You confirm that all your personal information with the Bank is accurate and updated. You should inform us of any changes on your personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款36",
+          "如此文件有任何错漏或不符，须于此文件发出后90日内通知本行。如本行未有在上述时间内收到阁下的查询，此文件将被视为正确无误且一切账项均作实论。\n    请留意不时适用于阁下户口之条款及细则。查询账户详情，请致电 +852 3665 3665。"
+        ],
+        [
+          "条款37",
+          "所有虚拟资产的交易均是由获证监会发牌的第三方虚拟资产交易平台进行。"
+        ],
+        [
+          "条款38",
+          "为免生疑问，本文件亦作本行代阁下收取的任何有关本文件列明之虚拟资产的交易客户虚拟资产的收据用途。"
+        ],
+        [
+          "条款39",
+          "在香港以外地方收取或持有的客户资产，是受到有关海外司法管辖区的适用法律及规例所监管的。这些法律及规例与《证券及期货条例》(第571章)及根据该条例制订的规则可能有所不同。因此，有关客户资产将可能不会享有赋予在香港收取或持有的客户资产的相同保障。"
+        ],
+        [
+          "条款40",
+          "客户虚拟资产可能不会享有在《证券及期货条例》（第571章）、《证券及期货（客户证券）规则》（第571H章）及《证券及期货（客户款项）规则》（第571I章）下赋予“证券”的相同保障。"
+        ],
+        [
+          "条款41",
+          "阁下可考虑将此文件的电子副本储存于个人存储装置，或备存一份列印本，以作日后参考。"
+        ],
+        [
+          "条款42",
+          "众安银行以代理人的身份处理此交易。"
+        ],
+        [
+          "条款43",
+          "有关适用的费用和收费，请参见本行网站上的费率表：https://bank.za.group/hk。"
+        ],
+        [
+          "条款44",
+          "若中文版本与英文版本有异，一概以英文版本为准。"
+        ],
+        [
+          "条款45",
+          "阁下确认向本行提供的个人资料为准确及最新。如阁下的个人资料日后有所变更，请通知本行并提供阁下的最新资料。"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "2024-09-10 v2"
+        },
+        "zh_cn": {
+          "version": "2024-09-10 v2"
+        }
+      }
+    },
+    "sale": {
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Virtual Asset Contract Note 虛擬資產成交單"
+        ],
+        [
+          "条款6",
+          "Issue Date 發出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投資賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Virtual Asset Name\n虛擬資產名稱"
+        ],
+        [
+          "条款9",
+          "Virtual Asset Code\n虛擬資產代碼"
+        ],
+        [
+          "条款10",
+          "SFC-Licensed Virtual Asset Trading Platform\n證監會持牌虛擬資產交易平台"
+        ],
+        [
+          "条款11",
+          "Transaction Type\n交易類別"
+        ],
+        [
+          "条款12",
+          "Contract Date\n成交日期"
+        ],
+        [
+          "条款13",
+          "Average Execution Price (Per Unit of Virtual Asset) \n平均成交價（每單位）"
+        ],
+        [
+          "条款14",
+          "Execution Quantities\n成交數量"
+        ],
+        [
+          "条款15",
+          "Total Consideration Amount\n交易金額"
+        ],
+        [
+          "条款16",
+          "Commission\n佣金金額"
+        ],
+        [
+          "条款17",
+          "Platform Fee\n平台費"
+        ],
+        [
+          "条款18",
+          "Settlement Amount\n交收金額"
+        ],
+        [
+          "条款19",
+          "Settlement Date\n交收日期"
+        ],
+        [
+          "条款20",
+          "Order Reference\n交易編號"
+        ],
+        [
+          "条款21",
+          "Sell/賣出"
+        ],
+        [
+          "条款22",
+          "Partial Execution quantities 部分成交數量"
+        ],
+        [
+          "条款23",
+          "Price Per Unit of Virtual Asset 每單位價格"
+        ],
+        [
+          "条款24",
+          "Partial Consideration Amount 部分成交金額"
+        ],
+        [
+          "条款25",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款26",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive.\n    Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款27",
+          "All virtual asset transactions are executed by third-party virtual asset trading platform operator(s) licensed by the Securities and Futures Commission."
+        ],
+        [
+          "条款28",
+          "For the avoidance of doubt, this document also serves as a receipt for client virtual assets received by the Bank on your behalf in respect of the virtual asset transactions specified herein."
+        ],
+        [
+          "条款29",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder. Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款30",
+          "Client virtual assets may not enjoy the same protection as that conferred on “securities” under the Securities and Futures Ordinance (Cap. 571), the Securities and Futures (Client Securities) Rules (Cap. 571H) and the Securities and Futures (Client Money) Rules (Cap. 571I)."
+        ],
+        [
+          "条款31",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款32",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款33",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank’s website https://bank.za.group/en."
+        ],
+        [
+          "条款34",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款35",
+          "You confirm that all your personal information with the Bank is accurate and updated. You should inform us of any changes on your personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款36",
+          "如此文件有任何錯漏或不符，須於此文件發出後90日內通知本行。如本行未有在上述時間內收到閣下的查詢，此文件將被視為正確無誤且一切賬項均作實論。\n      請留意不時適用於閣下戶口之條款及細則。查詢賬戶詳情，請致電 +852 3665 3665。"
+        ],
+        [
+          "条款37",
+          "所有虛擬資產的交易均是由獲證監會發牌的第三方虛擬資產交易平台進行。"
+        ],
+        [
+          "条款38",
+          "為免生疑問，本文件亦作本行代閣下收取的任何有關本文件列明之虛擬資產的交易客戶虛擬資產的收據用途。"
+        ],
+        [
+          "条款39",
+          "在香港以外地方收取或持有的客戶資產，是受到有關海外司法管轄區的適用法律及規例所監管的。這些法律及規例與《證券及期貨條例》(第571章)及根據該條例制訂的規則可能有所不同。因此，有關客戶資產將可能不會享有賦予在香港收取或持有的客戶資產的相同保障。"
+        ],
+        [
+          "条款40",
+          "客戶虛擬資產可能不會享有在《證券及期貨條例》(第571章)、《證券及期貨（客戶證券）規則》（第571H章）及《證券及期貨（客戶款項）規則》（第571I章）下賦予“證券”的相同保障。"
+        ],
+        [
+          "条款41",
+          "閣下可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款42",
+          "眾安銀行以代理人的身份處理此交易。"
+        ],
+        [
+          "条款43",
+          "有關適用的費用和收費，請參見本行網站上的費率表：https://bank.za.group/hk。"
+        ],
+        [
+          "条款44",
+          "若中文版本與英文版本有異，一概以英文版本為準。"
+        ],
+        [
+          "条款45",
+          "閣下確認向本行提供的個人資料為準確及最新。如閣下的個人資料日後有所變更，請通知本行並提供閣下的最新資料。"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Virtual Asset Contract Note 虚拟资产成交单"
+        ],
+        [
+          "条款6",
+          "Issue Date 发出日期"
+        ],
+        [
+          "条款7",
+          "Investment Account Number 投资账户号码"
+        ],
+        [
+          "条款8",
+          "Virtual Asset Name\n虚拟资产名称"
+        ],
+        [
+          "条款9",
+          "Virtual Asset Code\n虚拟资产代码"
+        ],
+        [
+          "条款10",
+          "SFC-Licensed Virtual Asset Trading Platform\n证监会持牌虚拟资产交易平台"
+        ],
+        [
+          "条款11",
+          "Transaction Type\n交易类别"
+        ],
+        [
+          "条款12",
+          "Contract Date\n成交日期"
+        ],
+        [
+          "条款13",
+          "Average Execution Price (Per Unit of Virtual Asset) \n平均成交价（每单位）"
+        ],
+        [
+          "条款14",
+          "Execution Quantities\n成交数量"
+        ],
+        [
+          "条款15",
+          "Total Consideration Amount\n交易金额"
+        ],
+        [
+          "条款16",
+          "Commission\n佣金金额"
+        ],
+        [
+          "条款17",
+          "Platform Fee\n平台费"
+        ],
+        [
+          "条款18",
+          "Settlement Amount\n交收金额"
+        ],
+        [
+          "条款19",
+          "Settlement Date\n交收日期"
+        ],
+        [
+          "条款20",
+          "Order Reference\n交易编号"
+        ],
+        [
+          "条款21",
+          "Sell/卖出"
+        ],
+        [
+          "条款22",
+          "Partial Execution quantities 部分成交数量"
+        ],
+        [
+          "条款23",
+          "Price Per Unit of Virtual Asset 每单位价格"
+        ],
+        [
+          "条款24",
+          "Partial Consideration Amount 部分成交金额"
+        ],
+        [
+          "条款25",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款26",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive.\n    Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款27",
+          "All virtual asset transactions are executed by third-party virtual asset trading platform operator(s) licensed by the Securities and Futures Commission."
+        ],
+        [
+          "条款28",
+          "For the avoidance of doubt, this document also serves as a receipt for client virtual assets received by the Bank on your behalf in respect of the virtual asset transactions specified herein."
+        ],
+        [
+          "条款29",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder. Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款30",
+          "Client virtual assets may not enjoy the same protection as that conferred on “securities” under the Securities and Futures Ordinance (Cap. 571), the Securities and Futures (Client Securities) Rules (Cap. 571H) and the Securities and Futures (Client Money) Rules (Cap. 571I)."
+        ],
+        [
+          "条款31",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款32",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款33",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank’s website https://bank.za.group/en."
+        ],
+        [
+          "条款34",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款35",
+          "You confirm that all your personal information with the Bank is accurate and updated. You should inform us of any changes on your personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款36",
+          "如此文件有任何错漏或不符，须于此文件发出后90日内通知本行。如本行未有在上述时间内收到阁下的查询，此文件将被视为正确无误且一切账项均作实论。\n    请留意不时适用于阁下户口之条款及细则。查询账户详情，请致电 +852 3665 3665。"
+        ],
+        [
+          "条款37",
+          "所有虚拟资产的交易均是由获证监会发牌的第三方虚拟资产交易平台进行。"
+        ],
+        [
+          "条款38",
+          "为免生疑问，本文件亦作本行代阁下收取的任何有关本文件列明之虚拟资产的交易客户虚拟资产的收据用途。"
+        ],
+        [
+          "条款39",
+          "在香港以外地方收取或持有的客户资产，是受到有关海外司法管辖区的适用法律及规例所监管的。这些法律及规例与《证券及期货条例》(第571章)及根据该条例制订的规则可能有所不同。因此，有关客户资产将可能不会享有赋予在香港收取或持有的客户资产的相同保障。"
+        ],
+        [
+          "条款40",
+          "客户虚拟资产可能不会享有在《证券及期货条例》（第571章）、《证券及期货（客户证券）规则》（第571H章）及《证券及期货（客户款项）规则》（第571I章）下赋予“证券”的相同保障。"
+        ],
+        [
+          "条款41",
+          "阁下可考虑将此文件的电子副本储存于个人存储装置，或备存一份列印本，以作日后参考。"
+        ],
+        [
+          "条款42",
+          "众安银行以代理人的身份处理此交易。"
+        ],
+        [
+          "条款43",
+          "有关适用的费用和收费，请参见本行网站上的费率表：https://bank.za.group/hk。"
+        ],
+        [
+          "条款44",
+          "若中文版本与英文版本有异，一概以英文版本为准。"
+        ],
+        [
+          "条款45",
+          "阁下确认向本行提供的个人资料为准确及最新。如阁下的个人资料日后有所变更，请通知本行并提供阁下的最新资料。"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "2024-09-10 v2"
+        },
+        "zh_cn": {
+          "version": "2024-09-10 v2"
+        }
+      }
+    }
+  },
+  "Statement": {
+    "monthly": {
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Investment Account Monthly Statement 投資賬戶月結單"
+        ],
+        [
+          "条款6",
+          "Statement Date 結單日期"
+        ],
+        [
+          "条款7",
+          "Account Number 賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Total Amount 總金額4"
+        ],
+        [
+          "条款9",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款10",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款11",
+          "Unless otherwise specified, all the amounts, balances, prices and market values as shown in this statement are calculated as of the Statement Date."
+        ],
+        [
+          "条款12",
+          "The securities and/or virtual assets in your account are held in the name or to the order of the Bank on behalf of the Client."
+        ],
+        [
+          "条款13",
+          "Where the relevant amount as shown in this statement is displayed in HKD equivalent, such amount is calculated based on the exchange rate determined by the Bank as at the Statement Date."
+        ],
+        [
+          "条款14",
+          "All U.S. securities transactions are executed by third-party execution brokers as an agent through NYSE, NASDAQ or other stock exchange."
+        ],
+        [
+          "条款15",
+          "All HK securities transactions are executed by third-party execution brokers as an agent through The Stock Exchange of Hong Kong Limited."
+        ],
+        [
+          "条款16",
+          "The unit price of securities transactions in this document is the weighted average unit price."
+        ],
+        [
+          "条款17",
+          "All transactions are based on the dealing prices. Closing balances are based on the latest unit prices available as at the statement date. The reference prices and market values are for reference only. For securities undergoing split/merger, the Market Unit Price and Market Value shown are for reference only."
+        ],
+        [
+          "条款18",
+          "The date for Confirmed Transaction refers to the date when the transaction is confirmed. Pending Transaction refers to the transaction that is placed before cut-off time of the last trading date of that month but is pending to be confirmed by the fund houses. If the order is placed after cut-off time of the last trading date of that month, such transaction will not be captured in Pending Transaction."
+        ],
+        [
+          "条款19",
+          "Fund Holdings include the settled subscription transaction(s) and confirmed but unsettled subscription transaction(s)."
+        ],
+        [
+          "条款20",
+          "The dividend amount credited to your account is the gross dividend amount less the Bank’s total charges. If the Bank’s charges exceed the gross dividend amount, the entire gross dividend amount shall be applied toward the settlement of such charges."
+        ],
+        [
+          "条款21",
+          "All virtual asset transactions are executed by third-party virtual asset trading platform operator(s) licensed by the Securities and Futures Commission."
+        ],
+        [
+          "条款22",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder. Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款23",
+          "Client virtual assets may not enjoy the same protection as that conferred on “securities” under the Securities and Futures Ordinance (Cap. 571), the Securities and Futures (Client Securities) Rules (Cap. 571H) and the Securities and Futures (Client Money) Rules (Cap. 571I)."
+        ],
+        [
+          "条款24",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款25",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款26",
+          "Beware of bogus SMS messages and voice message calls – ZA Bank will not call you nor send you emails, SMS messages, letters or other communications asking for your User ID and password, other types of password/ PIN or sensitive information. In light of recent news report regarding telephone/ SMS message scams, the Bank would like to remind you to never disclose your personal data or bank account details to unsolicited callers, message senders or pre-recorded voice message phone calls requesting for such information. Should you have any doubts regarding the identity of a caller claiming to be from the Bank or the validity of a hotline number, please contact us at +852 3665 3665 for verification. Please be reminded not to contact the Bank using the information provided in a suspicious message."
+        ],
+        [
+          "条款27",
+          "The Amount in the Confirmed Transaction and Pending Transaction are inclusive of applicable fees and charges."
+        ],
+        [
+          "条款28",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank’s website:  https://bank.za.group/en"
+        ],
+        [
+          "条款29",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款30",
+          "You confirm that all your personal information with the Bank is accurate and updated. You should inform us of any changes on your personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款31",
+          "In compliance with securities dealing restrictions in the United States of America (US), customers who changed any of their addresses on our record to a US address will not be able to enjoy our investment services."
+        ],
+        [
+          "条款32",
+          "如此文件有任何錯漏或不符，須於此文件發出後90日內通知本行。如本行未有在上述時間內收到你的查詢，此文件將被視為正確無誤且一切賬項均作實論。 請留意不時適用於你的戶口之條款及細則。查詢賬戶詳情，請致電 +852 3665 3665。"
+        ],
+        [
+          "条款33",
+          "除非另有說明，此結單上顯示的所有金額、結餘、價格及市值均於結單日期計算。"
+        ],
+        [
+          "条款34",
+          "你的戶口内之證券及/或虛擬資產以本行的名義或按其指示代你持有。"
+        ],
+        [
+          "条款35",
+          "倘此結單上的相關金額以港元等值顯示，該等金額以本行於結單日期釐定之滙率計算。"
+        ],
+        [
+          "条款36",
+          "所有美國證券交易均由第三方證券經紀商以代理人名義透過紐約證券交易所、納斯達克證券交易所或其他證券交易所執行。"
+        ],
+        [
+          "条款37",
+          "所有香港證券交易均由第三方證券經紀商以代理人名義透過香港聯合交易所有限公司執行。"
+        ],
+        [
+          "条款38",
+          "此文件內的證券交易之單位價格乃加權平均單位價格。"
+        ],
+        [
+          "条款39",
+          "所有交易均以成交價計算。期終結餘以結單日期可獲取的最新單位價格計算。參考價及市值只供參考。正進行合併/分拆的證券所顯示的單位市價及市值僅供參考之用。"
+        ],
+        [
+          "条款40",
+          "已確認交易的日期為交易確認的日期。處理中交易是指於該月的最後交易日截單時間前提交但有待基金公司確認之交易。如交易指示是在該月的最後交易日截單時間後才提交，則該交易將不會被記錄在處理中交易。"
+        ],
+        [
+          "条款41",
+          "基金持倉包含已結算的認購交易和已確認但未結算的認購交易。"
+        ],
+        [
+          "条款42",
+          "入賬金額為股息總金額扣除總費用。倘若股息總金額少於本行之費用，則本行將扣除全部股息總金額以支付此類費用。"
+        ],
+        [
+          "条款43",
+          "所有虛擬資產的交易均是由獲證監會發牌的第三方虛擬資產交易平台執行。"
+        ],
+        [
+          "条款44",
+          "在香港以外地方收取或持有的客戶資產，是受到有關海外司法管轄區的適用法律及規例所監管的。這些法律及規例與《證券及期貨條例》 (第571章) 及根據該條例制訂的規則可能有所不同。因此，有關客戶資產將可能不會享有賦予在香港收取或持有的客戶資產的相同保障。"
+        ],
+        [
+          "条款45",
+          "客戶虛擬資產可能不會享有在《證券及期貨條例》(第571章)、《證券及期貨 (客戶證券) 規則》 (第571H章) 及《證券及期貨 (客戶款項) 規則》 (第571I章) 下賦予“證券”的相同保障。"
+        ],
+        [
+          "条款46",
+          "你可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款47",
+          "ZA Bank以代理人的身份處理此交易。"
+        ],
+        [
+          "条款48",
+          "慎防偽冒手機短訊及語音訊息來電: ZA Bank並不會致電或以電子郵件、短訊、信件或其他通訊渠道要求你披露登入用戶名及密碼、其他類型密碼、個人識別碼或其他敏感資料。就近期有關以未經銀行授權的來電、短訊或預錄語音電話訊息套取個人資料事件，本行呼籲你切勿對可疑來電者提供任何個人或戶口資料。如對自稱本行職員的來電或短訊上之熱線號碼有懷疑，應致電 +852 3665 3665 核實。切勿依照可疑短訊所提供的電話號碼聯絡本行。"
+        ],
+        [
+          "条款49",
+          "已確認交易及處理中交易的金額已經包含適用的費用和收費。"
+        ],
+        [
+          "条款50",
+          "有關適用的費用和收費，請參見本行網站上的費率表:  https://bank.za.group/hk"
+        ],
+        [
+          "条款51",
+          "若中文版本與英文版本有異，一概以英文版本為準。"
+        ],
+        [
+          "条款52",
+          "你確認向本行提供的個人資料為準確及最新。如你的個人資料日後有所變更，請通知本行並提供你的最新資料。"
+        ],
+        [
+          "条款53",
+          "根據美國就有關證券交易的管制，若客戶將其在本行記錄的任何地址更改為美國地址，則無法繼續享用本行所提供的任何投資服務。"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Investment Account Monthly Statement 投资账户月结单"
+        ],
+        [
+          "条款6",
+          "Statement Date 结单日期"
+        ],
+        [
+          "条款7",
+          "Account Number 账户号码"
+        ],
+        [
+          "条款8",
+          "Total Amount 总金额4"
+        ],
+        [
+          "条款9",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款10",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款11",
+          "Unless otherwise specified, all the amounts, balances, prices and market values as shown in this statement are calculated as of the Statement Date."
+        ],
+        [
+          "条款12",
+          "The securities and/or virtual assets in your account are held in the name or to the order of the Bank on behalf of the Client."
+        ],
+        [
+          "条款13",
+          "Where the relevant amount as shown in this statement is displayed in HKD equivalent, such amount is calculated based on the exchange rate determined by the Bank as at the Statement Date."
+        ],
+        [
+          "条款14",
+          "All U.S. securities transactions are executed by third-party execution brokers as an agent through NYSE, NASDAQ or other stock exchange."
+        ],
+        [
+          "条款15",
+          "All HK securities transactions are executed by third-party execution brokers as an agent through The Stock Exchange of Hong Kong Limited."
+        ],
+        [
+          "条款16",
+          "The unit price of securities transactions in this document is the weighted average unit price."
+        ],
+        [
+          "条款17",
+          "All transactions are based on the dealing prices. Closing balances are based on the latest unit prices available as at the statement date. The reference prices and market values are for reference only. For securities undergoing split/merger, the Market Unit Price and Market Value shown are for reference only."
+        ],
+        [
+          "条款18",
+          "The date for Confirmed Transaction refers to the date when the transaction is confirmed. Pending Transaction refers to the transaction that is placed before cut-off time of the last trading date of that month but is pending to be confirmed by the fund houses. If the order is placed after cut-off time of the last trading date of that month, such transaction will not be captured in Pending Transaction."
+        ],
+        [
+          "条款19",
+          "Fund Holdings include the settled subscription transaction(s) and confirmed but unsettled subscription transaction(s)."
+        ],
+        [
+          "条款20",
+          "The dividend amount credited to your account is the gross dividend amount less the Bank’s total charges. If the Bank’s charges exceed the gross dividend amount, the entire gross dividend amount shall be applied toward the settlement of such charges."
+        ],
+        [
+          "条款21",
+          "All virtual asset transactions are executed by third-party virtual asset trading platform operator(s) licensed by the Securities and Futures Commission."
+        ],
+        [
+          "条款22",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder. Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款23",
+          "Client virtual assets may not enjoy the same protection as that conferred on “securities” under the Securities and Futures Ordinance (Cap. 571), the Securities and Futures (Client Securities) Rules (Cap. 571H) and the Securities and Futures (Client Money) Rules (Cap. 571I)."
+        ],
+        [
+          "条款24",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款25",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款26",
+          "Beware of bogus SMS messages and voice message calls – ZA Bank will not call you nor send you emails, SMS messages, letters or other communications asking for your User ID and password, other types of password/ PIN or sensitive information. In light of recent news report regarding telephone/ SMS message scams, the Bank would like to remind you to never disclose your personal data or bank account details to unsolicited callers, message senders or pre-recorded voice message phone calls requesting for such information. Should you have any doubts regarding the identity of a caller claiming to be from the Bank or the validity of a hotline number, please contact us at +852 3665 3665 for verification. Please be reminded not to contact the Bank using the information provided in a suspicious message."
+        ],
+        [
+          "条款27",
+          "The Amount in the Confirmed Transaction and Pending Transaction are inclusive of applicable fees and charges."
+        ],
+        [
+          "条款28",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank’s website:  https://bank.za.group/en"
+        ],
+        [
+          "条款29",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款30",
+          "You confirm that all your personal information with the Bank is accurate and updated. You should inform us of any changes on your personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款31",
+          "In compliance with securities dealing restrictions in the United States of America (US), customers who changed any of their addresses on our record to a US address will not be able to enjoy our investment services."
+        ],
+        [
+          "条款32",
+          "如此文件有任何错漏或不符，须于此文件发出后90日内通知本行。如本行未有在上述时间内收到你的查询，此文件将被视为正确无误且一切账项均作实论。 请留意不时适用于你的户口之条款及细则。查询账户详情，请致电 +852 3665 3665。"
+        ],
+        [
+          "条款33",
+          "除非另有说明，此结单上显示的所有金额、结余、价格及市值均于结单日期计算。"
+        ],
+        [
+          "条款34",
+          "你的户口内之证券及/或虚拟资产以本行的名义或按其指示代你持有。"
+        ],
+        [
+          "条款35",
+          "倘此结单上的相关金额以港元等值显示，该等金额以本行于结单日期厘定之汇率计算。"
+        ],
+        [
+          "条款36",
+          "所有美国证券交易均由第三方证券经纪商以代理人名义透过纽约证券交易所、纳斯达克证券交易所或其他证券交易所执行。"
+        ],
+        [
+          "条款37",
+          "所有香港证券交易均由第三方证券经纪商以代理人名义透过香港联合交易所有限公司执行。"
+        ],
+        [
+          "条款38",
+          "此文件内的证券交易之单位价格乃加权平均单位价格。"
+        ],
+        [
+          "条款39",
+          "所有交易均以成交价计算。期终结余以结单日期可获取的最新单位价格计算。参考价及市值只供参考。正进行合并/分拆的证券所显示的单位市价及市值仅供参考之用。"
+        ],
+        [
+          "条款40",
+          "已确认交易的日期为交易确认的日期。处理中交易是指于该月的最后交易日截单时间前提交但有待基金公司确认之交易。如交易指示是在该月的最后交易日截单时间后才提交，则该交易将不会被记录在处理中交易。"
+        ],
+        [
+          "条款41",
+          "基金持仓包含已结算的认购交易和已确认但未结算的认购交易。"
+        ],
+        [
+          "条款42",
+          "入账金额为股息总金额扣除总费用。倘若股息总金额少于本行之费用，則本行将扣除全部股息总金额以支付此类费用。"
+        ],
+        [
+          "条款43",
+          "所有虚拟资产的交易均是由获证监会发牌的第三方虚拟资产交易平台执行。"
+        ],
+        [
+          "条款44",
+          "在香港以外地方收取或持有的客户资产，是受到有关海外司法管辖区的适用法律及规例所监管的。这些法律及规例与《证券及期货条例》 (第571章) 及根据该条例制订的规则可能有所不同。因此，有关客户资产将可能不会享有赋予在香港收取或持有的客户资产的相同保障。"
+        ],
+        [
+          "条款45",
+          "客户虚拟资产可能不会享有在《证券及期货条例》 (第571章) 、《证券及期货 (客户证券) 规则》 (第571H章) 及《证券及期货 (客户款项) 规则》 (第571I章) 下赋予“证券”的相同保障。"
+        ],
+        [
+          "条款46",
+          "你可考虑将此文件的电子副本储存于个人存储装置，或备存一份列印本，以作日后参考。"
+        ],
+        [
+          "条款47",
+          "众安银行以代理人的身份处理此交易。"
+        ],
+        [
+          "条款48",
+          "慎防伪冒手机短讯及语音讯息来电: 众安银行并不会致电或以电子邮件、短讯、信件或其他通讯渠道要求你披露登入用户名及密码、其他类型密码、个人识别码或其他敏感资料。就近期有关以未经银行授权的来电、短讯或预录语音电话讯息套取个人资料事件，本行呼吁你切勿对可疑来电者提供任何个人或户口资料。如对自称本行职员的来电或短讯上之热线号码有怀疑，应致电 +852 3665 3665 核实。切勿依照可疑短讯所提供的电话号码联络本行。"
+        ],
+        [
+          "条款49",
+          "已确认交易及处理中交易的金额已经包含适用的费用和收费。"
+        ],
+        [
+          "条款50",
+          "有关适用的费用和收费，请参见本行网站上的费率表:  https://bank.za.group/hk"
+        ],
+        [
+          "条款51",
+          "若中文版本与英文版本有异，一概以英文版本为准。"
+        ],
+        [
+          "条款52",
+          "你确认向本行提供的个人资料为准确及最新。如你的个人资料日后有所变更，请通知本行并提供你的最新资料。"
+        ],
+        [
+          "条款53",
+          "根据美国就有关证券交易的管制，若客户将其在本行记录的任何地址更改为美国地址，则无法继续享用本行所提供的任何投资服务。"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "2026-01-27 v1"
+        },
+        "zh_cn": {
+          "version": "2026-01-27 v1"
+        }
+      }
+    },
+    "bbInvest": {
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Investment Account Monthly Statement 投資賬戶月結單"
+        ],
+        [
+          "条款6",
+          "Statement Date 結單日期"
+        ],
+        [
+          "条款7",
+          "Account Number 賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Total Amount 總金額4"
+        ],
+        [
+          "条款9",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款10",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. lf the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive.Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款11",
+          "Unless otherwise specified, all the amounts, balances, prices and market values as shown in this statement are calculated as of the Statement Date."
+        ],
+        [
+          "条款12",
+          "The securities in your account are held in the name or to the order of the Bank on behalf of the Client."
+        ],
+        [
+          "条款13",
+          "Where the relevant amount as shown in this statement is displayed in HKD equivalent, such amount is calculated based on the exchange rate determined by the Bank as at the Statement Date."
+        ],
+        [
+          "条款14",
+          "All transactions are based on the dealing prices, Closing balances are based on the latest unit prices available as at the statement date, The reference prices and market values are for reference only."
+        ],
+        [
+          "条款15",
+          "The date for Confirmed Transaction refers to the date when the transaction is confirmed, Pending Transaction refers to the transaction that is placed before cut-off time of the last trading date of that month but is pending to be confirmed by the fund houses. lf the order is placed after cut-off time of the last trading date of that month, such transaction will not be captured in Pending Transaction."
+        ],
+        [
+          "条款16",
+          "Fund Holdings include the settled subscription transactions and confirmed but unsettled subscription transactions."
+        ],
+        [
+          "条款17",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder.Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款18",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款19",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款20",
+          "Beware of bogus SMS messages and voice message calls ZA Bank will not call you nor send you emails, SMS messages letters or other communications asking for your User lD and password,other types of password/ PlN or sensitive information, In light of recent news report regarding telephone/SMS message scams, the Bank would like to remind you to never disclose your personal data or bank account details to unsolicited callers, message senders or pre-recorded voice message phone calls requesting for such information. Should you have any doubts regarding the identity of a caller claiming to be from the Bank or the validity of a hotline number, please contact us at +852 3665 3665 for verification. Please be reminded not to contact the Bank using the information provided in a suspicious message."
+        ],
+        [
+          "条款21",
+          "The Amount in the Confirmed Transaction and Pending Transaction are inclusive of applicable fees and charges."
+        ],
+        [
+          "条款22",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank's website https://bank.za.group/en"
+        ],
+        [
+          "条款23",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款24",
+          "You confirm that all your company/personal information with the Bank is accurate and updated, You should inform us of any changes on your company/personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款25",
+          "In compliance with securities dealing restrictions in the United States of America (US), customers who changed any of their addresses on our record to a US address will not be able to enjoy our investment services."
+        ],
+        [
+          "条款26",
+          "如此文件有任何錯漏或不符，須於此文件發出後 90 日內通知本行。如本行未有在上述時間內收到你的查詢，此文件將被視為正確無誤且一切賬項均作實論。請留意不時適用於你的戶口之條款及細則。查詢賬戶詳情，請致 +852 3665 3665。"
+        ],
+        [
+          "条款27",
+          "除非另有說明，此結單上顯示的所有金額、結餘、價格及市值均於結單日期計算。"
+        ],
+        [
+          "条款28",
+          "你的戶口內之證券及/或虛擬資產以本行的名義或按其指示代你持有。"
+        ],
+        [
+          "条款29",
+          "倘此結單上的相關金額以港元等值顯示，該等金額以本行於結單日期釐定之滙率計算。"
+        ],
+        [
+          "条款30",
+          "所有交易均以成交價計算。期終結餘以結單日期可獲取的最新單位價格計算。參考價及市值只供參考。"
+        ],
+        [
+          "条款31",
+          "已確認交易的日期為交易確認的日期。處理中交易是指於該月的最後交易日截單時間前提交但有待基金公司確認之交易。如交易指示是在該月的最後交易日截單時間後才提交，則該交易將不會被記錄在處理中交易。"
+        ],
+        [
+          "条款32",
+          "基金持倉包含已結算的認購交易和已確認但未結算的認購交易。"
+        ],
+        [
+          "条款33",
+          "在香港以外地方收取或持有的客戶資產，是受到有關海外司法管轄區的適用法律及規例所監管的。這些法律及規例與《證券及期貨條例》(第 571 章)及根據該條例制訂的規則可能有所不同。因此，有關客戶資產將可能不會享有賦予在香港收取或持有的客戶資產的相同保障。"
+        ],
+        [
+          "条款34",
+          "你可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款35",
+          "ZA Bank 以代理人的身份處理此交易。"
+        ],
+        [
+          "条款36",
+          "慎防偽冒手機短訊及語音訊息來電：ZA Bank 並不會致電或以電子郵件、短訊、信件或其他通訊渠道要求你披露登入用戶名及密碼、其他類型密碼、個人識別碼或其他敏感資料。就近期有以未經銀行授權的來電、短訊或預錄語音電話訊息套取個人資料事件，本行呼籲你切勿對可疑來電者提供任何個人或戶口資料，如對自稱本行職員的來電或短訊上之熱線號碼有懷疑，應致電 +852 3665 3665 核實。切勿依照可疑短訊所提供的電話聯絡本行。"
+        ],
+        [
+          "条款37",
+          "已確認交易及處理中交易的金額已經包含適用的費用和收費。"
+        ],
+        [
+          "条款38",
+          "有關適用的費用和收費，請參見本行網站上的費率表 https://bank.za.group/hk"
+        ],
+        [
+          "条款39",
+          "若中文版本與英文版本有異，一概以英文版本為準。"
+        ],
+        [
+          "条款40",
+          "你確認向本行提供的公司/個人資料為準確及最新。如你的公司/個人資料日後有所變更，請通知本行並提供你的最新資料。"
+        ],
+        [
+          "条款41",
+          "根據美國就有關證券交易的管制，若客戶將其在本行記錄的任何地址更改為美國地址，則無法繼續享用本行所提供的任何投資服務。"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Investment Account Monthly Statement 投资账户月结单"
+        ],
+        [
+          "条款6",
+          "Statement Date 结单日期"
+        ],
+        [
+          "条款7",
+          "Account Number 账户号码"
+        ],
+        [
+          "条款8",
+          "Total Amount 总金额4"
+        ],
+        [
+          "条款9",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款10",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. lf the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive.Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款11",
+          "Unless otherwise specified, all the amounts, balances, prices and market values as shown in this statement are calculated as of the Statement Date."
+        ],
+        [
+          "条款12",
+          "The securities in your account are held in the name or to the order of the Bank on behalf of the Client."
+        ],
+        [
+          "条款13",
+          "Where the relevant amount as shown in this statement is displayed in HKD equivalent, such amount is calculated based on the exchange rate determined by the Bank as at the Statement Date."
+        ],
+        [
+          "条款14",
+          "All transactions are based on the dealing prices, Closing balances are based on the latest unit prices available as at the statement date, The reference prices and market values are for reference only."
+        ],
+        [
+          "条款15",
+          "The date for Confirmed Transaction refers to the date when the transaction is confirmed, Pending Transaction refers to the transaction that is placed before cut-off time of the last trading date of that month but is pending to be confirmed by the fund houses. lf the order is placed after cut-off time of the last trading date of that month, such transaction will not be captured in Pending Transaction."
+        ],
+        [
+          "条款16",
+          "Fund Holdings include the settled subscription transactions and confirmed but unsettled subscription transactions."
+        ],
+        [
+          "条款17",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder.Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款18",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款19",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款20",
+          "Beware of bogus SMS messages and voice message calls ZA Bank will not call you nor send you emails, SMS messages letters or other communications asking for your User lD and password,other types of password/ PlN or sensitive information, In light of recent news report regarding telephone/SMS message scams, the Bank would like to remind you to never disclose your personal data or bank account details to unsolicited callers, message senders or pre-recorded voice message phone calls requesting for such information. Should you have any doubts regarding the identity of a caller claiming to be from the Bank or the validity of a hotline number, please contact us at +852 3665 3665 for verification. Please be reminded not to contact the Bank using the information provided in a suspicious message."
+        ],
+        [
+          "条款21",
+          "The Amount in the Confirmed Transaction and Pending Transaction are inclusive of applicable fees and charges."
+        ],
+        [
+          "条款22",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank's website https://bank.za.group/en"
+        ],
+        [
+          "条款23",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款24",
+          "You confirm that all your company/personal information with the Bank is accurate and updated, You should inform us of any changes on your company/personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款25",
+          "In compliance with securities dealing restrictions in the United States of America (US), customers who changed any of their addresses on our record to a US address will not be able to enjoy our investment services."
+        ],
+        [
+          "条款26",
+          "如此文件有任何错漏或不符，须于此文件发出后 90 日内通知本行。如本行未有在上述时间内收到你的查询，此文件将被视为正确无误且一切账项均作实论。请留意不时适用于你的户口之条款及细则。查询账户详情，请致 +852 3665 3665。"
+        ],
+        [
+          "条款27",
+          "除非另有说明，此结单上显示的所有金额、结余、价格及市值均于结单日期计算。"
+        ],
+        [
+          "条款28",
+          "你的户口内之证券及/或虚拟资产以本行的名义或按其指示代你持有。"
+        ],
+        [
+          "条款29",
+          "倘此结单上的相关金额以港元等值显示，该等金额以本行于结单日期厘定之汇率计算。"
+        ],
+        [
+          "条款30",
+          "所有交易均以成交价计算。期终结余以结单日期可获取的最新单位价格计算。参考价及市值只供参考。"
+        ],
+        [
+          "条款31",
+          "已确认交易的日期为交易确认的日期。处理中交易是指于该月的最后交易日截单时间前提交但有待基金公司确认之交易。如交易指示是在该月的最后交易日截单时间后才提交，则该交易将不会被记录在处理中交易。"
+        ],
+        [
+          "条款32",
+          "基金持仓包含已结算的认购交易和已确认但未结算的认购交易。"
+        ],
+        [
+          "条款33",
+          "在香港以外地方收取或持有的客户资产，是受到有关海外司法管辖区的适用法律及规例所监管的。这些法律及规例与《证券及期货条例》(第 571 章)及根据该条例制订的规则可能有所不同。因此，有关客户资产将可能不会享有赋予在香港收取或持有的客户资产的相同保障。"
+        ],
+        [
+          "条款34",
+          "你可考虑将此文件的电子副本储存于个人存储装置，或备存一份列印本，以作日后参考。"
+        ],
+        [
+          "条款35",
+          "ZA Bank 以代理人的身份处理此交易。"
+        ],
+        [
+          "条款36",
+          "慎防伪冒手机短讯及语音讯息来电：ZA Bank 并不会致电或以电子邮件、短讯、信件或其他通讯渠道要求你披露登入用户名及密码、其他类型密码、个人识别码或其他敏感资料。就近期有以未经银行授权的来电、短讯或预录语音电话讯息套取个人资料事件，本行呼吁你切勿对可疑来电者提供任何个人或户口资料，如对自称本行职员的来电或短讯上之热线号码有怀疑，应致电 +852 3665 3665 核实。切勿依照可疑短讯所提供的电话联络本行。"
+        ],
+        [
+          "条款37",
+          "已确认交易及处理中交易的金额已经包含适用的费用和收费。"
+        ],
+        [
+          "条款38",
+          "有关适用的费用和收费，请参见本行网站上的费率表 https://bank.za.group/hk"
+        ],
+        [
+          "条款39",
+          "若中文版本与英文版本有异，一概以英文版本为准。"
+        ],
+        [
+          "条款40",
+          "你确认向本行提供的公司/个人资料为准确及最新。如你的公司/个人资料日后有所变更，请通知本行并提供你的最新资料。"
+        ],
+        [
+          "条款41",
+          "根据美国就有关证券交易的管制，若客户将其在本行记录的任何地址更改为美国地址，则无法继续享用本行所提供的任何投资服务。"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "v1"
+        },
+        "zh_cn": {
+          "version": "v1"
+        }
+      }
+    },
+    "southBound": {
+      "zh_hk": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Southbound Scheme Investment Account Monthly Statement 南向通投資賬戶月結單"
+        ],
+        [
+          "条款6",
+          "Statement Date 結單日期"
+        ],
+        [
+          "条款7",
+          "Account Number 賬戶號碼"
+        ],
+        [
+          "条款8",
+          "Total Amount 總金額4"
+        ],
+        [
+          "条款9",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款10",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款11",
+          "Unless otherwise specified, all the amounts, balances, prices and market values as shown in this statement are calculated as of the Statement Date."
+        ],
+        [
+          "条款12",
+          "The securities in your account are held in the name or to the order of the Bank on behalf of the Client."
+        ],
+        [
+          "条款13",
+          "Where the relevant amount as shown in this statement is displayed in HKD equivalent, such amount is calculated based on the exchange rate determined by the Bank as at the Statement Date."
+        ],
+        [
+          "条款14",
+          "The unit price of securities transactions in this document is the weighted average unit price."
+        ],
+        [
+          "条款15",
+          "All transactions are based on the dealing prices. Closing balances are based on the latest unit prices available as at the statement date. The reference prices and market values are for reference only. For securities undergoing split/merger, the Market Unit Price and Market Value shown are for reference only."
+        ],
+        [
+          "条款16",
+          "The date for Confirmed Transaction refers to the date when the transaction is confirmed. Pending Transaction refers to the transaction that is placed before cut-off time of the last trading date of that month but is pending to be confirmed by the fund houses. If the order is placed after cut-off time of the last trading date of that month, such transaction will not be captured in Pending Transaction."
+        ],
+        [
+          "条款17",
+          "Fund Holdings include the settled subscription transaction(s) and confirmed but unsettled subscription transaction(s)."
+        ],
+        [
+          "条款18",
+          "The dividend amount credited to your account is the gross dividend amount less the Bank’s total charges. If the Bank’s charges exceed the gross dividend amount, the entire gross dividend amount shall be applied toward the settlement of such charges."
+        ],
+        [
+          "条款19",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder. Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款20",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款21",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款22",
+          "Beware of bogus SMS messages and voice message calls – ZA Bank will not call you nor send you emails, SMS messages, letters or other communications asking for your User ID and password, other types of password/ PIN or sensitive information. In light of recent news report regarding telephone/ SMS message scams, the Bank would like to remind you to never disclose your personal data or bank account details to unsolicited callers, message senders or pre-recorded voice message phone calls requesting for such information. Should you have any doubts regarding the identity of a caller claiming to be from the Bank or the validity of a hotline number, please contact us at +852 3665 3665 for verification. Please be reminded not to contact the Bank using the information provided in a suspicious message."
+        ],
+        [
+          "条款23",
+          "The Amount in the Confirmed Transaction and Pending Transaction are inclusive of applicable fees and charges."
+        ],
+        [
+          "条款24",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank’s website https://bank.za.group/en"
+        ],
+        [
+          "条款25",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款26",
+          "You confirm that all your personal information with the Bank is accurate and updated. You should inform us of any changes on your personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款27",
+          "In compliance with securities dealing restrictions in the United States of America (US), customers who changed any of their addresses on our record to a US address will not be able to enjoy our investment services."
+        ],
+        [
+          "条款28",
+          "如此文件有任何錯漏或不符，須於此文件發出後 90 日內通知本行。如本行未有在上述時間內收到你的查詢，此文件將被視為正確無誤且一切賬項均作實論。 請留意不時適用於你的戶口之條款及細則。查詢賬戶詳情，請致電 +852 3665 3665。"
+        ],
+        [
+          "条款29",
+          "除非另有說明，此結單上顯示的所有金額、結餘、價格及市值均於結單日期計算。"
+        ],
+        [
+          "条款30",
+          "你的戶口内之證券以本行的名義或按其指示代你持有。"
+        ],
+        [
+          "条款31",
+          "倘此結單上的相關金額以港元等值顯示，該等金額以本行於結單日期釐定之滙率計算。"
+        ],
+        [
+          "条款32",
+          "此文件內的證券交易之單位價格乃加權平均單位價格。"
+        ],
+        [
+          "条款33",
+          "所有交易均以成交價計算。期終結餘以結單日期可獲取的最新單位價格計算。參考價及市值只供參考。正進行合併/分拆的證券所顯示的單位市價及市值僅供參考之用。"
+        ],
+        [
+          "条款34",
+          "已確認交易的日期為交易確認的日期。處理中交易是指於該月的最後交易日截單時間前提交但有待基金公司確認之交易。如交易指示是在該月的最後交易日截單時間後才提交，則該交易將不會被記錄在處理中交易。"
+        ],
+        [
+          "条款35",
+          "基金持倉包含已結算的認購交易和已確認但未結算的認購交易。"
+        ],
+        [
+          "条款36",
+          "入賬金額為股息總金額扣除總費用。倘若股息總金額少於本行之費用，則本行將扣除全部股息總金額以支付此類費用。"
+        ],
+        [
+          "条款37",
+          "在香港以外地方收取或持有的客戶資產，是受到有關海外司法管轄區的適用法律及規例所監管的。這些法律及規例與《證券及期貨條例》(第571章)及根據該條例制訂的規則可能有所不同。因此，有關客戶資產將可能不會享有賦予在香港收取或持有的客戶資產的相同保障。"
+        ],
+        [
+          "条款38",
+          "你可考慮將此文件的電子副本儲存於個人存儲裝置，或備存一份列印本，以作日後參考。"
+        ],
+        [
+          "条款39",
+          "ZA Bank以代理人的身份處理此交易。"
+        ],
+        [
+          "条款40",
+          "慎防偽冒手機短訊及語音訊息來電: ZA Bank並不會致電或以電子郵件、短訊、信件或其他通訊渠道要求你披露登入用戶名及密碼、其他類型密碼、個人識別碼或其他敏感資料。就近期有關以未經銀行授權的來電、短訊或預錄語音電話訊息套取個人資料事件，本行呼籲你切勿對可疑來電者提供任何個人或戶口資料。如對自稱本行職員的來電或短訊上之熱線號碼有懷疑，應致電+852 3665 3665核實。切勿依照可疑短訊所提供的電話號碼聯絡本行。"
+        ],
+        [
+          "条款41",
+          "已確認交易及處理中交易的金額已經包含適用的費用和收費。"
+        ],
+        [
+          "条款42",
+          "有關適用的費用和收費，請參見本行網站上的費率表：https://bank.za.group/hk"
+        ],
+        [
+          "条款43",
+          "若中文版本與英文版本有異，一概以英文版本為準。"
+        ],
+        [
+          "条款44",
+          "你確認向本行提供的個人資料為準確及最新。如你的個人資料日後有所變更，請通知本行並提供你的最新資料。"
+        ],
+        [
+          "条款45",
+          "根據美國就有關證券交易的管制，若客戶將其在本行記錄的任何地址更改為美國地址，則無法繼續享用本行所提供的任何投資服務。"
+        ]
+      ],
+      "zh_cn": [
+        [
+          "条款1",
+          "ZA Bank Limited 眾安銀行有限公司"
+        ],
+        [
+          "条款2",
+          "Unit 1301,Level 13,IT Street,Cyberport 3,100 Cyberport Road,Hong Kong"
+        ],
+        [
+          "条款3",
+          "香港數碼港100號數碼港3座資訊科技大道13樓1301室"
+        ],
+        [
+          "条款4",
+          "bank.za.group"
+        ],
+        [
+          "条款5",
+          "Southbound Scheme Investment Account Monthly Statement 南向通投资账户月结单"
+        ],
+        [
+          "条款6",
+          "Statement Date 结单日期"
+        ],
+        [
+          "条款7",
+          "Account Number 账户号码"
+        ],
+        [
+          "条款8",
+          "Total Amount 总金额4"
+        ],
+        [
+          "条款9",
+          "Important Notice 重要提示"
+        ],
+        [
+          "条款10",
+          "Any errors or discrepancies in this document should be reported to the Bank within 90 days from the issue date. If the Bank does not receive such notice within the abovementioned period, the document will be considered as correct and conclusive. Your attention is drawn to the applicable terms and conditions in force from time to time governing the use of your account. For enquiry of account details, please contact us at +852 3665 3665."
+        ],
+        [
+          "条款11",
+          "Unless otherwise specified, all the amounts, balances, prices and market values as shown in this statement are calculated as of the Statement Date."
+        ],
+        [
+          "条款12",
+          "The securities in your account are held in the name or to the order of the Bank on behalf of the Client."
+        ],
+        [
+          "条款13",
+          "Where the relevant amount as shown in this statement is displayed in HKD equivalent, such amount is calculated based on the exchange rate determined by the Bank as at the Statement Date."
+        ],
+        [
+          "条款14",
+          "The unit price of securities transactions in this document is the weighted average unit price."
+        ],
+        [
+          "条款15",
+          "All transactions are based on the dealing prices. Closing balances are based on the latest unit prices available as at the statement date. The reference prices and market values are for reference only. For securities undergoing split/merger, the Market Unit Price and Market Value shown are for reference only."
+        ],
+        [
+          "条款16",
+          "The date for Confirmed Transaction refers to the date when the transaction is confirmed. Pending Transaction refers to the transaction that is placed before cut-off time of the last trading date of that month but is pending to be confirmed by the fund houses. If the order is placed after cut-off time of the last trading date of that month, such transaction will not be captured in Pending Transaction."
+        ],
+        [
+          "条款17",
+          "Fund Holdings include the settled subscription transaction(s) and confirmed but unsettled subscription transaction(s)."
+        ],
+        [
+          "条款18",
+          "The dividend amount credited to your account is the gross dividend amount less the Bank’s total charges. If the Bank’s charges exceed the gross dividend amount, the entire gross dividend amount shall be applied toward the settlement of such charges."
+        ],
+        [
+          "条款19",
+          "Client assets received or held outside Hong Kong are subject to the applicable laws and regulations of the relevant overseas jurisdiction which may be different from the Securities and Futures Ordinance (Cap. 571) and the rules made thereunder. Consequently, such client assets may not enjoy the same protection as that conferred on client assets received or held in Hong Kong."
+        ],
+        [
+          "条款20",
+          "You may consider saving an electronic copy of this document in your own storage or printing a hard copy for future reference."
+        ],
+        [
+          "条款21",
+          "ZA Bank acts as agent in handling this transaction."
+        ],
+        [
+          "条款22",
+          "Beware of bogus SMS messages and voice message calls – ZA Bank will not call you nor send you emails, SMS messages, letters or other communications asking for your User ID and password, other types of password/ PIN or sensitive information. In light of recent news report regarding telephone/ SMS message scams, the Bank would like to remind you to never disclose your personal data or bank account details to unsolicited callers, message senders or pre-recorded voice message phone calls requesting for such information. Should you have any doubts regarding the identity of a caller claiming to be from the Bank or the validity of a hotline number, please contact us at +852 3665 3665 for verification. Please be reminded not to contact the Bank using the information provided in a suspicious message."
+        ],
+        [
+          "条款23",
+          "The Amount in the Confirmed Transaction and Pending Transaction are inclusive of applicable fees and charges."
+        ],
+        [
+          "条款24",
+          "For details of applicable fees and charges, please refer to the fee schedule in the Bank’s website https://bank.za.group/en"
+        ],
+        [
+          "条款25",
+          "In the event of discrepancies between the Chinese and English versions, the English version shall prevail."
+        ],
+        [
+          "条款26",
+          "You confirm that all your personal information with the Bank is accurate and updated. You should inform us of any changes on your personal information and provide us with your latest personal information at any future time."
+        ],
+        [
+          "条款27",
+          "In compliance with securities dealing restrictions in the United States of America (US), customers who changed any of their addresses on our record to a US address will not be able to enjoy our investment services."
+        ],
+        [
+          "条款28",
+          "如此文件有任何错漏或不符，须于此文件发出后 90 日内通知本行。如本行未有在上述时间内收到你的查询，此文件将被视为正确无误且一切账项均作实论。 请留意不时适用于你的户口之条款及细则。查询账户详情，请致电 +852 3665 3665。"
+        ],
+        [
+          "条款29",
+          "除非另有说明，此结单上显示的所有金额、结余、价格及市值均于结单日期计算。"
+        ],
+        [
+          "条款30",
+          "你的户口内之证券以本行的名义或按其指示代你持有。"
+        ],
+        [
+          "条款31",
+          "倘此结单上的相关金额以港元等值显示，该等金额以本行于结单日期厘定之汇率计算。"
+        ],
+        [
+          "条款32",
+          "此文件内的证券交易之单位价格乃加权平均单位价格。"
+        ],
+        [
+          "条款33",
+          "所有交易均以成交价计算。期终结余以结单日期可获取的最新单位价格计算。参考价及市值只供参考。正进行合并/分拆的证券所显示的单位市价及市值仅供参考之用。"
+        ],
+        [
+          "条款34",
+          "已确认交易的日期为交易确认的日期。处理中交易是指于该月的最后交易日截单时间前提交但有待基金公司确认之交易。如交易指示是在该月的最后交易日截单时间后才提交，则该交易将不会被记录在处理中交易。"
+        ],
+        [
+          "条款35",
+          "基金持仓包含已结算的认购交易和已确认但未结算的认购交易。"
+        ],
+        [
+          "条款36",
+          "入账金额为股息总金额扣除总费用。倘若股息总金额少于本行之费用，則本行将扣除全部股息总金额以支付此类费 用。"
+        ],
+        [
+          "条款37",
+          "在香港以外地方收取或持有的客户资产，是受到有关海外司法管辖区的适用法律及规例所监管的。这些法律及规例与《证券及期货条例》(第571章)及根据该条例制订的规则可能有所不同。因此，有关客户资产将可能不会享有赋予在香港收取或持有的客户资产的相同保障。"
+        ],
+        [
+          "条款38",
+          "你可考虑将此文件的电子副本储存于个人存储装置，或备存一份列印本，以作日后参考。"
+        ],
+        [
+          "条款39",
+          "众安银行以代理人的身份处理此交易"
+        ],
+        [
+          "条款40",
+          "慎防伪冒手机短讯及语音讯息来电: 众安银行并不会致电或以电子邮件、短讯、信件或其他通讯渠道要求你披露登入用户名及密码、其他类型密码、个人识别码或其他敏感资料。就近期有关以未经银行授权的来电、短讯或预录语音电话讯息套取个人资料事件，本行呼吁你切勿对可疑来电者提供任何个人或户口资料。如对自称本行职员的来电或短讯上之热线号码有怀疑，应致电+852 3665 3665核实。切勿依照可疑短讯所提供的电话号码联络本行。"
+        ],
+        [
+          "条款41",
+          "已确认交易及处理中交易的金额已经包含适用的费用和收费。"
+        ],
+        [
+          "条款42",
+          "有关适用的费用和收费，请参见本行网站上的费率表：https://bank.za.group/hk"
+        ],
+        [
+          "条款43",
+          "若中文版本与英文版本有异，一概以英文版本为准。"
+        ],
+        [
+          "条款44",
+          "你确认向本行提供的个人资料为准确及最新。如你的个人资料日后有所变更，请通知本行并提供你的最新资料。"
+        ],
+        [
+          "条款45",
+          "根据美国就有关证券交易的管制，若客户将其在本行记录的任何地址更改为美国地址，则无法继续享用本行所提供的任何投资服务。"
+        ]
+      ],
+      "_meta": {
+        "zh_hk": {
+          "version": "v4"
+        },
+        "zh_cn": {
+          "version": "v4"
+        }
+      }
+    }
+  }
+}

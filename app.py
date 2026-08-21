@@ -14,12 +14,17 @@ from fastapi import FastAPI, File, UploadFile, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from typing import Optional
 
 from modules.pdf_parser import PDFParser, ContractData
 from modules.audit_engine import AuditEngine, AuditReport
-from modules.statement_parser import StatementParser
 from modules.va_checker import VAChecker
-from modules.contract_auditor import ContractAuditor
+from modules.contract_auditor import (
+    ContractAuditor,
+    STOCK_EN_CLAUSES, STOCK_ZH_HK_CLAUSES, STOCK_ZH_CN_CLAUSES,
+    FUND_EN_CLAUSES, FUND_ZH_HK_CLAUSES, FUND_ZH_CN_CLAUSES,
+    VA_EN_CLAUSES, VA_ZH_HK_CLAUSES, VA_ZH_CN_CLAUSES,
+)
 
 # ===== 应用初始化 =====
 app = FastAPI(
@@ -37,6 +42,13 @@ UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 RECORDS_DIR = Path("records")
 RECORDS_DIR.mkdir(exist_ok=True)
+
+STOCK_SUBTYPES = [
+    "order", "orderHk", "companyAction", "companyActionHk",
+    "business", "businessHk",
+]
+VA_SUBTYPES = ["buy", "sale"]
+STATEMENT_SUBTYPES = ["monthly", "bbInvest", "southBound"]
 
 
 # ===== 辅助函数 =====
@@ -58,49 +70,6 @@ async def home(request: Request):
     return templates.TemplateResponse(request, "index.html", {
         "title": "AI 成交单审核平台",
     })
-
-
-@app.post("/api/audit", response_class=JSONResponse)
-async def audit_contract(file: UploadFile = File(...)):
-    if not file.filename or not file.filename.lower().endswith('.pdf'):
-        return JSONResponse({"error": "仅支持 PDF 文件"}, status_code=400)
-
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    safe_name = f"{timestamp}_{file.filename}"
-    file_path = UPLOAD_DIR / safe_name
-
-    try:
-        with open(file_path, "wb") as f:
-            content = await file.read()
-            f.write(content)
-    except Exception as e:
-        return JSONResponse({"error": f"文件保存失败: {str(e)}"}, status_code=500)
-
-    try:
-        parser = PDFParser()
-        contract_data = parser.parse(str(file_path))
-        engine = get_audit_engine()
-        report = engine.audit(contract_data, file.filename)
-
-        result = {
-            "success": True,
-            "file_name": file.filename,
-            "audit_time": report.audit_time,
-            "contract_data": contract_data.model_dump(),
-            "findings": [f.model_dump() for f in report.findings],
-            "total_findings": report.total_findings,
-            "critical_count": report.critical_count,
-            "warning_count": report.warning_count,
-            "info_count": report.info_count,
-            "ai_summary": report.ai_summary,
-            "fee_waiver_details": report.fee_waiver_details,
-        }
-
-        save_record(result)
-        return result
-
-    except Exception as e:
-        return JSONResponse({"error": f"审核失败: {str(e)}"}, status_code=500)
 
 
 @app.get("/api/records", response_class=JSONResponse)
@@ -172,117 +141,15 @@ async def chat(request: Request):
         return {"answer": f"AI 回答失败: {str(e)}"}
 
 
-@app.post("/api/compare", response_class=JSONResponse)
-async def compare_documents(
-    contract_file: UploadFile = File(...),
-    statement_file: UploadFile = File(...),
-):
-    """对比成交单和月结单"""
-    results = {"matches": [], "mismatches": [], "unmatched": []}
-
-    # 保存并解析成交单
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    contract_path = UPLOAD_DIR / f"{ts}_contract_{contract_file.filename}"
-    statement_path = UPLOAD_DIR / f"{ts}_statement_{statement_file.filename}"
-
-    with open(contract_path, "wb") as f:
-        f.write(await contract_file.read())
-    with open(statement_path, "wb") as f:
-        f.write(await statement_file.read())
-
-    contract = PDFParser().parse(str(contract_path))
-    statement = StatementParser().parse(str(statement_path))
-
-    # 构建成交单摘要
-    cn = {
-        "stock_code": contract.stock_code,
-        "stock_name": contract.stock_name,
-        "trade_date": contract.contract_date,
-        "settlement_date": contract.settlement_date,
-        "quantity": contract.quantity,
-        "unit_price": contract.avg_price,
-        "commission": contract.commission,
-        "platform_fee": contract.platform_fee,
-        "settlement_amount": contract.settlement_amount,
-        "account_number": contract.account_number,
-        "customer_name": contract.customer_name,
-    }
-
-    # 在月结单中找匹配交易
-    matched_tx = None
-    for tx in statement.transactions:
-        code_match = tx.stock_code == contract.stock_code
-        qty_match = tx.quantity == contract.quantity if tx.quantity and contract.quantity else False
-        if code_match and qty_match:
-            matched_tx = tx
-            break
-        elif code_match:
-            matched_tx = tx  # 股票代码匹配就算找到，继续比对其他字段
-
-    if not matched_tx and statement.transactions:
-        # 尝试只匹配股票代码
-        for tx in statement.transactions:
-            if tx.stock_code == contract.stock_code:
-                matched_tx = tx
-                break
-
-    def check(field, cn_val, st_val, label):
-        if cn_val is None and st_val is None:
-            return
-        if cn_val is None or st_val is None:
-            results["mismatches"].append({
-                "field": label,
-                "contract": str(cn_val) if cn_val is not None else "未提取到",
-                "statement": str(st_val) if st_val is not None else "未提取到",
-                "note": "其中一方未能提取数据"
-            })
-            return
-        if isinstance(cn_val, float) and isinstance(st_val, float):
-            ok = abs(cn_val - st_val) < 0.02
-        else:
-            ok = str(cn_val).strip() == str(st_val).strip()
-        item = {"field": label, "contract": str(cn_val), "statement": str(st_val)}
-        if ok:
-            results["matches"].append(item)
-        else:
-            results["mismatches"].append(item)
-
-    if matched_tx:
-        check("stock_code", cn["stock_code"], matched_tx.stock_code, "股票代码")
-        check("quantity", cn["quantity"], matched_tx.quantity, "成交股数")
-        check("unit_price", cn["unit_price"], matched_tx.unit_price, "成交单价")
-        check("commission", cn["commission"], matched_tx.commission, "佣金")
-        check("platform_fee", cn["platform_fee"], matched_tx.platform_fee, "平台费")
-        check("settlement_amount", cn["settlement_amount"], matched_tx.settlement_amount, "交收金额")
-    else:
-        results["unmatched"].append({
-            "note": f"月结单中未找到股票代码 {contract.stock_code} 的对应交易记录"
-        })
-
-    # 账户核对
-    if statement.account_number and contract.account_number:
-        check("account_number", cn["account_number"], statement.account_number, "账户号码")
-
-    return {
-        "success": True,
-        "contract_summary": cn,
-        "statement_summary": {
-            "account_number": statement.account_number,
-            "customer_name": statement.customer_name,
-            "period": statement.statement_period,
-            "transaction_count": len(statement.transactions),
-            "matched_transaction": matched_tx.model_dump() if matched_tx else None,
-        },
-        "matches": results["matches"],
-        "mismatches": results["mismatches"],
-        "unmatched": results["unmatched"],
-        "overall": "pass" if not results["mismatches"] and not results["unmatched"] else "fail",
-    }
-
-
 @app.post("/api/batch-audit", response_class=JSONResponse)
 async def batch_audit_contracts(files: list[UploadFile] = File(...)):
     """批量审核成交单重要提示条款"""
+    if len(files) > 200:
+        return JSONResponse(
+            {"error": f"单次最多上传 200 份文件，当前 {len(files)} 份"},
+            status_code=400
+        )
+
     auditor = ContractAuditor()
     results = []
     errors = []
@@ -293,11 +160,12 @@ async def batch_audit_contracts(files: list[UploadFile] = File(...)):
             continue
 
         ts = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-        file_path = UPLOAD_DIR / f"{ts}_{file.filename}"
+        safe_name = Path(file.filename).name or "file.pdf"
+        file_path = UPLOAD_DIR / f"{ts}_{safe_name}"
         try:
             with open(file_path, "wb") as f:
                 f.write(await file.read())
-            result = auditor.audit(str(file_path), file.filename)
+            result = auditor.audit(str(file_path), safe_name)
             data = result.model_dump()
             save_record({"type": "clause_audit", **data})
             results.append(data)
@@ -459,25 +327,702 @@ async def export_clause_audit():
     )
 
 
-@app.post("/api/va-audit", response_class=JSONResponse)
-async def va_audit(file: UploadFile = File(...)):
-    """VA成交单审核"""
-    if not file.filename or not file.filename.lower().endswith('.pdf'):
-        return JSONResponse({"error": "仅支持 PDF 文件"}, status_code=400)
+# ===== 条款模板管理 =====
+CLAUSES_JSON = Path("data/clauses.json")
 
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    file_path = UPLOAD_DIR / f"{ts}_{file.filename}"
-    with open(file_path, "wb") as f:
-        f.write(await file.read())
+def _build_clauses_from_constants():
+    """从硬编码常量构建条款数据"""
+    def to_list(clauses):
+        return [[name, kw] for name, kw in clauses]
+    empty_langs = {"en": [], "zh_hk": [], "zh_cn": []}
+    return {
+        "Stock": {
+            "order": {"en": to_list(STOCK_EN_CLAUSES), "zh_hk": to_list(STOCK_ZH_HK_CLAUSES), "zh_cn": to_list(STOCK_ZH_CN_CLAUSES)},
+            "orderHk": {**empty_langs},
+            "companyAction": {**empty_langs},
+            "companyActionHk": {**empty_langs},
+            "business": {**empty_langs},
+            "businessHk": {**empty_langs},
+        },
+        "Fund":  {"zh_hk": to_list(FUND_ZH_HK_CLAUSES),  "zh_cn": to_list(FUND_ZH_CN_CLAUSES)},
+        "VA": {
+            "buy":  {"zh_hk": to_list(VA_ZH_HK_CLAUSES), "zh_cn": to_list(VA_ZH_CN_CLAUSES)},
+            "sale": {"zh_hk": [], "zh_cn": []},
+        },
+        "Statement": {
+            "monthly": {"zh_hk": [], "zh_cn": []},
+            "bbInvest": {"zh_hk": [], "zh_cn": []},
+            "southBound": {"zh_hk": [], "zh_cn": []},
+        },
+    }
 
+
+@app.get("/api/clauses", response_class=JSONResponse)
+async def get_clauses():
+    """获取当前条款数据"""
+    if CLAUSES_JSON.exists():
+        try:
+            data = json.loads(CLAUSES_JSON.read_text(encoding="utf-8"))
+            return JSONResponse(data)
+        except Exception:
+            pass
+    return JSONResponse(_build_clauses_from_constants())
+
+
+@app.put("/api/clauses", response_class=JSONResponse)
+async def save_clauses(request: Request):
+    """保存条款数据"""
+    data = await request.json()
+    # 验证结构
+    # Stock: 嵌套子类型
+    if "Stock" not in data:
+        return JSONResponse({"error": "缺少产品: Stock"}, status_code=400)
+    for st in STOCK_SUBTYPES:
+        if st not in data["Stock"]:
+            return JSONResponse({"error": f"Stock 缺少子类型: {st}"}, status_code=400)
+        for lang in ["en", "zh_hk", "zh_cn"]:
+            if lang not in data["Stock"][st]:
+                return JSONResponse({"error": f"Stock/{st} 缺少语言: {lang}"}, status_code=400)
+            for i, clause in enumerate(data["Stock"][st][lang]):
+                if not isinstance(clause, list) or len(clause) != 2:
+                    return JSONResponse({"error": f"Stock/{st}/{lang} 条款{i+1}格式错误"}, status_code=400)
+    # Fund: 扁平结构（无 en）
+    if "Fund" not in data:
+        return JSONResponse({"error": "缺少产品: Fund"}, status_code=400)
+    for lang in ["zh_hk", "zh_cn"]:
+        if lang not in data["Fund"]:
+            return JSONResponse({"error": f"Fund 缺少语言: {lang}"}, status_code=400)
+        for i, clause in enumerate(data["Fund"][lang]):
+            if not isinstance(clause, list) or len(clause) != 2:
+                return JSONResponse({"error": f"Fund/{lang} 条款{i+1}格式错误"}, status_code=400)
+    # VA: 嵌套子类型（无 en）
+    if "VA" not in data:
+        return JSONResponse({"error": "缺少产品: VA"}, status_code=400)
+    for st in VA_SUBTYPES:
+        if st not in data["VA"]:
+            return JSONResponse({"error": f"VA 缺少子类型: {st}"}, status_code=400)
+        for lang in ["zh_hk", "zh_cn"]:
+            if lang not in data["VA"][st]:
+                return JSONResponse({"error": f"VA/{st} 缺少语言: {lang}"}, status_code=400)
+            for i, clause in enumerate(data["VA"][st][lang]):
+                if not isinstance(clause, list) or len(clause) != 2:
+                    return JSONResponse({"error": f"VA/{st}/{lang} 条款{i+1}格式错误"}, status_code=400)
+    # Statement: 嵌套子类型（无 en，同 VA）
+    if "Statement" not in data:
+        return JSONResponse({"error": "缺少产品: Statement"}, status_code=400)
+    for st in STATEMENT_SUBTYPES:
+        if st not in data["Statement"]:
+            return JSONResponse({"error": f"Statement 缺少子类型: {st}"}, status_code=400)
+        for lang in ["zh_hk", "zh_cn"]:
+            if lang not in data["Statement"][st]:
+                return JSONResponse({"error": f"Statement/{st} 缺少语言: {lang}"}, status_code=400)
+            for i, clause in enumerate(data["Statement"][st][lang]):
+                if not isinstance(clause, list) or len(clause) != 2:
+                    return JSONResponse({"error": f"Statement/{st}/{lang} 条款{i+1}格式错误"}, status_code=400)
+    CLAUSES_JSON.parent.mkdir(parents=True, exist_ok=True)
+    CLAUSES_JSON.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    return JSONResponse({"success": True, "message": "条款已保存"})
+
+
+@app.post("/api/clauses/import-html", response_class=JSONResponse)
+async def import_html_clauses(file: UploadFile = File(...)):
+    """从 HTML 模板文件提取所有固定文本作为条款（公司信息、标题、字段标签、重要提示等）"""
+    if not file.filename or not file.filename.lower().endswith(('.html', '.htm')):
+        return JSONResponse({"error": "仅支持 HTML 文件"}, status_code=400)
     try:
-        checker = VAChecker()
-        result = checker.check(str(file_path), file.filename)
-        data = result.model_dump()
-        save_record({"type": "va", **data})
-        return {"success": True, **data}
+        from bs4 import BeautifulSoup, NavigableString
+        import re as _re
+        content = await file.read()
+        try:
+            html_text = content.decode("utf-8")
+        except UnicodeDecodeError:
+            html_text = content.decode("latin-1")
+        soup = BeautifulSoup(html_text, "html.parser")
+
+        clauses = []
+        idx = [0]  # mutable counter
+
+        def add(text: str):
+            text = text.strip()
+            if not text or len(text) < 2:
+                return
+            # 跳过纯模板变量（如 ${contractNote.xxx}）
+            if _re.fullmatch(r'[\s]*(\$\{[^}]+\}\s*)+', text):
+                return
+            idx[0] += 1
+            clauses.append([f"条款{idx[0]}", text])
+
+        # --- 1. 页脚公司信息 (footer_compnay) ---
+        footer = soup.find("div", class_="footer_compnay")
+        if footer:
+            for span in footer.find_all("span"):
+                add(span.get_text(strip=True))
+
+        # --- 2. 文档标题 (p.title) ---
+        title_p = soup.find("p", class_="title")
+        if title_p:
+            add(title_p.get_text(strip=True))
+
+        # --- 3. 表头字段标签 (table.table-head) ---
+        head_table = soup.find("table", class_="table-head")
+        if head_table:
+            for td in head_table.find_all("td"):
+                raw = td.get_text(strip=True)
+                # 提取固定文本标签（去掉模板变量部分）
+                # e.g. "Issue Date 發出日期:" from "Issue Date 發出日期:${...}"
+                label = _re.sub(r'\$\{[^}]+\}', '', raw).strip().rstrip(':').rstrip('：').strip()
+                if label and len(label) >= 4:
+                    add(label)
+
+        # --- 4. 主数据表字段标签 (table.table-title td.table-title-tr-title) ---
+        title_table = soup.find("table", class_="table-title")
+        if title_table:
+            for td in title_table.find_all("td", class_="table-title-tr-title"):
+                # 获取文本，br 替换为换行符保持可读性
+                for br in td.find_all("br"):
+                    br.replace_with("\n")
+                label = td.get_text(strip=False).strip()
+                # 将换行压缩为单个换行
+                label = _re.sub(r'\n+', '\n', label).strip()
+                if label:
+                    add(label)
+
+            # 固定值单元格（如 "Buy/買入", "Sell/賣出"）
+            for td in title_table.find_all("td", class_="table-title-tr-content"):
+                raw = td.get_text(strip=True)
+                # 跳过纯模板变量
+                cleaned = _re.sub(r'\$\{[^}]+\}', '', raw).strip()
+                if cleaned and not _re.fullmatch(r'[\s]*', cleaned) and len(cleaned) >= 3:
+                    add(cleaned)
+
+            # 嵌套 special-table 内的字段标签（部分成交明细）
+            special = title_table.find("table", class_="special-table")
+            if special:
+                for tr in special.find_all("tr", class_="table-special-tr"):
+                    tds = tr.find_all("td")
+                    if tds:
+                        raw = tds[0].get_text(strip=True)
+                        # 移除模板变量
+                        label = _re.sub(r'\$\{[^}]+\}', '', raw).strip()
+                        # 移除尾部括号中的模板占位 e.g. "()"
+                        label = _re.sub(r'\(\s*\)\s*$', '', label).strip()
+                        if label and len(label) >= 4:
+                            add(label)
+
+        # --- 5. 重要提示标题 ---
+        tips = soup.find("p", class_="tips-import")
+        if tips:
+            add(tips.get_text(strip=True))
+
+        # --- 6. 重要提示条款 (div.content with span.pr-8) ---
+        content_divs = soup.find_all("div", class_="content")
+        for div in content_divs:
+            span = div.find("span", class_="pr-8")
+            if span:
+                num_text = span.get_text(strip=True)
+                full_text = div.get_text(strip=True)
+                clause_text = full_text[len(num_text):].strip()
+                if clause_text and len(clause_text) > 5:
+                    add(clause_text)
+
+        if not clauses:
+            return JSONResponse({"error": "未能从 HTML 中提取到任何固定文本"}, status_code=400)
+
+        # 从文件名提取版本信息（如 zabank_crypto_contract_note_buy_hk_240910_v2.html -> 2024-09-10 v2）
+        version_info = _extract_version_from_filename(file.filename or "")
+
+        return JSONResponse({"success": True, "clauses": clauses, "count": len(clauses), "version": version_info})
     except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=500)
+        return JSONResponse({"error": f"解析失败: {str(e)}"}, status_code=500)
+
+
+def _extract_version_from_filename(filename: str) -> str:
+    """从文件名提取版本信息，如 zabank_..._240910_v2.html -> 2024-09-10 v2"""
+    import re as _re
+    name = filename.rsplit('.', 1)[0] if '.' in filename else filename
+    # 匹配 YYMMDD_vN 格式
+    m = _re.search(r'(\d{6})_v(\d+)', name)
+    if m:
+        date_str, ver = m.group(1), m.group(2)
+        try:
+            year = int(date_str[:2]) + 2000
+            month = int(date_str[2:4])
+            day = int(date_str[4:6])
+            return f"{year}-{month:02d}-{day:02d} v{ver}"
+        except (ValueError, IndexError):
+            pass
+    # 匹配 YYYYMMDD_vN 格式
+    m = _re.search(r'(\d{8})_v(\d+)', name)
+    if m:
+        date_str, ver = m.group(1), m.group(2)
+        try:
+            return f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]} v{ver}"
+        except (ValueError, IndexError):
+            pass
+    # 匹配单独的 vN
+    m = _re.search(r'_v(\d+)', name)
+    if m:
+        return f"v{m.group(1)}"
+    return filename
+
+
+def _extract_clauses_from_html(html_text: str) -> list:
+    """从 HTML 文本提取条款列表，复用现有逻辑"""
+    from bs4 import BeautifulSoup
+    import re as _re
+
+    soup = BeautifulSoup(html_text, "html.parser")
+    clauses = []
+    idx = [0]
+
+    def add(text: str):
+        text = text.strip()
+        if not text or len(text) < 2:
+            return
+        if _re.fullmatch(r'[\s]*(\$\{[^}]+\}\s*)+', text):
+            return
+        idx[0] += 1
+        clauses.append([f"条款{idx[0]}", text])
+
+    footer = soup.find("div", class_="footer_compnay")
+    if footer:
+        for span in footer.find_all("span"):
+            add(span.get_text(strip=True))
+
+    title_p = soup.find("p", class_="title")
+    if title_p:
+        add(title_p.get_text(strip=True))
+
+    head_table = soup.find("table", class_="table-head")
+    if head_table:
+        for td in head_table.find_all("td"):
+            raw = td.get_text(strip=True)
+            label = _re.sub(r'\$\{[^}]+\}', '', raw).strip().rstrip(':').rstrip('：').strip()
+            if label and len(label) >= 4:
+                add(label)
+
+    title_table = soup.find("table", class_="table-title")
+    if title_table:
+        for td in title_table.find_all("td", class_="table-title-tr-title"):
+            for br in td.find_all("br"):
+                br.replace_with("\n")
+            label = td.get_text(strip=False).strip()
+            label = _re.sub(r'\n+', '\n', label).strip()
+            if label:
+                add(label)
+        for td in title_table.find_all("td", class_="table-title-tr-content"):
+            raw = td.get_text(strip=True)
+            cleaned = _re.sub(r'\$\{[^}]+\}', '', raw).strip()
+            if cleaned and not _re.fullmatch(r'[\s]*', cleaned) and len(cleaned) >= 3:
+                add(cleaned)
+        special = title_table.find("table", class_="special-table")
+        if special:
+            for tr in special.find_all("tr", class_="table-special-tr"):
+                tds = tr.find_all("td")
+                if tds:
+                    raw = tds[0].get_text(strip=True)
+                    label = _re.sub(r'\$\{[^}]+\}', '', raw).strip()
+                    label = _re.sub(r'\(\s*\)\s*$', '', label).strip()
+                    if label and len(label) >= 4:
+                        add(label)
+
+    tips = soup.find("p", class_="tips-import")
+    if tips:
+        add(tips.get_text(strip=True))
+
+    content_divs = soup.find_all("div", class_="content")
+    for div in content_divs:
+        span = div.find("span", class_="pr-8")
+        if span:
+            num_text = span.get_text(strip=True)
+            full_text = div.get_text(strip=True)
+            clause_text = full_text[len(num_text):].strip()
+            if clause_text and len(clause_text) > 5:
+                add(clause_text)
+
+    return clauses
+
+
+def _detect_product_from_path(html_path: Path) -> tuple:
+    """
+    从文件路径识别 (product, subtype, lang)
+    文件夹结构约定:
+      Fund Contract note/        -> Fund, None
+      investMonthlyStatement/    -> Statement, monthly/bbInvest/southBound
+      VA Contract note/          -> VA, buy/sale
+      Stock .../order/           -> Stock, order
+      Stock .../businessHk/      -> Stock, businessHk
+      ... 等
+    语言从文件名识别: _hk_ -> zh_hk, _zh_ -> zh_cn
+    """
+    parts = [p.lower() for p in html_path.parts]
+    fname = html_path.name
+
+    lang = _detect_lang_from_filename(fname)
+
+    # Stock 优先：parent 文件夹名是子类型（最明确）
+    stock_subtypes = {"order", "orderhk", "companyaction", "companyactionhk", "business", "businesshk"}
+    parent = html_path.parent.name.lower()
+    if parent in stock_subtypes:
+        subtype_map = {
+            "order": "order", "orderhk": "orderHk",
+            "companyaction": "companyAction", "companyactionhk": "companyActionHk",
+            "business": "business", "businesshk": "businessHk",
+        }
+        return "Stock", subtype_map[parent], lang
+
+    # Fund
+    if any("fund" in p for p in parts):
+        return "Fund", None, lang
+
+    # Statement / Monthly（仅当直接父文件夹包含 monthly/statement，避免误匹配 Stock 上级目录）
+    if any("monthly" in p or "investmonthlystatement" in p for p in parts):
+        subtype = _detect_subtype_from_filename(fname)
+        return "Statement", subtype, lang
+
+    # VA
+    if any("va" in p or "crypto" in p or "virtual" in p for p in parts):
+        sub = "sale" if ("sale" in fname.lower()) else "buy"
+        return "VA", sub, lang
+
+    return None, None, lang
+
+
+@app.post("/api/clauses/sync-folder", response_class=JSONResponse)
+async def sync_folder(request: Request):
+    """扫描本地文件夹，自动识别并导入所有 HTML 模板"""
+    body = await request.json()
+    folder_path = body.get("folder_path", "").strip()
+    if not folder_path:
+        return JSONResponse({"error": "未提供文件夹路径"}, status_code=400)
+
+    folder = Path(folder_path)
+    if not folder.exists() or not folder.is_dir():
+        return JSONResponse({"error": f"文件夹不存在: {folder_path}"}, status_code=400)
+
+    # 递归找所有 HTML 文件
+    html_files = list(folder.rglob("*.html")) + list(folder.rglob("*.htm"))
+    if not html_files:
+        return JSONResponse({"error": "文件夹内未找到任何 HTML 文件"}, status_code=400)
+
+    # 加载现有条款数据
+    if CLAUSES_JSON.exists():
+        try:
+            clauses_data = json.loads(CLAUSES_JSON.read_text(encoding="utf-8"))
+        except Exception:
+            clauses_data = _build_clauses_from_constants()
+    else:
+        clauses_data = _build_clauses_from_constants()
+
+    results = []
+    errors = []
+
+    for html_path in sorted(html_files):
+        product, subtype, lang = _detect_product_from_path(html_path)
+        if not product or not lang:
+            errors.append({"file": html_path.name, "error": f"无法识别产品或语言 (product={product}, lang={lang})"})
+            continue
+
+        try:
+            try:
+                html_text = html_path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                html_text = html_path.read_text(encoding="latin-1")
+
+            clauses = _extract_clauses_from_html(html_text)
+            if not clauses:
+                errors.append({"file": html_path.name, "error": "未能提取到任何条款"})
+                continue
+
+            version = _extract_version_from_filename(html_path.name)
+
+            # 写入 clauses_data
+            if product == "Stock":
+                if "Stock" not in clauses_data:
+                    clauses_data["Stock"] = {}
+                if subtype not in clauses_data["Stock"]:
+                    clauses_data["Stock"][subtype] = {"en": [], "zh_hk": [], "zh_cn": []}
+                clauses_data["Stock"][subtype][lang] = clauses
+                if version:
+                    clauses_data["Stock"][subtype].setdefault("_meta", {})[lang] = {"version": version}
+            elif product in ("Fund", "Statement") and subtype is None:
+                # Fund: flat
+                if product not in clauses_data:
+                    clauses_data[product] = {}
+                clauses_data[product][lang] = clauses
+                if version:
+                    clauses_data[product].setdefault("_meta", {})[lang] = {"version": version}
+            else:
+                # VA / Statement with subtype
+                if product not in clauses_data:
+                    clauses_data[product] = {}
+                if subtype not in clauses_data[product]:
+                    clauses_data[product][subtype] = {}
+                clauses_data[product][subtype][lang] = clauses
+                if version:
+                    clauses_data[product][subtype].setdefault("_meta", {})[lang] = {"version": version}
+
+            results.append({
+                "file": html_path.name,
+                "product": product,
+                "subtype": subtype,
+                "lang": lang,
+                "count": len(clauses),
+                "version": version,
+            })
+        except Exception as e:
+            errors.append({"file": html_path.name, "error": str(e)})
+
+    # 保存
+    if results:
+        CLAUSES_JSON.parent.mkdir(parents=True, exist_ok=True)
+        CLAUSES_JSON.write_text(json.dumps(clauses_data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return JSONResponse({
+        "success": True,
+        "total": len(html_files),
+        "imported": len(results),
+        "errors_count": len(errors),
+        "results": results,
+        "errors": errors,
+        "summary": f"共扫描 {len(html_files)} 个文件，成功导入 {len(results)} 个" + (f"，{len(errors)} 个失败" if errors else ""),
+    })
+
+
+def _detect_lang_from_filename(filename: str) -> str:
+    """从文件名识别语言: _hk_ -> zh_hk, _zh_ -> zh_cn"""
+    name = filename.lower()
+    if "_hk_" in name or "_hk." in name:
+        return "zh_hk"
+    if "_zh_" in name or "_zh." in name:
+        return "zh_cn"
+    return ""
+
+
+def _detect_subtype_from_filename(filename: str) -> str:
+    """从文件名识别子类型"""
+    name = filename.lower()
+    if "bbinvest" in name:
+        return "bbInvest"
+    if "southbound" in name:
+        return "southBound"
+    return "monthly"
+
+
+@app.post("/api/clauses/import-html-batch", response_class=JSONResponse)
+async def import_html_clauses_batch(files: list[UploadFile] = File(...)):
+    """批量导入 HTML 模板文件，自动识别语言和子类型"""
+    if not files:
+        return JSONResponse({"error": "未选择文件"}, status_code=400)
+
+    from bs4 import BeautifulSoup, NavigableString
+    import re as _re
+
+    results = []
+    errors = []
+
+    for file in files:
+        if not file.filename or not file.filename.lower().endswith(('.html', '.htm')):
+            errors.append({"file": file.filename, "error": "非 HTML 文件"})
+            continue
+
+        try:
+            content = await file.read()
+            try:
+                html_text = content.decode("utf-8")
+            except UnicodeDecodeError:
+                html_text = content.decode("latin-1")
+            soup = BeautifulSoup(html_text, "html.parser")
+
+            clauses = []
+            idx = [0]
+
+            def add(text: str):
+                text = text.strip()
+                if not text or len(text) < 2:
+                    return
+                if _re.fullmatch(r'[\s]*(\$\{[^}]+\}\s*)+', text):
+                    return
+                idx[0] += 1
+                clauses.append([f"条款{idx[0]}", text])
+
+            # 复用现有提取逻辑（6个提取区域）
+            footer = soup.find("div", class_="footer_compnay")
+            if footer:
+                for span in footer.find_all("span"):
+                    add(span.get_text(strip=True))
+
+            title_p = soup.find("p", class_="title")
+            if title_p:
+                add(title_p.get_text(strip=True))
+
+            head_table = soup.find("table", class_="table-head")
+            if head_table:
+                for td in head_table.find_all("td"):
+                    raw = td.get_text(strip=True)
+                    label = _re.sub(r'\$\{[^}]+\}', '', raw).strip().rstrip(':').rstrip('：').strip()
+                    if label and len(label) >= 4:
+                        add(label)
+
+            title_table = soup.find("table", class_="table-title")
+            if title_table:
+                for td in title_table.find_all("td", class_="table-title-tr-title"):
+                    for br in td.find_all("br"):
+                        br.replace_with("\n")
+                    label = td.get_text(strip=False).strip()
+                    label = _re.sub(r'\n+', '\n', label).strip()
+                    if label:
+                        add(label)
+                for td in title_table.find_all("td", class_="table-title-tr-content"):
+                    raw = td.get_text(strip=True)
+                    cleaned = _re.sub(r'\$\{[^}]+\}', '', raw).strip()
+                    if cleaned and not _re.fullmatch(r'[\s]*', cleaned) and len(cleaned) >= 3:
+                        add(cleaned)
+                special = title_table.find("table", class_="special-table")
+                if special:
+                    for tr in special.find_all("tr", class_="table-special-tr"):
+                        tds = tr.find_all("td")
+                        if tds:
+                            raw = tds[0].get_text(strip=True)
+                            label = _re.sub(r'\$\{[^}]+\}', '', raw).strip()
+                            label = _re.sub(r'\(\s*\)\s*$', '', label).strip()
+                            if label and len(label) >= 4:
+                                add(label)
+
+            tips = soup.find("p", class_="tips-import")
+            if tips:
+                add(tips.get_text(strip=True))
+
+            content_divs = soup.find_all("div", class_="content")
+            for div in content_divs:
+                span = div.find("span", class_="pr-8")
+                if span:
+                    num_text = span.get_text(strip=True)
+                    full_text = div.get_text(strip=True)
+                    clause_text = full_text[len(num_text):].strip()
+                    if clause_text and len(clause_text) > 5:
+                        add(clause_text)
+
+            if not clauses:
+                errors.append({"file": file.filename, "error": "未能提取到任何条款"})
+                continue
+
+            lang = _detect_lang_from_filename(file.filename)
+            subtype = _detect_subtype_from_filename(file.filename)
+            version = _extract_version_from_filename(file.filename)
+
+            results.append({
+                "filename": file.filename,
+                "subtype": subtype,
+                "lang": lang,
+                "clauses": clauses,
+                "count": len(clauses),
+                "version": version,
+            })
+        except Exception as e:
+            errors.append({"file": file.filename, "error": str(e)})
+
+    if not results and errors:
+        return JSONResponse({"error": f"所有文件处理失败", "errors": errors}, status_code=400)
+
+    return JSONResponse({
+        "success": True,
+        "results": results,
+        "errors": errors,
+        "summary": f"成功处理 {len(results)} 个文件" + (f"，{len(errors)} 个失败" if errors else ""),
+    })
+
+
+# ===== 产品审核（统一端点） =====
+@app.post("/api/product-audit", response_class=JSONResponse)
+async def product_audit(files: list[UploadFile] = File(...), product: str = Form(...), subtype: Optional[str] = Form(None)):
+    """统一产品审核端点：条款审核 + AI/VA 审核。product=auto 时自动识别每个文件的类型"""
+    if product not in ("stock", "fund", "va", "statement", "auto"):
+        return JSONResponse({"error": f"不支持的产品类型: {product}"}, status_code=400)
+    if product == "stock" and subtype and subtype not in STOCK_SUBTYPES:
+        return JSONResponse({"error": f"不支持的股票子类型: {subtype}"}, status_code=400)
+    if product == "va" and subtype and subtype not in VA_SUBTYPES:
+        return JSONResponse({"error": f"不支持的VA子类型: {subtype}"}, status_code=400)
+    if product == "statement" and subtype and subtype not in STATEMENT_SUBTYPES:
+        return JSONResponse({"error": f"不支持的月结单子类型: {subtype}"}, status_code=400)
+    if product not in ("stock", "va", "statement") and subtype:
+        return JSONResponse({"error": "仅股票、VA和月结单产品支持子类型参数"}, status_code=400)
+    if len(files) > 200:
+        return JSONResponse({"error": f"单次最多上传 200 份文件，当前 {len(files)} 份"}, status_code=400)
+
+    auditor = ContractAuditor()
+    results = []
+    errors = []
+
+    for file in files:
+        if not file.filename or not file.filename.lower().endswith('.pdf'):
+            errors.append({"file": file.filename, "error": "非 PDF 文件"})
+            continue
+
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        safe_name = Path(file.filename).name or "file.pdf"
+        file_path = UPLOAD_DIR / f"{ts}_{safe_name}"
+        try:
+            with open(file_path, "wb") as f:
+                f.write(await file.read())
+
+            item = {"file_name": file.filename.replace("\\", "/")}
+
+            # 1. 条款审核（auto 模式下不传 subtype，由 auditor 自动识别）
+            audit_subtype = None if product == "auto" else subtype
+            clause_result = auditor.audit(str(file_path), file.filename, subtype=audit_subtype)
+            item["clause_audit"] = clause_result.model_dump()
+
+            # auto 模式：根据识别的 doc_type 映射到实际产品
+            effective_product = product
+            if product == "auto":
+                dt = clause_result.doc_type or ""
+                if dt == "VA":
+                    effective_product = "va"
+                elif dt == "Fund":
+                    effective_product = "fund"
+                elif dt == "Statement":
+                    effective_product = "statement"
+                elif dt in ("Stock-HK", "Stock-US", "Unknown"):
+                    effective_product = "stock"
+                else:
+                    effective_product = "stock"
+            item["product"] = effective_product
+
+            # 2. AI 审核（股票 + 基金）
+            if effective_product in ("stock", "fund"):
+                try:
+                    parser = PDFParser()
+                    contract_data = parser.parse(str(file_path))
+                    engine = get_audit_engine()
+                    report = engine.audit(contract_data, file.filename)
+                    item["ai_audit"] = {
+                        "findings": [f.model_dump() for f in report.findings],
+                        "total_findings": report.total_findings,
+                        "critical_count": report.critical_count,
+                        "warning_count": report.warning_count,
+                        "info_count": report.info_count,
+                        "ai_summary": report.ai_summary,
+                        "fee_waiver_details": report.fee_waiver_details,
+                    }
+                except Exception:
+                    item["ai_audit"] = None
+
+            # 3. VA 专项审核
+            if effective_product == "va":
+                try:
+                    checker = VAChecker()
+                    va_result = checker.check(str(file_path), file.filename)
+                    item["va_audit"] = va_result.model_dump()
+                except Exception:
+                    item["va_audit"] = None
+
+            save_record({"type": f"{effective_product}_audit", **item})
+            results.append(item)
+        except Exception as e:
+            errors.append({"file": file.filename, "error": str(e)})
+
+    return {"success": True, "total": len(results), "errors": errors, "results": results}
 
 
 @app.get("/api/export/excel", response_class=StreamingResponse)

@@ -5,326 +5,412 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 成交单审核平台</title>
     <link rel="stylesheet" href="/static/style.css">
-    <style>
-        /* ===== Nav ===== */
-        .nav { background: #1e1b4b; padding: 0 32px; display: flex; align-items: center; gap: 0; }
-        .nav-brand { color: #fff; font-weight: 700; font-size: 16px; padding: 16px 24px 16px 0; border-right: 1px solid #312e81; margin-right: 8px; }
-        .nav-btn { color: #a5b4fc; padding: 16px 20px; cursor: pointer; font-size: 14px; border: none; background: none; transition: all 0.15s; border-bottom: 3px solid transparent; }
-        .nav-btn:hover { color: #fff; }
-        .nav-btn.active { color: #fff; border-bottom-color: #818cf8; }
-        .nav-status { margin-left: auto; font-size: 12px; }
-
-        /* ===== Pages ===== */
-        .page { display: none; padding: 24px 32px; max-width: 1000px; margin: 0 auto; }
-        .page.active { display: block; }
-
-        /* ===== Compare Page ===== */
-        .compare-upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-        .compare-upload-box { border: 2px dashed #d1d5db; border-radius: 12px; padding: 24px; text-align: center; background: #fafafa; }
-        .compare-upload-box h3 { font-size: 14px; color: #4f46e5; margin-bottom: 8px; }
-        .compare-upload-box p { font-size: 12px; color: #9ca3af; margin-bottom: 12px; }
-        .compare-upload-box.has-file { border-color: #4f46e5; background: #f0f4ff; }
-        .file-label { font-size: 12px; color: #6b7280; margin-top: 8px; }
-
-        /* ===== Compare Results ===== */
-        .compare-result-header { display: flex; gap: 12px; margin-bottom: 20px; }
-        .result-badge { padding: 8px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; }
-        .result-badge.pass { background: #dcfce7; color: #16a34a; }
-        .result-badge.fail { background: #fee2e2; color: #dc2626; }
-        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .compare-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
-        .compare-card h4 { font-size: 13px; color: #6b7280; margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .compare-card .kv { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f3f4f6; }
-        .compare-card .kv:last-child { border: none; }
-        .compare-card .kv .key { color: #6b7280; }
-        .compare-card .kv .val { font-weight: 500; color: #111; }
-
-        .match-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .match-table th { background: #f3f4f6; padding: 8px 12px; text-align: left; font-weight: 600; color: #374151; }
-        .match-table td { padding: 8px 12px; border-bottom: 1px solid #f3f4f6; }
-        .match-table tr.match-ok td { background: #f0fdf4; }
-        .match-table tr.match-fail td { background: #fff1f2; }
-        .match-icon { font-size: 16px; }
-
-        /* ===== History Page ===== */
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 8px; background: #fff; cursor: pointer; }
-        .history-item:hover { background: #f9fafb; }
-        .hi-name { font-weight: 500; font-size: 14px; }
-        .hi-time { font-size: 12px; color: #9ca3af; margin-top: 2px; }
-        .hi-badges { display: flex; gap: 6px; }
-        .badge-critical { background: #fee2e2; color: #dc2626; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
-        .badge-warning { background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
-        .badge-ok { background: #dcfce7; color: #16a34a; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
-
-        /* ===== Chat Box ===== */
-        .chat-box { position: fixed; bottom: 24px; right: 24px; width: 360px; background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 1000; display: flex; flex-direction: column; overflow: hidden; }
-        .chat-header { background: #4f46e5; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .chat-header h4 { margin: 0; font-size: 14px; }
-        .chat-toggle-btn { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
-        .chat-body { display: flex; flex-direction: column; height: 340px; }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-        .chat-msg { padding: 8px 12px; border-radius: 10px; font-size: 13px; max-width: 85%; line-height: 1.5; }
-        .chat-msg.user { background: #4f46e5; color: #fff; align-self: flex-end; }
-        .chat-msg.ai { background: #f3f4f6; color: #111; align-self: flex-start; }
-        .chat-msg.hint { background: #fef9c3; color: #92400e; align-self: center; font-size: 12px; text-align: center; }
-        .chat-input-row { display: flex; border-top: 1px solid #e5e7eb; padding: 8px; gap: 6px; }
-        .chat-input-row input { flex: 1; border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 10px; font-size: 13px; outline: none; }
-        .chat-input-row input:focus { border-color: #4f46e5; }
-        .chat-send-btn { background: #4f46e5; color: #fff; border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13px; }
-        .chat-send-btn:disabled { background: #a5b4fc; }
-        .chat-collapsed .chat-body { display: none; }
-
-        /* ===== Misc ===== */
-        .page-title { font-size: 20px; font-weight: 700; color: #1e1b4b; margin-bottom: 4px; }
-        .page-subtitle { font-size: 13px; color: #6b7280; margin-bottom: 24px; }
-        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 500; }
-        .btn-primary { background: #4f46e5; color: #fff; }
-        .btn-primary:hover { background: #4338ca; }
-        .btn-secondary { background: #f3f4f6; color: #374151; }
-        .hidden { display: none !important; }
-        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-        .section-title { font-size: 15px; font-weight: 600; color: #1e1b4b; margin-bottom: 12px; }
-    </style>
 </head>
-<body style="margin:0;background:#f8f9ff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<body>
 
     <!-- ===== Nav ===== -->
     <nav class="nav">
         <div class="nav-brand">AI 审核平台</div>
-        <button class="nav-btn active" onclick="showPage('audit')">成交单审核</button>
-        <button class="nav-btn" onclick="showPage('compare')">对比月结单</button>
-        <button class="nav-btn" onclick="showPage('batch')">批量条款审核</button>
-        <button class="nav-btn" onclick="showPage('va')">VA成交单审核</button>
+        <button class="nav-btn active" onclick="showPage('stock')">股票成交单</button>
+        <button class="nav-btn" onclick="showPage('fund')">基金成交单</button>
+        <button class="nav-btn" onclick="showPage('va')">VA 虚拟资产</button>
+        <button class="nav-btn" onclick="showPage('statement')">投资月结单</button>
+        <button class="nav-btn" onclick="showPage('clauses')">条款模板</button>
         <button class="nav-btn" onclick="showPage('history')">历史记录</button>
         <div class="nav-status">
-            <span class="header-badge" id="ai-status" style="font-size:12px;padding:4px 10px;">检测中...</span>
+            <span class="header-badge" id="ai-status">检测中...</span>
         </div>
     </nav>
 
-    <!-- ===== Page: 成交单审核 ===== -->
-    <div class="page active" id="page-audit">
-        <div style="max-width:800px;margin:0 auto;">
-            <div class="page-title">成交单审核</div>
-            <div class="page-subtitle">上传股票成交单 PDF，AI 自动识别费用豁免、合规检查、异常检测</div>
+    <!-- ===== Page: 股票成交单 ===== -->
+    <div class="page active" id="page-stock">
+        <div class="batch-container">
+            <div class="page-title">股票成交单审核</div>
+            <div class="page-subtitle mb-20">上传股票成交单 PDF（可拖入文件夹），自动识别 HK/US 及子类型，执行条款核查 + AI 审核</div>
 
-            <div class="upload-zone" id="upload-zone" style="border:2px dashed #d1d5db;border-radius:12px;padding:40px;text-align:center;background:#fff;margin-bottom:16px;">
-                <div style="font-size:40px;margin-bottom:12px;">📄</div>
-                <h2 style="font-size:16px;margin-bottom:8px;">拖拽 PDF 文件到此处，或点击上传</h2>
-                <p style="color:#9ca3af;font-size:13px;margin-bottom:16px;">支持 ZA Bank 股票成交单 PDF</p>
-                <input type="file" id="file-input" accept=".pdf" hidden>
-                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">选择 PDF 文件</button>
-            </div>
-
-            <div id="file-list" style="margin-bottom:12px;"></div>
-            <div class="hidden" id="progress-container" style="margin-bottom:16px;">
-                <div style="background:#e5e7eb;border-radius:8px;height:8px;overflow:hidden;">
-                    <div id="progress-fill" style="background:#4f46e5;height:100%;width:0;transition:width 0.3s;"></div>
+            <div class="batch-info-grid">
+                <div class="batch-info-card">
+                    <div class="batch-info-icon format">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">支持格式</div>
+                        <div class="batch-info-value">PDF（可拖入文件夹）</div>
+                    </div>
                 </div>
-                <p id="progress-text" style="font-size:13px;color:#6b7280;margin-top:6px;">正在处理...</p>
-            </div>
-
-            <div class="hidden" id="results-section">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                    <div class="section-title">审核报告</div>
-                    <button class="btn btn-secondary" onclick="resetAudit()">审核新文件</button>
+                <div class="batch-info-card">
+                    <div class="batch-info-icon scope">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">自动识别</div>
+                        <div class="batch-info-value">HK/US 子类型 + 语言 + 条款</div>
+                    </div>
                 </div>
-                <div id="summary-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;"></div>
-                <div class="card hidden" id="ai-summary-card">
-                    <div class="section-title">AI 审核摘要</div>
-                    <p id="ai-summary-text" style="font-size:14px;line-height:1.7;color:#374151;"></p>
-                </div>
-                <div class="card hidden" id="fee-waiver-card">
-                    <div class="section-title">费用豁免详情</div>
-                    <div id="fee-waiver-content"></div>
-                </div>
-                <div class="card">
-                    <div class="section-title">审核发现 (<span id="findings-count">0</span>)</div>
-                    <div id="findings-list"></div>
-                </div>
-                <div class="card">
-                    <div class="section-title">提取的成交单数据</div>
-                    <div id="data-table"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== Page: 对比月结单 ===== -->
-    <div class="page" id="page-compare">
-        <div class="page-title">成交单 vs 月结单对比</div>
-        <div class="page-subtitle">上传成交单和对应月结单，自动比对是否体现同一笔交易</div>
-
-        <div class="compare-upload-grid">
-            <div class="compare-upload-box" id="contract-box">
-                <h3>成交单 Contract Note</h3>
-                <p>Stock Contract Note PDF</p>
-                <input type="file" id="contract-input" accept=".pdf" hidden onchange="onContractSelected()">
-                <button class="btn btn-primary" style="font-size:13px;padding:8px 16px;" onclick="document.getElementById('contract-input').click()">选择成交单</button>
-                <div class="file-label" id="contract-label"></div>
-            </div>
-            <div class="compare-upload-box" id="statement-box">
-                <h3>月结单 Monthly Statement</h3>
-                <p>Investment Account Monthly Statement PDF</p>
-                <input type="file" id="statement-input" accept=".pdf" hidden onchange="onStatementSelected()">
-                <button class="btn btn-secondary" style="font-size:13px;padding:8px 16px;" onclick="document.getElementById('statement-input').click()">选择月结单</button>
-                <div class="file-label" id="statement-label"></div>
-            </div>
-        </div>
-
-        <div style="text-align:center;margin-bottom:24px;">
-            <button class="btn btn-primary" id="compare-btn" onclick="runCompare()" disabled style="padding:12px 32px;font-size:15px;">开始对比</button>
-        </div>
-
-        <div class="hidden" id="compare-loading" style="text-align:center;padding:40px;color:#6b7280;">
-            正在解析文件并对比中，请稍候...
-        </div>
-
-        <div class="hidden" id="compare-results">
-            <div class="compare-result-header">
-                <div class="result-badge" id="overall-badge"></div>
-                <div style="font-size:13px;color:#6b7280;align-self:center;" id="overall-note"></div>
-            </div>
-
-            <div class="compare-grid">
-                <div class="compare-card">
-                    <h4>成交单</h4>
-                    <div id="contract-summary"></div>
-                </div>
-                <div class="compare-card">
-                    <h4>月结单（匹配交易）</h4>
-                    <div id="statement-summary"></div>
+                <div class="batch-info-card">
+                    <div class="batch-info-icon limit">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">单次上限</div>
+                        <div class="batch-info-value">200 份文件</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="section-title">字段对比结果</div>
-                <table class="match-table">
-                    <thead><tr><th>字段</th><th>成交单</th><th>月结单</th><th>结果</th></tr></thead>
-                    <tbody id="match-table-body"></tbody>
-                </table>
+            <div class="hidden batch-error-toast" id="stock-error-toast">
+                <span class="error-icon">!</span>
+                <span id="stock-error-msg"></span>
             </div>
 
-            <div class="hidden card" id="unmatched-card" style="background:#fff7ed;border-color:#fed7aa;">
-                <div class="section-title" style="color:#c2410c;">未找到对应交易</div>
-                <div id="unmatched-content" style="font-size:13px;color:#9a3412;"></div>
+            <div class="batch-upload-zone" id="stock-upload-zone"
+                 ondragover="pDragOver(event,'stock')" ondragleave="pDragLeave(event,'stock')" ondrop="pDrop(event,'stock')">
+                <div class="batch-upload-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <div class="batch-upload-title">拖拽文件夹或 PDF 文件到此处</div>
+                <div class="batch-upload-hint">支持股票成交单（买卖 / 公司行动 / 资金股票 / HK IPO），自动识别子类型</div>
+                <div class="batch-upload-btn-group">
+                    <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('stock-file-input').click()">选择 PDF 文件</button>
+                    <button class="btn btn-secondary" onclick="event.stopPropagation(); document.getElementById('stock-folder-input').click()">选择文件夹</button>
+                </div>
+                <input type="file" id="stock-file-input" accept=".pdf" multiple hidden onchange="pFilesSelected('stock')">
+                <input type="file" id="stock-folder-input" webkitdirectory multiple hidden onchange="pFolderSelected('stock')">
             </div>
 
-            <div style="text-align:center;margin-top:16px;">
-                <button class="btn btn-secondary" onclick="resetCompare()">重新对比</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== Page: 批量条款审核 ===== -->
-    <div class="page" id="page-batch">
-        <div style="max-width:860px;margin:0 auto;">
-            <div class="page-title">批量条款审核</div>
-            <div class="page-subtitle">批量上传成交单 PDF（股票 HK/US · VA 虚拟资产），自动核查英文与中文重要提示条款是否与官方模板一致，结果导出 Excel</div>
-
-            <!-- 上传区 -->
-            <div id="batch-upload-zone" style="background:#fff;border:2px dashed #e2e8f0;border-radius:12px;padding:48px 24px;text-align:center;margin-bottom:16px;cursor:pointer;transition:border-color 0.2s;"
-                ondragover="batchDragOver(event)" ondragleave="batchDragLeave(event)" ondrop="batchDrop(event)"
-                onclick="document.getElementById('batch-file-input').click()">
-                <div style="font-size:40px;margin-bottom:12px;">📂</div>
-                <h2 style="font-size:16px;font-weight:700;margin-bottom:8px;">拖拽多个 PDF 到此处，或点击选择</h2>
-                <p style="font-size:13px;color:#64748b;margin-bottom:16px;">支持股票成交单（HK/US）、VA 虚拟资产成交单，繁体/简体自动识别</p>
-                <input type="file" id="batch-file-input" accept=".pdf" multiple hidden onchange="batchFilesSelected()">
-                <input type="file" id="batch-folder-input" webkitdirectory multiple hidden onchange="batchFolderSelected()">
-                <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                    <button class="btn btn-primary" onclick="document.getElementById('batch-file-input').click()">选择多个 PDF 文件</button>
-                    <button class="btn btn-secondary" onclick="document.getElementById('batch-folder-input').click()">选择整个文件夹</button>
+            <div class="hidden batch-action-bar" id="stock-action-bar">
+                <div class="action-left">
+                    <span class="file-count">已选 <span class="count-num" id="stock-file-count">0</span> / 200 份</span>
+                    <span class="file-size-total" id="stock-file-size"></span>
+                </div>
+                <div class="action-right">
+                    <button class="btn-clear" onclick="pClear('stock')">清空</button>
+                    <button class="btn-run" id="stock-run-btn" onclick="pRunAudit('stock')">开始审核</button>
                 </div>
             </div>
 
-            <!-- 文件列表 -->
-            <div id="batch-file-list" style="margin-bottom:12px;"></div>
+            <div class="batch-file-list-container" id="stock-file-list"></div>
 
-            <!-- 操作按钮 -->
-            <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;" id="batch-action-row" class="hidden">
-                <button class="btn btn-primary" id="batch-run-btn" onclick="runBatchAudit()" style="padding:12px 32px;font-size:15px;">开始批量审核</button>
-                <button class="btn btn-secondary" onclick="clearBatch()">清空</button>
-                <span id="batch-status" style="font-size:13px;color:#64748b;"></span>
-            </div>
-
-            <!-- 进度 -->
-            <div class="hidden" id="batch-progress" style="background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;">
-                <div style="height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-bottom:8px;">
-                    <div id="batch-progress-fill" style="height:100%;background:#3b82f6;border-radius:3px;transition:width 0.3s;width:0;"></div>
+            <div class="hidden batch-progress" id="stock-progress">
+                <div class="batch-progress-bar">
+                    <div class="batch-progress-fill" id="stock-progress-fill"></div>
                 </div>
-                <div id="batch-progress-text" style="font-size:13px;color:#64748b;text-align:center;">正在处理...</div>
+                <div class="batch-progress-info">
+                    <span id="stock-progress-count">0 / 0</span>
+                    <span class="current-file" id="stock-progress-file"></span>
+                </div>
             </div>
 
-            <!-- 结果汇总 -->
-            <div class="hidden" id="batch-results">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                    <div style="font-size:18px;font-weight:700;">审核结果</div>
+            <div class="hidden batch-results" id="stock-results">
+                <div class="batch-results-header">
+                    <div class="batch-results-title">审核结果</div>
                     <a href="/api/export/clause-audit" download>
-                        <button class="btn btn-primary" style="background:#16a34a;">⬇ 导出 Excel 报告</button>
+                        <button class="btn btn-primary">导出 Excel 报告</button>
                     </a>
                 </div>
-
-                <!-- 统计卡片 -->
-                <div id="batch-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;"></div>
-
-                <!-- 结果列表 -->
-                <div id="batch-result-list"></div>
+                <div class="batch-stats-grid" id="stock-stats"></div>
+                <div id="stock-result-list"></div>
             </div>
         </div>
     </div>
 
-    <!-- ===== Page: VA成交单审核 ===== -->
-    <div class="page" id="page-va">
-        <div class="page-title">VA 成交单审核</div>
-        <div class="page-subtitle">上传虚拟资产成交单 PDF，自动识别语言和交易类型，对照官方模板逐条检查条款</div>
+    <!-- ===== Page: 基金成交单 ===== -->
+    <div class="page" id="page-fund">
+        <div class="batch-container">
+            <div class="page-title">基金成交单审核</div>
+            <div class="page-subtitle mb-20">上传基金成交单 PDF（可拖入文件夹），执行条款核查 + AI 审核</div>
 
-        <div style="border:2px dashed #d1d5db;border-radius:12px;padding:40px;text-align:center;background:#fff;margin-bottom:16px;" id="va-upload-zone">
-            <div style="font-size:40px;margin-bottom:12px;">🔐</div>
-            <h2 style="font-size:16px;margin-bottom:8px;">上传 VA 成交单 PDF</h2>
-            <p style="color:#9ca3af;font-size:13px;margin-bottom:16px;">支持繁体/简体，买入/卖出自动识别</p>
-            <input type="file" id="va-file-input" accept=".pdf" hidden>
-            <button class="btn btn-primary" onclick="document.getElementById('va-file-input').click()">选择 PDF 文件</button>
+            <div class="batch-info-grid">
+                <div class="batch-info-card">
+                    <div class="batch-info-icon format">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">支持格式</div>
+                        <div class="batch-info-value">PDF（可拖入文件夹）</div>
+                    </div>
+                </div>
+                <div class="batch-info-card">
+                    <div class="batch-info-icon scope">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">审核类型</div>
+                        <div class="batch-info-value">条款核查 + AI 审核</div>
+                    </div>
+                </div>
+                <div class="batch-info-card">
+                    <div class="batch-info-icon limit">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">单次上限</div>
+                        <div class="batch-info-value">200 份文件</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden batch-error-toast" id="fund-error-toast">
+                <span class="error-icon">!</span>
+                <span id="fund-error-msg"></span>
+            </div>
+
+            <div class="batch-upload-zone" id="fund-upload-zone"
+                 ondragover="pDragOver(event,'fund')" ondragleave="pDragLeave(event,'fund')" ondrop="pDrop(event,'fund')">
+                <div class="batch-upload-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <div class="batch-upload-title">拖拽文件夹或 PDF 文件到此处</div>
+                <div class="batch-upload-hint">支持基金成交单，自动识别语言并核查条款</div>
+                <div class="batch-upload-btn-group">
+                    <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('fund-file-input').click()">选择 PDF 文件</button>
+                    <button class="btn btn-secondary" onclick="event.stopPropagation(); document.getElementById('fund-folder-input').click()">选择文件夹</button>
+                </div>
+                <input type="file" id="fund-file-input" accept=".pdf" multiple hidden onchange="pFilesSelected('fund')">
+                <input type="file" id="fund-folder-input" webkitdirectory multiple hidden onchange="pFolderSelected('fund')">
+            </div>
+
+            <div class="hidden batch-action-bar" id="fund-action-bar">
+                <div class="action-left">
+                    <span class="file-count">已选 <span class="count-num" id="fund-file-count">0</span> / 200 份</span>
+                    <span class="file-size-total" id="fund-file-size"></span>
+                </div>
+                <div class="action-right">
+                    <button class="btn-clear" onclick="pClear('fund')">清空</button>
+                    <button class="btn-run" id="fund-run-btn" onclick="pRunAudit('fund')">开始审核</button>
+                </div>
+            </div>
+
+            <div class="batch-file-list-container" id="fund-file-list"></div>
+
+            <div class="hidden batch-progress" id="fund-progress">
+                <div class="batch-progress-bar">
+                    <div class="batch-progress-fill" id="fund-progress-fill"></div>
+                </div>
+                <div class="batch-progress-info">
+                    <span id="fund-progress-count">0 / 0</span>
+                    <span class="current-file" id="fund-progress-file"></span>
+                </div>
+            </div>
+
+            <div class="hidden batch-results" id="fund-results">
+                <div class="batch-results-header">
+                    <div class="batch-results-title">审核结果</div>
+                    <a href="/api/export/clause-audit" download>
+                        <button class="btn btn-primary">导出 Excel 报告</button>
+                    </a>
+                </div>
+                <div class="batch-stats-grid" id="fund-stats"></div>
+                <div id="fund-result-list"></div>
+            </div>
         </div>
+    </div>
 
-        <div class="hidden" id="va-loading" style="text-align:center;padding:30px;color:#6b7280;">正在审核中，请稍候...</div>
+    <!-- ===== Page: VA 虚拟资产 ===== -->
+    <div class="page" id="page-va">
+        <div class="batch-container">
+            <div class="page-title">VA 虚拟资产成交单审核</div>
+            <div class="page-subtitle mb-20">上传虚拟资产成交单 PDF（可拖入文件夹），自动识别 Buy/Sale 和语言，执行条款核查 + VA 专项检查</div>
 
-        <div class="hidden" id="va-results">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                <div class="section-title">VA 审核报告</div>
-                <button class="btn btn-secondary" onclick="resetVA()">审核新文件</button>
+            <div class="batch-info-grid">
+                <div class="batch-info-card">
+                    <div class="batch-info-icon format">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">支持格式</div>
+                        <div class="batch-info-value">PDF（可拖入文件夹）</div>
+                    </div>
+                </div>
+                <div class="batch-info-card">
+                    <div class="batch-info-icon scope">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">自动识别</div>
+                        <div class="batch-info-value">Buy/Sale + 语言 + 条款</div>
+                    </div>
+                </div>
+                <div class="batch-info-card">
+                    <div class="batch-info-icon limit">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">单次上限</div>
+                        <div class="batch-info-value">200 份文件</div>
+                    </div>
+                </div>
             </div>
 
-            <!-- 基本信息 -->
-            <div class="card" style="margin-bottom:16px;">
-                <div class="section-title">文件信息</div>
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="va-info"></div>
+            <div class="hidden batch-error-toast" id="va-error-toast">
+                <span class="error-icon">!</span>
+                <span id="va-error-msg"></span>
             </div>
 
-            <!-- 总体结论 -->
-            <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center;">
-                <div class="result-badge" id="va-overall-badge"></div>
-                <div style="font-size:13px;color:#6b7280;" id="va-overall-note"></div>
+            <div class="batch-upload-zone" id="va-upload-zone"
+                 ondragover="pDragOver(event,'va')" ondragleave="pDragLeave(event,'va')" ondrop="pDrop(event,'va')">
+                <div class="batch-upload-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <div class="batch-upload-title">拖拽文件夹或 PDF 文件到此处</div>
+                <div class="batch-upload-hint">支持 VA 虚拟资产成交单（Buy/Sale），自动识别类型</div>
+                <div class="batch-upload-btn-group">
+                    <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('va-file-input').click()">选择 PDF 文件</button>
+                    <button class="btn btn-secondary" onclick="event.stopPropagation(); document.getElementById('va-folder-input').click()">选择文件夹</button>
+                </div>
+                <input type="file" id="va-file-input" accept=".pdf" multiple hidden onchange="pFilesSelected('va')">
+                <input type="file" id="va-folder-input" webkitdirectory multiple hidden onchange="pFolderSelected('va')">
             </div>
 
-            <!-- 统计 -->
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;" id="va-stats"></div>
+            <div class="hidden batch-action-bar" id="va-action-bar">
+                <div class="action-left">
+                    <span class="file-count">已选 <span class="count-num" id="va-file-count">0</span> / 200 份</span>
+                    <span class="file-size-total" id="va-file-size"></span>
+                </div>
+                <div class="action-right">
+                    <button class="btn-clear" onclick="pClear('va')">清空</button>
+                    <button class="btn-run" id="va-run-btn" onclick="pRunAudit('va')">开始审核</button>
+                </div>
+            </div>
 
-            <!-- 检查详情 -->
-            <div class="card">
-                <div class="section-title">逐条检查结果</div>
-                <div id="va-checks"></div>
+            <div class="batch-file-list-container" id="va-file-list"></div>
+
+            <div class="hidden batch-progress" id="va-progress">
+                <div class="batch-progress-bar">
+                    <div class="batch-progress-fill" id="va-progress-fill"></div>
+                </div>
+                <div class="batch-progress-info">
+                    <span id="va-progress-count">0 / 0</span>
+                    <span class="current-file" id="va-progress-file"></span>
+                </div>
+            </div>
+
+            <div class="hidden batch-results" id="va-results">
+                <div class="batch-results-header">
+                    <div class="batch-results-title">审核结果</div>
+                    <a href="/api/export/clause-audit" download>
+                        <button class="btn btn-primary">导出 Excel 报告</button>
+                    </a>
+                </div>
+                <div class="batch-stats-grid" id="va-stats"></div>
+                <div id="va-result-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Page: 投资月结单 ===== -->
+    <div class="page" id="page-statement">
+        <div class="batch-container">
+            <div class="page-title">投资月结单审核</div>
+            <div class="page-subtitle mb-20">上传投资月结单 PDF（可拖入文件夹），选择子类型，执行条款核查</div>
+
+            <div class="batch-info-grid">
+                <div class="batch-info-card">
+                    <div class="batch-info-icon format">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">支持格式</div>
+                        <div class="batch-info-value">PDF（可拖入文件夹）</div>
+                    </div>
+                </div>
+                <div class="batch-info-card">
+                    <div class="batch-info-icon scope">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">子类型</div>
+                        <div class="batch-info-value">月结单 / BB Invest / 南向通</div>
+                    </div>
+                </div>
+                <div class="batch-info-card">
+                    <div class="batch-info-icon limit">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="batch-info-text">
+                        <div class="batch-info-label">单次上限</div>
+                        <div class="batch-info-value">200 份文件</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden batch-error-toast" id="statement-error-toast">
+                <span class="error-icon">!</span>
+                <span id="statement-error-msg"></span>
+            </div>
+
+            <div class="batch-upload-zone" id="statement-upload-zone"
+                 ondragover="pDragOver(event,'statement')" ondragleave="pDragLeave(event,'statement')" ondrop="pDrop(event,'statement')">
+                <div class="batch-upload-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <div class="batch-upload-title">拖拽文件夹或 PDF 文件到此处</div>
+                <div class="batch-upload-hint">支持投资月结单（月结单 / BB Invest / 南向通），请先选择子类型</div>
+                <div class="batch-upload-btn-group">
+                    <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('statement-file-input').click()">选择 PDF 文件</button>
+                    <button class="btn btn-secondary" onclick="event.stopPropagation(); document.getElementById('statement-folder-input').click()">选择文件夹</button>
+                </div>
+                <input type="file" id="statement-file-input" accept=".pdf" multiple hidden onchange="pFilesSelected('statement')">
+                <input type="file" id="statement-folder-input" webkitdirectory multiple hidden onchange="pFolderSelected('statement')">
+            </div>
+
+            <div class="batch-subtype-selector">
+                <label class="batch-subtype-label" for="statement-subtype">子类型：</label>
+                <select class="batch-subtype-select" id="statement-subtype">
+                    <option value="monthly" selected>投资月结单</option>
+                    <option value="bbInvest">BB Invest</option>
+                    <option value="southBound">Southbound 南向通</option>
+                </select>
+            </div>
+
+            <div class="hidden batch-action-bar" id="statement-action-bar">
+                <div class="action-left">
+                    <span class="file-count">已选 <span class="count-num" id="statement-file-count">0</span> / 200 份</span>
+                    <span class="file-size-total" id="statement-file-size"></span>
+                </div>
+                <div class="action-right">
+                    <button class="btn-clear" onclick="pClear('statement')">清空</button>
+                    <button class="btn-run" id="statement-run-btn" onclick="pRunAudit('statement')">开始审核</button>
+                </div>
+            </div>
+
+            <div class="batch-file-list-container" id="statement-file-list"></div>
+
+            <div class="hidden batch-progress" id="statement-progress">
+                <div class="batch-progress-bar">
+                    <div class="batch-progress-fill" id="statement-progress-fill"></div>
+                </div>
+                <div class="batch-progress-info">
+                    <span id="statement-progress-count">0 / 0</span>
+                    <span class="current-file" id="statement-progress-file"></span>
+                </div>
+            </div>
+
+            <div class="hidden batch-results" id="statement-results">
+                <div class="batch-results-header">
+                    <div class="batch-results-title">审核结果</div>
+                    <a href="/api/export/clause-audit" download>
+                        <button class="btn btn-primary">导出 Excel 报告</button>
+                    </a>
+                </div>
+                <div class="batch-stats-grid" id="statement-stats"></div>
+                <div id="statement-result-list"></div>
             </div>
         </div>
     </div>
 
     <!-- ===== Page: 历史记录 ===== -->
     <div class="page" id="page-history">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="page-header">
             <div>
                 <div class="page-title">历史记录</div>
                 <div class="page-subtitle">所有历史审核报告，点击查看详情</div>
             </div>
             <a href="/api/export/excel" download>
-                <button class="btn btn-primary" style="background:#16a34a;">⬇ 导出 Excel</button>
+                <button class="btn btn-success">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    导出 Excel
+                </button>
             </a>
         </div>
         <div id="history-list-content"></div>
@@ -334,7 +420,7 @@
     <div class="chat-box" id="chat-box">
         <div class="chat-header" onclick="toggleChat()">
             <h4>AI 助手</h4>
-            <button class="chat-toggle-btn" id="chat-toggle-icon">−</button>
+            <button class="chat-toggle-btn" id="chat-toggle-icon">&minus;</button>
         </div>
         <div class="chat-body">
             <div class="chat-messages" id="chat-messages">
@@ -347,192 +433,478 @@
         </div>
     </div>
 
-<script>
-let auditResults = [];
-let currentContractData = null;
+    <!-- ===== Page: 条款模板管理 ===== -->
+    <div class="page" id="page-clauses">
+        <div class="page-inner">
+            <div class="page-title">条款模板管理</div>
+            <div class="page-subtitle mb-20">管理各产品的审核条款模板，支持手动编辑或从 HTML 模板导入</div>
 
+            <!-- 一键同步文件夹 -->
+            <div class="sync-folder-bar" id="sync-folder-bar">
+                <div class="sync-folder-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                </div>
+                <input class="sync-folder-input" id="sync-folder-path" type="text" placeholder="输入模板文件夹路径，如 C:\Users\...\sample" value="C:\Users\i_elise.ye\Desktop\sample">
+                <button class="btn btn-primary sync-folder-btn" id="sync-folder-btn" onclick="syncFolder()">一键同步</button>
+            </div>
+            <div class="hidden sync-folder-result" id="sync-folder-result"></div>
+
+            <div class="clause-tabs" id="clause-product-tabs">
+                <button class="clause-tab active" onclick="switchClauseProduct('Stock')">Stock 股票</button>
+                <button class="clause-tab" onclick="switchClauseProduct('Fund')">Fund 基金</button>
+                <button class="clause-tab" onclick="switchClauseProduct('VA')">VA 虚拟资产</button>
+                <button class="clause-tab" onclick="switchClauseProduct('Statement')">Statement 月结单</button>
+            </div>
+
+            <!-- 股票子类型标签（仅 Stock 时显示） -->
+            <div class="clause-tabs clause-subtabs" id="clause-subtype-tabs">
+                <button class="clause-tab active" data-subtype="order" onclick="switchClauseSubtype('order')">买卖成交单</button>
+                <button class="clause-tab" data-subtype="orderHk" onclick="switchClauseSubtype('orderHk')">买卖 (HK)</button>
+                <button class="clause-tab" data-subtype="companyAction" onclick="switchClauseSubtype('companyAction')">公司行动</button>
+                <button class="clause-tab" data-subtype="companyActionHk" onclick="switchClauseSubtype('companyActionHk')">公司行动 (HK)</button>
+                <button class="clause-tab" data-subtype="business" onclick="switchClauseSubtype('business')">资金/股票</button>
+                <button class="clause-tab" data-subtype="businessHk" onclick="switchClauseSubtype('businessHk')">HK IPO</button>
+            </div>
+
+            <div class="clause-tabs" id="clause-lang-tabs">
+                <button class="clause-tab active" onclick="switchClauseLang('en')">English</button>
+                <button class="clause-tab" onclick="switchClauseLang('zh_hk')">繁体中文</button>
+                <button class="clause-tab" onclick="switchClauseLang('zh_cn')">简体中文</button>
+            </div>
+
+            <div class="clause-stats" id="clause-stats"></div>
+            <div class="clause-list" id="clause-list"></div>
+            <button class="clause-add-btn" onclick="addClauseItem()">+ 添加条款</button>
+
+            <div class="clause-import-section">
+                <h4>从 HTML 模板导入</h4>
+                <div class="clause-import-zone" onclick="document.getElementById('clause-html-input').click()">
+                    <div class="import-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <p>单文件导入：替换当前产品 + 语言的条款</p>
+                    <p style="font-size:12px;color:var(--color-text-secondary);margin-top:4px">导入后会替换当前选中的条款列表，请确认后再保存</p>
+                    <input type="file" id="clause-html-input" accept=".html,.htm" style="display:none" onchange="importHtmlClauses(this)">
+                </div>
+                <div class="clause-import-zone" style="margin-top:12px" onclick="document.getElementById('clause-html-batch-input').click()">
+                    <div class="import-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3"/></svg>
+                    </div>
+                    <p>批量导入：选择多个 HTML 文件，自动识别语言和子类型</p>
+                    <p style="font-size:12px;color:var(--color-text-secondary);margin-top:4px">从文件名自动识别 hk/zh 语言和子类型，一次性导入多个模板</p>
+                    <input type="file" id="clause-html-batch-input" accept=".html,.htm" multiple style="display:none" onchange="importHtmlClausesBatch(this)">
+                </div>
+                <div class="hidden" id="batch-import-result" style="margin-top:12px;padding:12px;background:var(--color-bg-secondary);border-radius:8px;font-size:13px"></div>
+            </div>
+
+            <div class="clause-action-bar">
+                <span class="clause-save-msg" id="clause-save-msg"></span>
+                <button class="btn btn-primary" onclick="saveAllClauses()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>保存全部条款
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+// ===== Init =====
 document.addEventListener('DOMContentLoaded', () => {
     checkHealth();
-    setupDragDrop();
-    document.getElementById('file-input').addEventListener('change', e => {
-        if (e.target.files.length > 0) handleFiles(Array.from(e.target.files));
-    });
 });
 
-// ===== Batch Audit =====
-    let batchFiles = [];
+// ===== Product Audit State =====
+const MAX_FILES = 200;
+const pState = {
+    stock: { files: [], results: {} },
+    fund: { files: [], results: {} },
+    va: { files: [], results: {} },
+    statement: { files: [], results: {} },
+};
 
-    function batchDragOver(e) {
-        e.preventDefault();
-        document.getElementById('batch-upload-zone').style.borderColor = '#3b82f6';
-        document.getElementById('batch-upload-zone').style.background = '#eff6ff';
+// prefix -> product 映射（发给后端的 product 参数）
+const PRODUCT_BY_PREFIX = { stock: 'stock', fund: 'fund', va: 'va', statement: 'statement' };
+
+// ===== Drag & Drop =====
+function pDragOver(e, prefix) {
+    e.preventDefault();
+    document.getElementById(prefix + '-upload-zone').classList.add('drag-over');
+}
+
+function pDragLeave(e, prefix) {
+    document.getElementById(prefix + '-upload-zone').classList.remove('drag-over');
+}
+
+function pDrop(e, prefix) {
+    e.preventDefault();
+    document.getElementById(prefix + '-upload-zone').classList.remove('drag-over');
+    const items = Array.from(e.dataTransfer.items || []);
+    if (items.length && items[0].webkitGetAsEntry) {
+        const promises = [];
+        items.forEach(item => {
+            const entry = item.webkitGetAsEntry();
+            if (entry) promises.push(readEntry(entry));
+        });
+        Promise.all(promises).then(results => pAddFiles(results.flat(), prefix));
+    } else {
+        pAddFiles(Array.from(e.dataTransfer.files), prefix);
+    }
+}
+
+function readEntry(entry) {
+    if (entry.isFile) {
+        return new Promise(resolve => entry.file(f => resolve([f])));
+    } else if (entry.isDirectory) {
+        const reader = entry.createReader();
+        return new Promise(resolve => {
+            const allEntries = [];
+            (function readAll() {
+                reader.readEntries(entries => {
+                    if (!entries.length) {
+                        Promise.all(allEntries.map(readEntry)).then(r => resolve(r.flat()));
+                    } else {
+                        allEntries.push(...entries);
+                        readAll();
+                    }
+                });
+            })();
+        });
+    }
+    return Promise.resolve([]);
+}
+
+// ===== File Selection =====
+function pFilesSelected(prefix) {
+    const files = Array.from(document.getElementById(prefix + '-file-input').files);
+    pAddFiles(files, prefix);
+}
+
+function pFolderSelected(prefix) {
+    const files = Array.from(document.getElementById(prefix + '-folder-input').files);
+    pAddFiles(files, prefix);
+}
+
+function pAddFiles(files, prefix) {
+    const state = pState[prefix];
+    const validFiles = [];
+    let nonPdf = 0;
+
+    for (const f of files) {
+        if (!f.name.toLowerCase().endsWith('.pdf')) { nonPdf++; continue; }
+        validFiles.push(f);
     }
 
-    function batchDragLeave(e) {
-        document.getElementById('batch-upload-zone').style.borderColor = '#e2e8f0';
-        document.getElementById('batch-upload-zone').style.background = '#fff';
+    if (nonPdf > 0) pShowError(prefix, `已自动过滤 ${nonPdf} 个非 PDF 文件`);
+
+    const remaining = MAX_FILES - state.files.length;
+    if (validFiles.length > remaining) {
+        pShowError(prefix, `已达到上限 ${MAX_FILES} 份，仅保留前 ${remaining} 个文件`);
+        validFiles.splice(remaining);
     }
 
-    function batchDrop(e) {
-        e.preventDefault();
-        batchDragLeave(e);
-        const items = Array.from(e.dataTransfer.items || []);
-        if (items.length && items[0].webkitGetAsEntry) {
-            // 支持拖拽文件夹
-            const filePromises = [];
-            items.forEach(item => {
-                const entry = item.webkitGetAsEntry();
-                if (entry) filePromises.push(readEntry(entry));
-            });
-            Promise.all(filePromises).then(results => {
-                const files = results.flat().filter(f => f.name.toLowerCase().endsWith('.pdf'));
-                if (files.length) addBatchFiles(files);
-            });
-        } else {
-            const files = Array.from(e.dataTransfer.files).filter(f => f.name.toLowerCase().endsWith('.pdf'));
-            if (files.length) addBatchFiles(files);
+    validFiles.forEach(f => {
+        if (!state.files.find(b => b.name === f.name && b.size === f.size)) {
+            state.files.push(f);
         }
+    });
+
+    if (state.files.length > MAX_FILES) state.files = state.files.slice(0, MAX_FILES);
+
+    pRenderFileList(prefix);
+    pUpdateUI(prefix);
+}
+
+function pShowError(prefix, msg) {
+    const el = document.getElementById(prefix + '-error-toast');
+    document.getElementById(prefix + '-error-msg').textContent = msg;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 4000);
+}
+
+// ===== File List =====
+function pRenderFileList(prefix) {
+    const state = pState[prefix];
+    const list = document.getElementById(prefix + '-file-list');
+    if (!state.files.length) { list.innerHTML = ''; return; }
+
+    const COLLAPSE = 5;
+    const showAll = state.files.length <= COLLAPSE || list.dataset.expanded === '1';
+
+    list.innerHTML = state.files.map((f, i) => {
+        const status = state.results[f.name];
+        let statusClass = 'pending';
+        if (status) statusClass = status.clause_audit?.overall === 'pass' ? 'success' : 'failed';
+        const collapsed = !showAll && i >= COLLAPSE ? ' collapsed' : '';
+        return `
+        <div class="batch-file-item${collapsed}" data-index="${i}">
+            <span class="file-icon">PDF</span>
+            <span class="file-name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</span>
+            <span class="file-size">${formatSize(f.size)}</span>
+            <span class="file-status ${statusClass}"></span>
+            <button class="file-remove" onclick="pRemoveFile(${i},'${prefix}')" title="移除">x</button>
+        </div>`;
+    }).join('');
+
+    if (state.files.length > COLLAPSE) {
+        const rem = state.files.length - COLLAPSE;
+        const toggle = document.createElement('div');
+        toggle.className = 'batch-file-collapse';
+        toggle.textContent = showAll ? '收起文件列表' : `展开剩余 ${rem} 个文件`;
+        toggle.onclick = () => { list.dataset.expanded = showAll ? '0' : '1'; pRenderFileList(prefix); };
+        list.appendChild(toggle);
+    }
+}
+
+function pRemoveFile(i, prefix) {
+    const state = pState[prefix];
+    const name = state.files[i]?.name;
+    state.files.splice(i, 1);
+    delete state.results[name];
+    document.getElementById(prefix + '-file-list').dataset.expanded = '0';
+    pRenderFileList(prefix);
+    pUpdateUI(prefix);
+}
+
+function pClear(prefix) {
+    const state = pState[prefix];
+    state.files = [];
+    state.results = {};
+    document.getElementById(prefix + '-file-input').value = '';
+    document.getElementById(prefix + '-folder-input').value = '';
+    document.getElementById(prefix + '-file-list').innerHTML = '';
+    document.getElementById(prefix + '-file-list').dataset.expanded = '0';
+    document.getElementById(prefix + '-action-bar').classList.add('hidden');
+    document.getElementById(prefix + '-upload-zone').classList.remove('has-files');
+    document.getElementById(prefix + '-results').classList.add('hidden');
+}
+
+function pUpdateUI(prefix) {
+    const state = pState[prefix];
+    const zone = document.getElementById(prefix + '-upload-zone');
+    const bar = document.getElementById(prefix + '-action-bar');
+    const count = document.getElementById(prefix + '-file-count');
+    const size = document.getElementById(prefix + '-file-size');
+
+    if (state.files.length > 0) {
+        zone.classList.add('has-files');
+        bar.classList.remove('hidden');
+        count.textContent = state.files.length;
+        const totalSize = state.files.reduce((s, f) => s + f.size, 0);
+        size.textContent = formatSize(totalSize);
+    } else {
+        zone.classList.remove('has-files');
+        bar.classList.add('hidden');
+    }
+}
+
+// ===== Run Audit =====
+async function pRunAudit(prefix) {
+    const state = pState[prefix];
+    if (!state.files.length) return;
+
+    const btn = document.getElementById(prefix + '-run-btn');
+    btn.disabled = true;
+    const progress = document.getElementById(prefix + '-progress');
+    progress.classList.remove('hidden');
+    document.getElementById(prefix + '-results').classList.add('hidden');
+
+    const total = state.files.length;
+    const progressFill = document.getElementById(prefix + '-progress-fill');
+    const progressCount = document.getElementById(prefix + '-progress-count');
+    const progressFile = document.getElementById(prefix + '-progress-file');
+
+    progressFill.style.width = '0%';
+    progressCount.textContent = `0 / ${total}`;
+    progressFile.textContent = '';
+
+    const fd = new FormData();
+    state.files.forEach(f => fd.append('files', f));
+    fd.append('product', PRODUCT_BY_PREFIX[prefix] || prefix);
+    // Statement 需要显式子类型（后端按显式 product 模式处理）
+    if (prefix === 'statement') {
+        const subtype = document.getElementById('statement-subtype')?.value || 'monthly';
+        fd.append('subtype', subtype);
     }
 
-    function readEntry(entry) {
-        if (entry.isFile) {
-            return new Promise(resolve => entry.file(f => resolve([f])));
-        } else if (entry.isDirectory) {
-            const reader = entry.createReader();
-            return new Promise(resolve => {
-                const allEntries = [];
-                function readAll() {
-                    reader.readEntries(entries => {
-                        if (!entries.length) {
-                            Promise.all(allEntries.map(readEntry)).then(r => resolve(r.flat()));
-                        } else {
-                            allEntries.push(...entries);
-                            readAll();
-                        }
-                    });
-                }
-                readAll();
-            });
-        }
-        return Promise.resolve([]);
-    }
+    try {
+        const resp = await fetch('/api/product-audit', { method: 'POST', body: fd });
+        const data = await resp.json();
 
-    function batchFilesSelected() {
-        const files = Array.from(document.getElementById('batch-file-input').files);
-        addBatchFiles(files);
-    }
-
-    function batchFolderSelected() {
-        const files = Array.from(document.getElementById('batch-folder-input').files)
-            .filter(f => f.name.toLowerCase().endsWith('.pdf'));
-        addBatchFiles(files);
-    }
-
-    function addBatchFiles(files) {
-        files.forEach(f => { if (!batchFiles.find(b => b.name === f.name)) batchFiles.push(f); });
-        renderBatchFileList();
-    }
-
-    function renderBatchFileList() {
-        const list = document.getElementById('batch-file-list');
-        if (!batchFiles.length) { list.innerHTML = ''; document.getElementById('batch-action-row').classList.add('hidden'); return; }
-        list.innerHTML = batchFiles.map((f, i) => `
-            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:6px;">
-                <span style="font-size:18px;">📄</span>
-                <span style="flex:1;font-size:13px;color:#374151;">${escapeHtml(f.name)}</span>
-                <span style="font-size:12px;color:#9ca3af;">${(f.size/1024).toFixed(0)} KB</span>
-                <button onclick="removeBatchFile(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;">×</button>
-            </div>`).join('');
-        document.getElementById('batch-action-row').classList.remove('hidden');
-        document.getElementById('batch-status').textContent = `已选择 ${batchFiles.length} 个文件`;
-    }
-
-    function removeBatchFile(i) { batchFiles.splice(i, 1); renderBatchFileList(); }
-
-    function clearBatch() {
-        batchFiles = [];
-        document.getElementById('batch-file-input').value = '';
-        document.getElementById('batch-file-list').innerHTML = '';
-        document.getElementById('batch-action-row').classList.add('hidden');
-        document.getElementById('batch-results').classList.add('hidden');
-    }
-
-    async function runBatchAudit() {
-        if (!batchFiles.length) return;
-        document.getElementById('batch-run-btn').disabled = true;
-        document.getElementById('batch-progress').classList.remove('hidden');
-        document.getElementById('batch-results').classList.add('hidden');
-        const fd = new FormData();
-        batchFiles.forEach(f => fd.append('files', f));
-        document.getElementById('batch-progress-fill').style.width = '30%';
-        document.getElementById('batch-progress-text').textContent = `正在审核 ${batchFiles.length} 个文件...`;
-        try {
-            const resp = await fetch('/api/batch-audit', { method: 'POST', body: fd });
-            const data = await resp.json();
-            document.getElementById('batch-progress-fill').style.width = '100%';
-            document.getElementById('batch-progress-text').textContent = '审核完成！';
-            setTimeout(() => document.getElementById('batch-progress').classList.add('hidden'), 800);
-            renderBatchResults(data);
-        } catch(e) {
-            document.getElementById('batch-progress-text').textContent = '审核失败，请重试';
-        }
-        document.getElementById('batch-run-btn').disabled = false;
-    }
-
-    function renderBatchResults(data) {
-        document.getElementById('batch-results').classList.remove('hidden');
         const results = data.results || [];
-        const passed = results.filter(r => r.overall === 'pass').length;
-        const failed = results.filter(r => r.overall === 'fail').length;
-        document.getElementById('batch-stats').innerHTML = `
-            <div style="background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
-                <div style="font-size:28px;font-weight:800;color:#374151;">${results.length}</div>
-                <div style="font-size:13px;color:#64748b;">总审核文件</div>
-            </div>
-            <div style="background:#dcfce7;border-radius:12px;padding:20px;text-align:center;">
-                <div style="font-size:28px;font-weight:800;color:#16a34a;">${passed}</div>
-                <div style="font-size:13px;color:#16a34a;">条款全部通过</div>
-            </div>
-            <div style="background:#fee2e2;border-radius:12px;padding:20px;text-align:center;">
-                <div style="font-size:28px;font-weight:800;color:#dc2626;">${failed}</div>
-                <div style="font-size:13px;color:#dc2626;">发现条款问题</div>
-            </div>
-            <div style="background:#fef3c7;border-radius:12px;padding:20px;text-align:center;">
-                <div style="font-size:28px;font-weight:800;color:#d97706;">${data.errors?.length||0}</div>
-                <div style="font-size:13px;color:#d97706;">处理失败</div>
-            </div>`;
-        document.getElementById('batch-result-list').innerHTML = results.map(r => {
-            const pass = r.overall === 'pass';
-            const enFail = r.en_total - r.en_passed;
-            const zhFail = r.zh_total - r.zh_passed;
-            return `
-            <div style="background:#fff;border-radius:12px;padding:16px 20px;margin-bottom:10px;border-left:4px solid ${pass?'#16a34a':'#ef4444'};">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
-                    <div>
-                        <div style="font-size:14px;font-weight:600;margin-bottom:4px;">📄 ${escapeHtml(r.file_name)}</div>
-                        <div style="font-size:12px;color:#64748b;">${r.doc_type} · ${r.language} · ${r.transaction_type} · ${r.customer_name||'-'} · 账户 ${r.account_number||'-'} · ${r.contract_date||'-'}</div>
-                    </div>
-                    <span style="background:${pass?'#dcfce7':'#fee2e2'};color:${pass?'#16a34a':'#dc2626'};padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;">
-                        ${pass ? '✅ 全部通过' : '❌ 发现问题'}
-                    </span>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;">
-                    <div style="background:${enFail>0?'#fee2e2':'#f0fdf4'};padding:10px;border-radius:8px;">
-                        <div style="font-weight:600;margin-bottom:4px;">英文条款</div>
-                        <div>通过 ${r.en_passed}/${r.en_total}${enFail>0?' · <span style="color:#dc2626;">失败 '+enFail+'</span>':''}</div>
-                    </div>
-                    <div style="background:${zhFail>0?'#fee2e2':'#f0fdf4'};padding:10px;border-radius:8px;">
-                        <div style="font-weight:600;margin-bottom:4px;">中文条款</div>
-                        <div>通过 ${r.zh_passed}/${r.zh_total}${zhFail>0?' · <span style="color:#dc2626;">失败 '+zhFail+'</span>':''}</div>
-                    </div>
-                </div>
-                ${r.issues?.length?`<div style="margin-top:10px;font-size:12px;color:#dc2626;background:#fef2f2;padding:8px 12px;border-radius:6px;">⚠️ 问题条款：${escapeHtml(r.issues.join(' | '))}</div>`:''}
-            </div>`;
-        }).join('') + (data.errors?.length ? data.errors.map(e =>
-            `<div style="background:#fff;border-radius:12px;padding:14px 20px;margin-bottom:10px;border-left:4px solid #f59e0b;">
-                <div style="font-size:13px;font-weight:600;color:#92400e;">⚠️ ${escapeHtml(e.file||'')} — ${escapeHtml(e.error||'')}</div>
-            </div>`).join('') : '');
+        let completed = 0;
+
+        for (const r of results) {
+            completed++;
+            progressFill.style.width = (completed / total * 100) + '%';
+            progressCount.textContent = `${completed} / ${total}`;
+            progressFile.textContent = r.file_name;
+            state.results[r.file_name] = r;
+            await sleep(30);
+        }
+
+        progressFill.style.width = '100%';
+        progressFile.textContent = '审核完成';
+        setTimeout(() => progress.classList.add('hidden'), 1000);
+        pRenderResults(data, prefix);
+        pRenderFileList(prefix);
+    } catch(e) {
+        progressFile.textContent = '审核失败，请重试';
+        progressCount.textContent = '';
     }
+    btn.disabled = false;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ===== Render Results =====
+function pRenderResults(data, prefix) {
+    document.getElementById(prefix + '-results').classList.remove('hidden');
+    const results = data.results || [];
+    const errors = data.errors?.length || 0;
+
+    // Count pass/fail based on clause_audit
+    const passed = results.filter(r => r.clause_audit?.overall === 'pass').length;
+    const failed = results.filter(r => r.clause_audit?.overall !== 'pass').length;
+
+    document.getElementById(prefix + '-stats').innerHTML = `
+        <div class="batch-stat-card total">
+            <div class="stat-num">${results.length}</div>
+            <div class="stat-label">审核文件</div>
+        </div>
+        <div class="batch-stat-card passed">
+            <div class="stat-num">${passed}</div>
+            <div class="stat-label">全部通过</div>
+        </div>
+        <div class="batch-stat-card failed">
+            <div class="stat-num">${failed}</div>
+            <div class="stat-label">发现问题</div>
+        </div>
+        <div class="batch-stat-card errors">
+            <div class="stat-num">${errors}</div>
+            <div class="stat-label">处理失败</div>
+        </div>`;
+
+    document.getElementById(prefix + '-result-list').innerHTML = results.map(r => {
+        const ca = r.clause_audit || {};
+        const pass = ca.overall === 'pass';
+        const enFail = (ca.en_total || 0) - (ca.en_passed || 0);
+        const zhFail = (ca.zh_total || 0) - (ca.zh_passed || 0);
+        const isStatement = ca.doc_type === 'Statement' || (ca.personal_info_total || 0) > 0;
+        const isStock = ca.doc_type === 'Stock-HK' || ca.doc_type === 'Stock-US' || ca.doc_type === 'Unknown';
+        const isModuleStyle = isStatement || ca.doc_type === 'Fund' || isStock;
+        const isFund = ca.doc_type === 'Fund';
+        const isVA = ca.doc_type === 'VA';
+        const dateCheckTitle = isFund ? '日期校验 (交易日+2=发出日)' : (isStock || isVA) ? '日期校验 (成交日+0~2工作日=发出日)' : '日期校验 (T+2)';
+        const productLabel = PRODUCT_LABELS[r.product] || ca.doc_type || '';
+        const subtypeLabel = r.product && ca.stock_subtype ? SUBTYPE_LABELS_FULL[ca.stock_subtype] || ca.stock_subtype : '';
+        const badgeHtml = `<span class="batch-result-product">${escapeHtml(productLabel)}${subtypeLabel ? ' · ' + escapeHtml(subtypeLabel) : ''}</span>`;
+
+        let extraHtml = '';
+
+        // AI audit results (stock / fund)
+        if (r.ai_audit) {
+            const ai = r.ai_audit;
+            extraHtml += `<div class="batch-result-ai">`;
+            extraHtml += `<div class="batch-result-ai-title">AI 审核</div>`;
+            extraHtml += `<div class="batch-result-ai-stats">`;
+            if (ai.critical_count > 0) extraHtml += `<span class="badge-critical">严重 ${ai.critical_count}</span> `;
+            if (ai.warning_count > 0) extraHtml += `<span class="badge-warning">警告 ${ai.warning_count}</span> `;
+            if (ai.info_count > 0) extraHtml += `<span class="badge-info">信息 ${ai.info_count}</span> `;
+            if (!ai.critical_count && !ai.warning_count) extraHtml += `<span class="badge-ok">正常</span>`;
+            extraHtml += `</div>`;
+            if (ai.ai_summary) extraHtml += `<div class="batch-result-ai-summary">${escapeHtml(ai.ai_summary)}</div>`;
+            if (ai.fee_waiver_details) {
+                const fw = ai.fee_waiver_details;
+                extraHtml += `<div class="batch-result-fee-waiver">`;
+                if (fw.commission_waived) extraHtml += `<span class="fee-tag waived">佣金已豁免</span> `;
+                if (fw.platform_fee_waived) extraHtml += `<span class="fee-tag waived">平台费已豁免</span> `;
+                if (fw.total_fees_saved > 0) extraHtml += `<span class="fee-tag saved">节省 ${fw.waiver_currency || ''} ${fw.total_fees_saved.toFixed(2)}</span>`;
+                extraHtml += `</div>`;
+            }
+            if (ai.findings?.length) {
+                const cat = {fee_waiver:'费用豁免', compliance:'合规检查', anomaly:'异常检测', data_quality:'数据质量'};
+                extraHtml += `<div class="batch-result-findings">`;
+                ai.findings.forEach(f => {
+                    extraHtml += `<div class="finding-mini finding-mini-${f.severity}">
+                        <span class="finding-sev-badge ${f.severity}">${f.severity.toUpperCase()}</span>
+                        <span class="finding-cat-label">[${cat[f.category]||f.category}]</span>
+                        ${escapeHtml(f.title)}
+                    </div>`;
+                });
+                extraHtml += `</div>`;
+            }
+            extraHtml += `</div>`;
+        }
+
+        // VA audit results
+        if (r.va_audit) {
+            const va = r.va_audit;
+            extraHtml += `<div class="batch-result-ai">`;
+            extraHtml += `<div class="batch-result-ai-title">VA 专项检查</div>`;
+            extraHtml += `<div class="batch-result-ai-stats">`;
+            extraHtml += `<span class="badge-ok">通过 ${va.passed || 0}</span> `;
+            if (va.failed > 0) extraHtml += `<span class="badge-critical">失败 ${va.failed}</span> `;
+            extraHtml += `总计 ${va.total || 0} 项`;
+            extraHtml += `</div>`;
+            if (va.checks?.length) {
+                const failedChecks = va.checks.filter(c => c.result !== 'pass');
+                if (failedChecks.length) {
+                    extraHtml += `<div class="batch-result-findings">`;
+                    failedChecks.forEach(c => {
+                        extraHtml += `<div class="finding-mini finding-mini-critical">
+                            <span class="finding-sev-badge critical">${c.result.toUpperCase()}</span>
+                            <span class="finding-cat-label">[${escapeHtml(c.category)}]</span>
+                            ${escapeHtml(c.item)}: ${escapeHtml(c.detail)}
+                        </div>`;
+                    });
+                    extraHtml += `</div>`;
+                }
+            }
+            extraHtml += `</div>`;
+        }
+
+        return `
+        <div class="batch-result-item ${pass ? '' : 'fail'}">
+            <div class="batch-result-header">
+                <div>
+                    <div class="batch-result-file">${escapeHtml(r.file_name)}</div>
+                    <div class="batch-result-meta">${ca.doc_type || ''} · ${ca.language || ''} · ${ca.transaction_type || ''}${ca.template_version ? ' · 模板: ' + ca.template_version : ''} · ${escapeHtml(ca.customer_name || '-')} · ${ca.contract_date || ''}</div>
+                </div>
+                <span class="batch-result-badge ${pass ? 'pass' : 'fail'}">${pass ? '条款通过' : '条款问题'}</span>
+                ${badgeHtml}
+            </div>
+            <div class="batch-result-clauses">
+                ${isModuleStyle ? `
+                <div class="batch-clause-box ${(ca.personal_info_passed || 0) >= (ca.personal_info_total || 0) && (ca.personal_info_total || 0) > 0 ? 'en-ok' : 'en-fail'}">
+                    <div class="clause-title">${isStock ? '个人信息' : '个人投资信息'}</div>
+                    <div class="clause-stat">通过 ${ca.personal_info_passed || 0}/${ca.personal_info_total || 0}${(ca.personal_info_total || 0) - (ca.personal_info_passed || 0) > 0 ? ' · <span class="clause-fail-count">失败 ' + ((ca.personal_info_total || 0) - (ca.personal_info_passed || 0)) + '</span>' : ''}</div>
+                </div>
+                <div class="batch-clause-box ${(enFail + zhFail) > 0 ? 'zh-fail' : 'zh-ok'}">
+                    <div class="clause-title">Important Notice 重要提示</div>
+                    <div class="clause-stat">通过 ${(ca.en_passed || 0) + (ca.zh_passed || 0)}/${(ca.en_total || 0) + (ca.zh_total || 0)}${(enFail + zhFail) > 0 ? ' · <span class="clause-fail-count">失败 ' + (enFail + zhFail) + '</span>' : ''}</div>
+                </div>
+                ` : `
+                <div class="batch-clause-box ${enFail > 0 ? 'en-fail' : 'en-ok'}">
+                    <div class="clause-title">英文条款</div>
+                    <div class="clause-stat">通过 ${ca.en_passed || 0}/${ca.en_total || 0}${enFail > 0 ? ' · <span class="clause-fail-count">失败 ' + enFail + '</span>' : ''}</div>
+                </div>
+                <div class="batch-clause-box ${zhFail > 0 ? 'zh-fail' : 'zh-ok'}">
+                    <div class="clause-title">中文条款</div>
+                    <div class="clause-stat">通过 ${ca.zh_passed || 0}/${ca.zh_total || 0}${zhFail > 0 ? ' · <span class="clause-fail-count">失败 ' + zhFail + '</span>' : ''}</div>
+                </div>
+                `}
+                <div class="batch-clause-box ${ca.date_check_result === 'pass' ? 'en-ok' : ca.date_check_result === 'fail' ? 'en-fail' : 'date-skip'}">
+                    <div class="clause-title">${dateCheckTitle}</div>
+                    <div class="clause-stat">${ca.date_check_result === 'pass' ? '✓ ' : ca.date_check_result === 'fail' ? '✗ ' : '— '}${escapeHtml(ca.date_check_note || '')}</div>
+                </div>
+            </div>
+            ${ca.issues?.length ? `<div class="batch-result-issues">问题条款：${escapeHtml(ca.issues.join(' | '))}</div>` : ''}
+            ${extraHtml}
+        </div>`;
+    }).join('') + (data.errors?.length ? data.errors.map(e =>
+        `<div class="batch-error-item">
+            <div class="error-title">${escapeHtml(e.file || '')} — ${escapeHtml(e.error || '')}</div>
+        </div>`).join('') : '');
+}
 
 // ===== Nav =====
 function showPage(name) {
@@ -541,6 +913,7 @@ function showPage(name) {
     document.getElementById('page-' + name).classList.add('active');
     event.target.classList.add('active');
     if (name === 'history') loadHistory();
+    if (name === 'clauses') loadClausesPage();
 }
 
 // ===== Health =====
@@ -549,240 +922,30 @@ async function checkHealth() {
         const data = await fetch('/api/health').then(r => r.json());
         const badge = document.getElementById('ai-status');
         badge.textContent = data.ai_enabled ? 'AI 已启用' : '规则引擎模式';
-        badge.style.background = data.ai_enabled ? '#dcfce7' : '#fef3c7';
-        badge.style.color = data.ai_enabled ? '#16a34a' : '#d97706';
-        badge.style.borderRadius = '20px';
-        badge.style.padding = '4px 10px';
+        badge.className = 'header-badge ' + (data.ai_enabled ? 'badge-on' : 'badge-off');
     } catch(e) {}
 }
 
-// ===== Audit Page =====
-function setupDragDrop() {
-    const zone = document.getElementById('upload-zone');
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor='#4f46e5'; zone.style.background='#f0f4ff'; });
-    zone.addEventListener('dragleave', () => { zone.style.borderColor='#d1d5db'; zone.style.background='#fff'; });
-    zone.addEventListener('drop', e => {
-        e.preventDefault(); zone.style.borderColor='#d1d5db'; zone.style.background='#fff';
-        const files = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.pdf'));
-        if (files.length) handleFiles(files);
-    });
+// ===== Utility =====
+function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
-function handleFiles(files) {
-    document.getElementById('file-list').innerHTML = files.map(f =>
-        `<div style="font-size:13px;color:#374151;padding:6px 0;">📄 ${f.name}</div>`
-    ).join('');
-    uploadFiles(files);
-}
-
-async function uploadFiles(files) {
-    document.getElementById('progress-container').classList.remove('hidden');
-    auditResults = [];
-    for (let i = 0; i < files.length; i++) {
-        document.getElementById('progress-fill').style.width = (i/files.length*100) + '%';
-        document.getElementById('progress-text').textContent = `正在处理 ${i+1}/${files.length}: ${files[i].name}`;
-        const fd = new FormData(); fd.append('file', files[i]);
-        const data = await fetch('/api/audit', {method:'POST', body:fd}).then(r=>r.json());
-        if (data.success) { auditResults.push(data); currentContractData = data.contract_data; }
-    }
-    document.getElementById('progress-fill').style.width = '100%';
-    document.getElementById('progress-text').textContent = '审核完成！';
-    setTimeout(() => document.getElementById('progress-container').classList.add('hidden'), 1000);
-    if (auditResults.length) renderAuditResults(auditResults[0]);
-}
-
-function renderAuditResults(r) {
-    document.getElementById('results-section').classList.remove('hidden');
-    const cards = [
-        {n: r.critical_count, label:'严重问题', bg:'#fee2e2', color:'#dc2626'},
-        {n: r.warning_count, label:'警告', bg:'#fef3c7', color:'#d97706'},
-        {n: r.info_count, label:'信息', bg:'#eff6ff', color:'#2563eb'},
-        {n: r.total_findings, label:'总计', bg:'#f3f4f6', color:'#374151'},
-    ];
-    document.getElementById('summary-cards').innerHTML = cards.map(c => `
-        <div style="background:${c.bg};border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:28px;font-weight:700;color:${c.color};">${c.n}</div>
-            <div style="font-size:12px;color:${c.color};margin-top:4px;">${c.label}</div>
-        </div>`).join('');
-
-    if (r.ai_summary) {
-        document.getElementById('ai-summary-card').classList.remove('hidden');
-        document.getElementById('ai-summary-text').textContent = r.ai_summary;
-    }
-
-    const fw = r.fee_waiver_details;
-    if (fw) {
-        document.getElementById('fee-waiver-card').classList.remove('hidden');
-        document.getElementById('fee-waiver-content').innerHTML = `
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:13px;">
-                <div style="padding:10px;background:${fw.commission_waived?'#dcfce7':'#f9fafb'};border-radius:8px;">
-                    <div style="color:#6b7280;">佣金</div>
-                    <div style="font-weight:600;color:${fw.commission_waived?'#16a34a':'#374151'};">${fw.commission_waived?'已豁免':'正常收取'}</div>
-                </div>
-                <div style="padding:10px;background:${fw.platform_fee_waived?'#dcfce7':'#f9fafb'};border-radius:8px;">
-                    <div style="color:#6b7280;">平台费</div>
-                    <div style="font-weight:600;color:${fw.platform_fee_waived?'#16a34a':'#374151'};">${fw.platform_fee_waived?'已豁免':'正常收取'}</div>
-                </div>
-                <div style="padding:10px;background:#f9fafb;border-radius:8px;">
-                    <div style="color:#6b7280;">共节省</div>
-                    <div style="font-weight:600;">${fw.waiver_currency} ${fw.total_fees_saved.toFixed(2)}</div>
-                </div>
-            </div>
-            ${fw.has_remark ? `<div style="margin-top:10px;font-size:13px;color:#6b7280;">备注：${fw.remark_text_cn||fw.remark_text}</div>` : ''}`;
-    }
-
-    const sev = {critical:'#fee2e2', warning:'#fef9c3', info:'#eff6ff'};
-    const sevC = {critical:'#dc2626', warning:'#d97706', info:'#2563eb'};
-    const cat = {fee_waiver:'费用豁免', compliance:'合规检查', anomaly:'异常检测', data_quality:'数据质量'};
-    document.getElementById('findings-count').textContent = r.findings.length;
-    document.getElementById('findings-list').innerHTML = r.findings.map(f => `
-        <div style="background:${sev[f.severity]||'#f9fafb'};border-radius:8px;padding:12px;margin-bottom:8px;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-                <span style="font-size:11px;background:#fff;color:${sevC[f.severity]||'#374151'};padding:2px 8px;border-radius:12px;font-weight:600;">${f.severity.toUpperCase()}</span>
-                <span style="font-size:11px;color:#6b7280;">[${cat[f.category]||f.category}]</span>
-                <span style="font-size:13px;font-weight:600;color:#111;">${escapeHtml(f.title)}</span>
-            </div>
-            <div style="font-size:13px;color:#374151;">${escapeHtml(f.detail)}</div>
-            ${f.suggestion ? `<div style="font-size:12px;color:#6b7280;margin-top:6px;">💡 ${escapeHtml(f.suggestion)}</div>` : ''}
-        </div>`).join('');
-
-    const d = r.contract_data;
-    const rows = [
-        ['客户', `${d.customer_name||'-'} ${d.customer_name_cn||''}`],
-        ['账户', d.account_number||'-'],
-        ['股票', `${d.stock_name||'-'} (${d.stock_code||'-'})`],
-        ['市场', d.stock_market||'-'],
-        ['类型', d.transaction_type||'-'],
-        ['成交日期', d.contract_date||'-'],
-        ['成交价', `${d.avg_price_currency||''} ${d.avg_price||'-'}`],
-        ['股数', d.quantity||'-'],
-        ['交易金额', `${d.total_amount_currency||''} ${d.total_amount?.toFixed(2)||'-'}`],
-        ['佣金', `${d.commission_currency||''} ${d.commission?.toFixed(2)??'-'}`],
-        ['平台费', `${d.platform_fee_currency||''} ${d.platform_fee?.toFixed(2)??'-'}`],
-        ['交收金额', `${d.settlement_amount_currency||''} ${d.settlement_amount?.toFixed(2)||'-'}`],
-        ['交收日期', d.settlement_date||'-'],
-        ['交易编号', d.order_reference||'-'],
-    ];
-    document.getElementById('data-table').innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
-        <tbody>${rows.map(([k,v])=>`<tr><td style="padding:6px 8px;color:#6b7280;width:120px;">${k}</td><td style="padding:6px 8px;font-weight:500;">${escapeHtml(String(v))}</td></tr>`).join('')}</tbody></table>`;
-
-    document.getElementById('results-section').scrollIntoView({behavior:'smooth'});
-}
-
-function resetAudit() {
-    auditResults = []; currentContractData = null;
-    document.getElementById('results-section').classList.add('hidden');
-    document.getElementById('file-list').innerHTML = '';
-    document.getElementById('file-input').value = '';
-    document.getElementById('ai-summary-card').classList.add('hidden');
-    document.getElementById('fee-waiver-card').classList.add('hidden');
-    window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ===== Compare Page =====
-let contractFile = null, statementFile = null;
-
-function onContractSelected() {
-    contractFile = document.getElementById('contract-input').files[0];
-    document.getElementById('contract-label').textContent = contractFile ? contractFile.name : '';
-    document.getElementById('contract-box').classList.toggle('has-file', !!contractFile);
-    updateCompareBtn();
-}
-
-function onStatementSelected() {
-    statementFile = document.getElementById('statement-input').files[0];
-    document.getElementById('statement-label').textContent = statementFile ? statementFile.name : '';
-    document.getElementById('statement-box').classList.toggle('has-file', !!statementFile);
-    updateCompareBtn();
-}
-
-function updateCompareBtn() {
-    document.getElementById('compare-btn').disabled = !(contractFile && statementFile);
-}
-
-async function runCompare() {
-    document.getElementById('compare-results').classList.add('hidden');
-    document.getElementById('compare-loading').classList.remove('hidden');
-
-    const fd = new FormData();
-    fd.append('contract_file', contractFile);
-    fd.append('statement_file', statementFile);
-
-    const data = await fetch('/api/compare', {method:'POST', body:fd}).then(r=>r.json());
-    document.getElementById('compare-loading').classList.add('hidden');
-
-    if (!data.success) { alert('对比失败，请重试'); return; }
-
-    // Overall badge
-    const pass = data.overall === 'pass';
-    document.getElementById('overall-badge').textContent = pass ? '✅ 对比通过' : '❌ 发现不一致';
-    document.getElementById('overall-badge').className = 'result-badge ' + (pass ? 'pass' : 'fail');
-    document.getElementById('overall-note').textContent = pass
-        ? `所有字段一致，成交单与月结单体现同一笔交易`
-        : `发现 ${data.mismatches.length} 处不一致，请核查`;
-
-    // Contract summary
-    const cn = data.contract_summary;
-    document.getElementById('contract-summary').innerHTML = [
-        ['股票代码', cn.stock_code], ['成交日期', cn.trade_date],
-        ['股数', cn.quantity], ['单价', cn.unit_price],
-        ['佣金', cn.commission], ['平台费', cn.platform_fee],
-        ['交收金额', cn.settlement_amount], ['账户', cn.account_number],
-    ].map(([k,v]) => `<div class="kv"><span class="key">${k}</span><span class="val">${v??'-'}</span></div>`).join('');
-
-    // Statement summary
-    const st = data.statement_summary;
-    const stx = st.matched_transaction;
-    document.getElementById('statement-summary').innerHTML = [
-        ['结单期间', st.period], ['账户', st.account_number],
-        ['交易笔数', st.transaction_count],
-        stx ? ['匹配交易日期', stx.trade_date] : ['匹配状态', '未找到'],
-        stx ? ['股数', stx.quantity] : null,
-        stx ? ['单价', stx.unit_price] : null,
-        stx ? ['交收金额', stx.settlement_amount] : null,
-    ].filter(Boolean).map(([k,v]) => `<div class="kv"><span class="key">${k}</span><span class="val">${v??'-'}</span></div>`).join('');
-
-    // Match table
-    const allFields = [...data.matches.map(f=>({...f,ok:true})), ...data.mismatches.map(f=>({...f,ok:false}))];
-    document.getElementById('match-table-body').innerHTML = allFields.map(f => `
-        <tr class="${f.ok?'match-ok':'match-fail'}">
-            <td>${f.field}</td>
-            <td>${f.contract}</td>
-            <td>${f.statement}</td>
-            <td class="match-icon">${f.ok ? '✅' : '❌'}</td>
-        </tr>`).join('');
-
-    // Unmatched
-    if (data.unmatched.length) {
-        document.getElementById('unmatched-card').classList.remove('hidden');
-        document.getElementById('unmatched-content').innerHTML = data.unmatched.map(u => u.note).join('<br>');
-    }
-
-    document.getElementById('compare-results').classList.remove('hidden');
-}
-
-function resetCompare() {
-    contractFile = null; statementFile = null;
-    document.getElementById('contract-input').value = '';
-    document.getElementById('statement-input').value = '';
-    document.getElementById('contract-label').textContent = '';
-    document.getElementById('statement-label').textContent = '';
-    document.getElementById('contract-box').classList.remove('has-file');
-    document.getElementById('statement-box').classList.remove('has-file');
-    document.getElementById('compare-btn').disabled = true;
-    document.getElementById('compare-results').classList.add('hidden');
-    document.getElementById('unmatched-card').classList.add('hidden');
+function escapeHtml(text) {
+    const d = document.createElement('div'); d.textContent = text; return d.innerHTML;
 }
 
 // ===== History Page =====
 async function loadHistory() {
     const data = await fetch('/api/records').then(r=>r.json());
     const list = document.getElementById('history-list-content');
-    if (!data.records.length) { list.innerHTML = '<div style="color:#9ca3af;font-size:14px;padding:20px;">暂无历史记录</div>'; return; }
+    if (!data.records.length) { list.innerHTML = '<div class="empty-state">暂无历史记录</div>'; return; }
     list.innerHTML = data.records.map(r => `
-        <div class="history-item" onclick="loadRecord('${r.id}')">
+        <div class="history-item">
             <div>
-                <div class="hi-name">📄 ${escapeHtml(r.file_name)}</div>
+                <div class="hi-name"><span class="file-icon-label">PDF</span> ${escapeHtml(r.file_name)}</div>
                 <div class="hi-time">${r.audit_time}</div>
             </div>
             <div class="hi-badges">
@@ -791,99 +954,6 @@ async function loadHistory() {
                 ${!r.critical_count && !r.warning_count ? `<span class="badge-ok">正常</span>` : ''}
             </div>
         </div>`).join('');
-}
-
-async function loadRecord(id) {
-    const data = await fetch(`/api/records/${id}`).then(r=>r.json());
-    if (data.success) {
-        currentContractData = data.contract_data;
-        showPage('audit');
-        document.querySelectorAll('.nav-btn')[0].classList.add('active');
-        document.querySelectorAll('.nav-btn')[2].classList.remove('active');
-        renderAuditResults(data);
-    }
-}
-
-// ===== VA Audit =====
-document.getElementById('va-file-input').addEventListener('change', async e => {
-    if (!e.target.files.length) return;
-    const file = e.target.files[0];
-    document.getElementById('va-loading').classList.remove('hidden');
-    document.getElementById('va-results').classList.add('hidden');
-
-    const fd = new FormData(); fd.append('file', file);
-    const data = await fetch('/api/va-audit', {method:'POST', body:fd}).then(r=>r.json());
-    document.getElementById('va-loading').classList.add('hidden');
-
-    if (!data.success) { alert('审核失败: ' + data.error); return; }
-
-    // 基本信息
-    const infoItems = [
-        ['文件名', data.file_name], ['审核时间', data.audit_time],
-        ['客户姓名', data.customer_name||'-'], ['账户号码', data.account_number||'-'],
-        ['资产名称', data.asset_name||'-'], ['资产代码', data.asset_code||'-'],
-        ['交易平台', data.platform||'-'], ['成交日期', data.contract_date||'-'],
-        ['语言', data.language], ['交易类型', data.transaction_type],
-    ];
-    document.getElementById('va-info').innerHTML = infoItems.map(([k,v]) => `
-        <div style="background:#f9fafb;border-radius:8px;padding:10px;">
-            <div style="font-size:11px;color:#6b7280;">${k}</div>
-            <div style="font-size:13px;font-weight:600;margin-top:2px;">${escapeHtml(String(v))}</div>
-        </div>`).join('');
-
-    // 总体结论
-    const pass = data.overall === 'pass';
-    document.getElementById('va-overall-badge').textContent = pass ? '✅ 审核通过' : '❌ 审核未通过';
-    document.getElementById('va-overall-badge').className = 'result-badge ' + (pass ? 'pass' : 'fail');
-    document.getElementById('va-overall-note').textContent = pass
-        ? `所有 ${data.total} 项检查均通过`
-        : `${data.failed} 项检查未通过，请核查`;
-
-    // 统计
-    document.getElementById('va-stats').innerHTML = `
-        <div style="background:#dcfce7;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:28px;font-weight:700;color:#16a34a;">${data.passed}</div>
-            <div style="font-size:12px;color:#16a34a;">通过</div>
-        </div>
-        <div style="background:#fee2e2;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:28px;font-weight:700;color:#dc2626;">${data.failed}</div>
-            <div style="font-size:12px;color:#dc2626;">失败</div>
-        </div>
-        <div style="background:#f3f4f6;border-radius:10px;padding:16px;text-align:center;">
-            <div style="font-size:28px;font-weight:700;color:#374151;">${data.total}</div>
-            <div style="font-size:12px;color:#374151;">总计</div>
-        </div>`;
-
-    // 按类别分组显示
-    const groups = {};
-    for (const c of data.checks) {
-        if (!groups[c.category]) groups[c.category] = [];
-        groups[c.category].push(c);
-    }
-    const resultColor = {pass:'#16a34a', fail:'#dc2626', warning:'#d97706'};
-    const resultBg = {pass:'#dcfce7', fail:'#fee2e2', warning:'#fef3c7'};
-    const resultLabel = {pass:'通过', fail:'失败', warning:'警告'};
-    document.getElementById('va-checks').innerHTML = Object.entries(groups).map(([cat, items]) => `
-        <div style="margin-bottom:16px;">
-            <div style="font-size:12px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">${cat}</div>
-            ${items.map(c => `
-                <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6;">
-                    <span style="background:${resultBg[c.result]};color:${resultColor[c.result]};padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;white-space:nowrap;">${resultLabel[c.result]||c.result}</span>
-                    <div>
-                        <div style="font-size:13px;font-weight:500;">${escapeHtml(c.item)}</div>
-                        <div style="font-size:12px;color:#6b7280;margin-top:2px;">${escapeHtml(c.detail)}</div>
-                    </div>
-                </div>`).join('')}
-        </div>`).join('');
-
-    document.getElementById('va-results').classList.remove('hidden');
-    document.getElementById('va-results').scrollIntoView({behavior:'smooth'});
-});
-
-function resetVA() {
-    document.getElementById('va-file-input').value = '';
-    document.getElementById('va-results').classList.add('hidden');
-    window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ===== Chat =====
@@ -898,14 +968,7 @@ async function sendChat() {
     const q = input.value.trim(); if (!q) return;
     appendMsg(q, 'user'); input.value = '';
     document.getElementById('chat-send-btn').disabled = true;
-    if (!currentContractData) {
-        const prompt = `用户问题：${q}\n\n请用简洁专业的中文回答。`;
-        const data = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({question:q, contract_data:{}})}).then(r=>r.json());
-        appendMsg(data.answer, 'ai');
-        document.getElementById('chat-send-btn').disabled = false;
-        return;
-    }
-    const data = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({question:q, contract_data:currentContractData})}).then(r=>r.json());
+    const data = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({question:q, contract_data:{}})}).then(r=>r.json());
     appendMsg(data.answer, 'ai');
     document.getElementById('chat-send-btn').disabled = false;
 }
@@ -919,8 +982,372 @@ function appendMsg(text, role) {
     msgs.scrollTop = msgs.scrollHeight;
 }
 
-function escapeHtml(text) {
-    const d = document.createElement('div'); d.textContent = text; return d.innerHTML;
+// ===== 条款模板管理 =====
+let clauseData = {};
+let currentProduct = 'Stock';
+let currentSubtype = 'order';
+let currentLang = 'en';
+let clausesLoaded = false;
+
+const STOCK_SUBTYPES = ['order','orderHk','companyAction','companyActionHk','business','businessHk'];
+const SUBTYPE_LABELS = {
+    order: '买卖成交单', orderHk: '买卖 (HK)', companyAction: '公司行动',
+    companyActionHk: '公司行动 (HK)', business: '资金/股票', businessHk: 'HK IPO',
+};
+const VA_SUBTYPES = ['buy', 'sale'];
+const VA_SUBTYPE_LABELS = { buy: 'Buy 买入', sale: 'Sale 卖出' };
+const STATEMENT_SUBTYPES = ['monthly', 'bbInvest', 'southBound'];
+const STATEMENT_SUBTYPE_LABELS = { monthly: '投资月结单', bbInvest: 'BB Invest', southBound: 'Southbound 南向通' };
+
+// Products that use subtypes
+const PRODUCTS_WITH_SUBTYPES = { Stock: STOCK_SUBTYPES, VA: VA_SUBTYPES, Statement: STATEMENT_SUBTYPES };
+const ALL_SUBTYPE_LABELS = { ...SUBTYPE_LABELS, ...VA_SUBTYPE_LABELS, ...STATEMENT_SUBTYPE_LABELS };
+
+// 结果展示用的产品/子类型标签
+const PRODUCT_LABELS = { stock: '股票成交单', fund: '基金成交单', va: 'VA 虚拟资产', statement: '投资月结单' };
+const SUBTYPE_LABELS_FULL = ALL_SUBTYPE_LABELS;
+
+function getClauseVersion() {
+    if (currentProduct in PRODUCTS_WITH_SUBTYPES) {
+        return clauseData?.[currentProduct]?.[currentSubtype]?.['_meta']?.[currentLang]?.version || '';
+    }
+    return clauseData?.[currentProduct]?.['_meta']?.[currentLang]?.version || '';
+}
+
+function setClauseVersion(version) {
+    if (currentProduct in PRODUCTS_WITH_SUBTYPES) {
+        if (!clauseData[currentProduct]) clauseData[currentProduct] = {};
+        if (!clauseData[currentProduct][currentSubtype]) clauseData[currentProduct][currentSubtype] = {};
+        if (!clauseData[currentProduct][currentSubtype]['_meta']) clauseData[currentProduct][currentSubtype]['_meta'] = {};
+        clauseData[currentProduct][currentSubtype]['_meta'][currentLang] = { version };
+    } else {
+        if (!clauseData[currentProduct]) clauseData[currentProduct] = {};
+        if (!clauseData[currentProduct]['_meta']) clauseData[currentProduct]['_meta'] = {};
+        clauseData[currentProduct]['_meta'][currentLang] = { version };
+    }
+}
+
+function getClauseArray() {
+    if (currentProduct in PRODUCTS_WITH_SUBTYPES) {
+        return clauseData?.[currentProduct]?.[currentSubtype]?.[currentLang] || [];
+    }
+    return clauseData?.[currentProduct]?.[currentLang] || [];
+}
+
+function setClauseArray(arr) {
+    if (currentProduct in PRODUCTS_WITH_SUBTYPES) {
+        if (!clauseData[currentProduct]) clauseData[currentProduct] = {};
+        if (!clauseData[currentProduct][currentSubtype]) clauseData[currentProduct][currentSubtype] = {};
+        clauseData[currentProduct][currentSubtype][currentLang] = arr;
+    } else {
+        if (!clauseData[currentProduct]) clauseData[currentProduct] = {};
+        clauseData[currentProduct][currentLang] = arr;
+    }
+}
+
+async function loadClausesPage() {
+    if (clausesLoaded) return;
+    try {
+        const res = await fetch('/api/clauses');
+        clauseData = await res.json();
+        currentProduct = 'Stock';
+        currentSubtype = 'order';
+        currentLang = 'en';
+        // 渲染 Stock 子类型标签
+        const subtypeTabsEl = document.getElementById('clause-subtype-tabs');
+        subtypeTabsEl.innerHTML = STOCK_SUBTYPES.map(st =>
+            `<button class="clause-tab${st === 'order' ? ' active' : ''}" data-subtype="${st}" onclick="switchClauseSubtype('${st}')">${SUBTYPE_LABELS[st]}</button>`
+        ).join('');
+        subtypeTabsEl.style.display = '';
+        updateClauseTabs();
+        renderClauseList();
+        clausesLoaded = true;
+    } catch (e) {
+        document.getElementById('clause-list').innerHTML =
+            '<div class="empty-state">加载条款失败: ' + escapeHtml(e.message) + '</div>';
+    }
+}
+
+function switchClauseProduct(product) {
+    syncCurrentEdits();
+    currentProduct = product;
+    const subtypeTabsEl = document.getElementById('clause-subtype-tabs');
+    if (product in PRODUCTS_WITH_SUBTYPES) {
+        const subtypes = PRODUCTS_WITH_SUBTYPES[product];
+        const labels = product === 'Stock' ? SUBTYPE_LABELS : product === 'VA' ? VA_SUBTYPE_LABELS : STATEMENT_SUBTYPE_LABELS;
+        currentSubtype = subtypes[0];
+        // 动态渲染子类型标签
+        subtypeTabsEl.innerHTML = subtypes.map(st =>
+            `<button class="clause-tab${st === currentSubtype ? ' active' : ''}" data-subtype="${st}" onclick="switchClauseSubtype('${st}')">${labels[st]}</button>`
+        ).join('');
+        subtypeTabsEl.style.display = '';
+    } else {
+        currentSubtype = null;
+        subtypeTabsEl.style.display = 'none';
+    }
+    // VA/Fund/Statement 没有英文条款，默认切到 zh_hk
+    if ((product === 'VA' || product === 'Fund' || product === 'Statement') && currentLang === 'en') {
+        currentLang = 'zh_hk';
+    }
+    updateClauseTabs();
+    renderClauseList();
+}
+
+function switchClauseSubtype(subtype) {
+    syncCurrentEdits();
+    currentSubtype = subtype;
+    updateClauseTabs();
+    renderClauseList();
+}
+
+function switchClauseLang(lang) {
+    syncCurrentEdits();
+    currentLang = lang;
+    updateClauseTabs();
+    renderClauseList();
+}
+
+function updateClauseTabs() {
+    const productMap = {'Stock': 'Stock 股票', 'Fund': 'Fund 基金', 'VA': 'VA 虚拟资产', 'Statement': 'Statement 月结单'};
+    document.querySelectorAll('#clause-product-tabs .clause-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === productMap[currentProduct]);
+    });
+    // 子类型标签
+    document.querySelectorAll('#clause-subtype-tabs .clause-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.subtype === currentSubtype);
+    });
+    const langMap = {'en': 'English', 'zh_hk': '繁体中文', 'zh_cn': '简体中文'};
+    document.querySelectorAll('#clause-lang-tabs .clause-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent === langMap[currentLang]);
+        // VA/Fund/Statement 不显示英文标签
+        if (btn.textContent === 'English') {
+            btn.style.display = (currentProduct === 'VA' || currentProduct === 'Fund' || currentProduct === 'Statement') ? 'none' : '';
+        }
+    });
+    // 统计
+    const clauses = getClauseArray();
+    const version = getClauseVersion();
+    let label = productMap[currentProduct];
+    if (currentProduct in PRODUCTS_WITH_SUBTYPES && currentSubtype) {
+        label += ' / ' + (ALL_SUBTYPE_LABELS[currentSubtype] || currentSubtype);
+    }
+    let versionHtml = version ? ` · 模板版本: <strong>${escapeHtml(version)}</strong>` : '';
+    document.getElementById('clause-stats').innerHTML =
+        `<span style="font-size:13px;color:var(--color-text-secondary)">当前: <strong>${label}</strong> / <strong>${langMap[currentLang]}</strong> — 共 <strong>${clauses.length}</strong> 条条款${versionHtml}</span>`;
+}
+
+function renderClauseList() {
+    const list = document.getElementById('clause-list');
+    const clauses = getClauseArray();
+    list.innerHTML = clauses.map((c, i) => `
+        <div class="clause-item" data-index="${i}">
+            <div class="clause-item-header">
+                <span>${escapeHtml(c[0])}</span>
+                <button class="clause-item-delete" onclick="deleteClauseItem(${i})">删除</button>
+            </div>
+            <textarea data-clause-index="${i}">${escapeHtml(c[1])}</textarea>
+        </div>
+    `).join('');
+}
+
+function syncCurrentEdits() {
+    const clauses = getClauseArray();
+    if (!clauses.length) return;
+    const textareas = document.querySelectorAll('#clause-list textarea[data-clause-index]');
+    textareas.forEach(ta => {
+        const idx = parseInt(ta.dataset.clauseIndex);
+        if (clauses[idx]) clauses[idx][1] = ta.value;
+    });
+}
+
+function addClauseItem() {
+    syncCurrentEdits();
+    let clauses = getClauseArray();
+    if (!clauses.length) {
+        clauses = [];
+        setClauseArray(clauses);
+    }
+    clauses.push([`条款${clauses.length + 1}`, '']);
+    renderClauseList();
+    updateClauseTabs();
+    const textareas = document.querySelectorAll('#clause-list textarea');
+    if (textareas.length) textareas[textareas.length - 1].focus();
+}
+
+function deleteClauseItem(index) {
+    syncCurrentEdits();
+    const clauses = getClauseArray();
+    clauses.splice(index, 1);
+    clauses.forEach((c, i) => { c[0] = `条款${i + 1}`; });
+    renderClauseList();
+    updateClauseTabs();
+}
+
+async function saveAllClauses() {
+    syncCurrentEdits();
+    const msgEl = document.getElementById('clause-save-msg');
+    try {
+        const res = await fetch('/api/clauses', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(clauseData)
+        });
+        const data = await res.json();
+        if (res.ok) {
+            msgEl.textContent = '保存成功';
+            msgEl.className = 'clause-save-msg success';
+            setTimeout(() => { msgEl.className = 'clause-save-msg'; msgEl.textContent = ''; }, 3000);
+        } else {
+            msgEl.textContent = data.error || '保存失败';
+            msgEl.className = 'clause-save-msg error';
+        }
+    } catch (e) {
+        msgEl.textContent = '保存失败: ' + e.message;
+        msgEl.className = 'clause-save-msg error';
+    }
+}
+
+async function syncFolder() {
+    const path = document.getElementById('sync-folder-path').value.trim();
+    if (!path) return;
+    const btn = document.getElementById('sync-folder-btn');
+    const resultEl = document.getElementById('sync-folder-result');
+    btn.disabled = true;
+    btn.textContent = '同步中...';
+    resultEl.classList.remove('hidden');
+    resultEl.innerHTML = '<span style="color:var(--color-text-secondary)">正在扫描文件夹...</span>';
+    try {
+        const res = await fetch('/api/clauses/sync-folder', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ folder_path: path })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            // 分组显示
+            const byProduct = {};
+            for (const r of data.results) {
+                const key = r.product + (r.subtype ? '/' + r.subtype : '');
+                if (!byProduct[key]) byProduct[key] = [];
+                byProduct[key].push(r);
+            }
+            let html = `<div class="sync-summary">
+                <strong>同步完成</strong> — 扫描 ${data.total} 个文件，导入 ${data.imported} 个
+                ${data.errors_count ? `<span style="color:var(--color-danger);margin-left:8px">失败 ${data.errors_count} 个</span>` : ''}
+            </div><div class="sync-details">`;
+            for (const [key, items] of Object.entries(byProduct)) {
+                html += `<div class="sync-group"><strong>${escapeHtml(key)}</strong>: `;
+                html += items.map(i => {
+                    const langLabel = i.lang === 'zh_hk' ? '繁' : i.lang === 'zh_cn' ? '简' : i.lang === 'en' ? 'EN' : i.lang;
+                    return `${langLabel} ${i.count}条${i.version ? ' <span class="sync-ver">' + escapeHtml(i.version) + '</span>' : ''}`;
+                }).join(' · ');
+                html += `</div>`;
+            }
+            if (data.errors?.length) {
+                html += `<div class="sync-errors">失败文件: ${data.errors.map(e => escapeHtml(e.file) + ' (' + escapeHtml(e.error) + ')').join(', ')}</div>`;
+            }
+            html += '</div>';
+            resultEl.innerHTML = html;
+            resultEl.className = 'sync-folder-result sync-ok';
+            // 刷新条款数据
+            clausesLoaded = false;
+            await loadClausesPage();
+        } else {
+            resultEl.innerHTML = `<span style="color:var(--color-danger)">${escapeHtml(data.error || '同步失败')}</span>`;
+            resultEl.className = 'sync-folder-result sync-fail';
+        }
+    } catch (e) {
+        resultEl.innerHTML = `<span style="color:var(--color-danger)">同步失败: ${escapeHtml(e.message)}</span>`;
+        resultEl.className = 'sync-folder-result sync-fail';
+    }
+    btn.disabled = false;
+    btn.textContent = '一键同步';
+}
+
+async function importHtmlClauses(input) {
+    if (!input.files || !input.files[0]) return;
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+    const msgEl = document.getElementById('clause-save-msg');
+    try {
+        const res = await fetch('/api/clauses/import-html', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            syncCurrentEdits();
+            setClauseArray(data.clauses);
+            if (data.version) setClauseVersion(data.version);
+            renderClauseList();
+            updateClauseTabs();
+            msgEl.textContent = `已导入 ${data.count} 条条款` + (data.version ? ` (${data.version})` : '');
+            msgEl.className = 'clause-save-msg success';
+            setTimeout(() => { msgEl.className = 'clause-save-msg'; msgEl.textContent = ''; }, 3000);
+        } else {
+            msgEl.textContent = data.error || '导入失败';
+            msgEl.className = 'clause-save-msg error';
+        }
+    } catch (e) {
+        msgEl.textContent = '导入失败: ' + e.message;
+        msgEl.className = 'clause-save-msg error';
+    }
+    input.value = '';
+}
+
+async function importHtmlClausesBatch(input) {
+    if (!input.files || !input.files.length) return;
+    const formData = new FormData();
+    for (const f of input.files) formData.append('files', f);
+    const msgEl = document.getElementById('clause-save-msg');
+    const resultEl = document.getElementById('batch-import-result');
+    try {
+        const res = await fetch('/api/clauses/import-html-batch', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            syncCurrentEdits();
+            let details = [];
+            for (const r of data.results) {
+                const prod = currentProduct;
+                // 写入对应的 clauseData 位置
+                if (prod in PRODUCTS_WITH_SUBTYPES && r.subtype && r.lang) {
+                    if (!clauseData[prod]) clauseData[prod] = {};
+                    if (!clauseData[prod][r.subtype]) clauseData[prod][r.subtype] = {};
+                    clauseData[prod][r.subtype][r.lang] = r.clauses;
+                    if (r.version) {
+                        if (!clauseData[prod][r.subtype]['_meta']) clauseData[prod][r.subtype]['_meta'] = {};
+                        clauseData[prod][r.subtype]['_meta'][r.lang] = { version: r.version };
+                    }
+                    const subtypeLabel = ALL_SUBTYPE_LABELS[r.subtype] || r.subtype;
+                    const langLabel = r.lang === 'zh_hk' ? '繁体' : r.lang === 'zh_cn' ? '简体' : r.lang;
+                    details.push(`${subtypeLabel}/${langLabel}: ${r.count} 条` + (r.version ? ` (${r.version})` : ''));
+                } else if (r.lang) {
+                    if (!clauseData[prod]) clauseData[prod] = {};
+                    clauseData[prod][r.lang] = r.clauses;
+                    if (r.version) {
+                        if (!clauseData[prod]['_meta']) clauseData[prod]['_meta'] = {};
+                        clauseData[prod]['_meta'][r.lang] = { version: r.version };
+                    }
+                    const langLabel = r.lang === 'zh_hk' ? '繁体' : r.lang === 'zh_cn' ? '简体' : r.lang;
+                    details.push(`${langLabel}: ${r.count} 条` + (r.version ? ` (${r.version})` : ''));
+                }
+            }
+            renderClauseList();
+            updateClauseTabs();
+            // 显示详细结果
+            resultEl.innerHTML = `<strong>批量导入成功 (${data.results.length} 个文件)</strong><br>` +
+                details.map(d => `• ${escapeHtml(d)}`).join('<br>') +
+                (data.errors?.length ? `<br><span style="color:var(--color-danger)">失败 ${data.errors.length} 个: ${data.errors.map(e => e.file).join(', ')}</span>` : '');
+            resultEl.classList.remove('hidden');
+            msgEl.textContent = data.summary;
+            msgEl.className = 'clause-save-msg success';
+            setTimeout(() => { msgEl.className = 'clause-save-msg'; msgEl.textContent = ''; }, 5000);
+        } else {
+            msgEl.textContent = data.error || '批量导入失败';
+            msgEl.className = 'clause-save-msg error';
+        }
+    } catch (e) {
+        msgEl.textContent = '批量导入失败: ' + e.message;
+        msgEl.className = 'clause-save-msg error';
+    }
+    input.value = '';
 }
 </script>
 </body>

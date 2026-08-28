@@ -11,12 +11,12 @@
     <!-- ===== Nav ===== -->
     <nav class="nav">
         <div class="nav-brand">AI 审核平台</div>
-        <button class="nav-btn active" onclick="showPage('stock')">股票成交单</button>
-        <button class="nav-btn" onclick="showPage('fund')">基金成交单</button>
-        <button class="nav-btn" onclick="showPage('va')">VA 虚拟资产</button>
-        <button class="nav-btn" onclick="showPage('statement')">投资月结单</button>
-        <button class="nav-btn" onclick="showPage('clauses')">条款模板</button>
-        <button class="nav-btn" onclick="showPage('history')">历史记录</button>
+        <button class="nav-btn active" data-page="stock" onclick="showPage('stock')">股票成交单</button>
+        <button class="nav-btn" data-page="fund" onclick="showPage('fund')">基金成交单</button>
+        <button class="nav-btn" data-page="va" onclick="showPage('va')">VA 虚拟资产</button>
+        <button class="nav-btn" data-page="statement" onclick="showPage('statement')">投资月结单</button>
+        <button class="nav-btn" data-page="clauses" onclick="showPage('clauses')">条款模板</button>
+        <button class="nav-btn" data-page="history" onclick="showPage('history')">历史记录</button>
         <div class="nav-status">
             <span class="header-badge" id="ai-status">检测中...</span>
         </div>
@@ -84,6 +84,9 @@
                     <span class="file-size-total" id="stock-file-size"></span>
                 </div>
                 <div class="action-right">
+                    <label class="skip-ai-toggle" title="跳过 AI 审核，仅执行本地规则引擎（批量跑量更快）">
+                        <input type="checkbox" id="stock-skip-ai"> 跳过 AI 审核
+                    </label>
                     <button class="btn-clear" onclick="pClear('stock')">清空</button>
                     <button class="btn-run" id="stock-run-btn" onclick="pRunAudit('stock')">开始审核</button>
                 </div>
@@ -176,6 +179,9 @@
                     <span class="file-size-total" id="fund-file-size"></span>
                 </div>
                 <div class="action-right">
+                    <label class="skip-ai-toggle" title="跳过 AI 审核，仅执行本地规则引擎（批量跑量更快）">
+                        <input type="checkbox" id="fund-skip-ai"> 跳过 AI 审核
+                    </label>
                     <button class="btn-clear" onclick="pClear('fund')">清空</button>
                     <button class="btn-run" id="fund-run-btn" onclick="pRunAudit('fund')">开始审核</button>
                 </div>
@@ -714,7 +720,7 @@ async function pRunAudit(prefix) {
 
     progressFill.style.width = '0%';
     progressCount.textContent = `0 / ${total}`;
-    progressFile.textContent = '';
+    progressFile.textContent = '正在上传...';
 
     const fd = new FormData();
     state.files.forEach(f => fd.append('files', f));
@@ -724,32 +730,69 @@ async function pRunAudit(prefix) {
         const subtype = document.getElementById('statement-subtype')?.value || 'monthly';
         fd.append('subtype', subtype);
     }
+    // 跳过 AI 审核（股票/基金可用，批量跑量更快）
+    const skipAi = document.getElementById(prefix + '-skip-ai');
+    if (skipAi && skipAi.checked) fd.append('skip_ai', 'true');
 
-    try {
-        const resp = await fetch('/api/product-audit', { method: 'POST', body: fd });
-        const data = await resp.json();
+    // 使用 XMLHttpRequest 以获取真实的上传进度
+    const result = await new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/product-audit');
 
-        const results = data.results || [];
-        let completed = 0;
+        // 上传阶段：真实字节进度
+        xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+                const pct = Math.round(e.loaded / e.total * 100);
+                progressFill.style.width = pct + '%';
+                progressFile.textContent = `上传中 ${formatSize(e.loaded)} / ${formatSize(e.total)}`;
+                progressCount.textContent = `${pct}%`;
+            }
+        };
+        xhr.upload.onload = () => {
+            progressFill.style.width = '100%';
+            progressFile.textContent = '上传完成，正在审核...';
+            progressCount.textContent = `${total} 个文件`;
+        };
 
-        for (const r of results) {
-            completed++;
-            progressFill.style.width = (completed / total * 100) + '%';
-            progressCount.textContent = `${completed} / ${total}`;
-            progressFile.textContent = r.file_name;
-            state.results[r.file_name] = r;
-            await sleep(30);
-        }
+        xhr.onload = () => {
+            try {
+                resolve({ ok: true, data: JSON.parse(xhr.responseText) });
+            } catch (err) {
+                resolve({ ok: false, error: '响应解析失败' });
+            }
+        };
+        xhr.onerror = () => resolve({ ok: false, error: '网络错误，请重试' });
+        xhr.ontimeout = () => resolve({ ok: false, error: '请求超时，请重试' });
+        xhr.send(fd);
+    });
 
-        progressFill.style.width = '100%';
-        progressFile.textContent = '审核完成';
-        setTimeout(() => progress.classList.add('hidden'), 1000);
-        pRenderResults(data, prefix);
-        pRenderFileList(prefix);
-    } catch(e) {
-        progressFile.textContent = '审核失败，请重试';
+    if (!result.ok) {
+        progressFile.textContent = result.error;
         progressCount.textContent = '';
+        btn.disabled = false;
+        return;
     }
+
+    const data = result.data;
+    const results = data.results || [];
+    let completed = 0;
+    progressFile.textContent = '';
+    progressCount.textContent = `0 / ${total}`;
+
+    for (const r of results) {
+        completed++;
+        progressFill.style.width = (completed / total * 100) + '%';
+        progressCount.textContent = `${completed} / ${total}`;
+        progressFile.textContent = r.file_name;
+        state.results[r.file_name] = r;
+        await sleep(30);
+    }
+
+    progressFill.style.width = '100%';
+    progressFile.textContent = '审核完成';
+    setTimeout(() => progress.classList.add('hidden'), 1000);
+    pRenderResults(data, prefix);
+    pRenderFileList(prefix);
     btn.disabled = false;
 }
 
@@ -911,7 +954,8 @@ function showPage(name) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
-    event.target.classList.add('active');
+    const btn = document.querySelector(`.nav-btn[data-page="${name}"]`);
+    if (btn) btn.classList.add('active');
     if (name === 'history') loadHistory();
     if (name === 'clauses') loadClausesPage();
 }

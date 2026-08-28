@@ -5,8 +5,10 @@ FastAPI Web 应用 — 上传 PDF -> 解析 -> AI 审核 -> 展示报告
 import os
 import json
 import shutil
+import asyncio
 from pathlib import Path
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -57,7 +59,7 @@ def get_audit_engine() -> AuditEngine:
     return AuditEngine(api_key=api_key)
 
 def save_record(data: dict):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
     record_path = RECORDS_DIR / f"{timestamp}.json"
     with open(record_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
@@ -67,6 +69,13 @@ def save_record(data: dict):
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
+    return templates.TemplateResponse(request, "landing.html", {
+        "title": "AI 成交单审核平台",
+    })
+
+
+@app.get("/app", response_class=HTMLResponse)
+async def app_page(request: Request):
     return templates.TemplateResponse(request, "index.html", {
         "title": "AI 成交单审核平台",
     })
@@ -240,46 +249,52 @@ async def export_clause_audit():
     ws3.append(headers3)
     style_header(ws3)
 
-    # 读取所有条款审核记录
+    # 读取所有条款审核记录（兼容旧的扁平 clause_audit 与新的嵌套 *_audit 格式）
     for f in sorted(RECORDS_DIR.glob("*.json"), reverse=True)[:500]:
         try:
             with open(f, "r", encoding="utf-8") as fp:
                 d = json.load(fp)
-            if d.get("type") != "clause_audit":
+
+            # 统一取出条款审核数据：旧格式直接就是 d，新格式嵌套在 clause_audit 里
+            if d.get("type") == "clause_audit":
+                cd = d
+            elif isinstance(d.get("clause_audit"), dict):
+                cd = d["clause_audit"]
+            else:
                 continue
 
-            pass_fill = GREEN if d.get("overall") == "pass" else RED
+            pass_fill = GREEN if cd.get("overall") == "pass" else RED
 
             # 汇总行
             row1 = [
-                d.get("file_name", ""),
-                d.get("audit_time", ""),
-                d.get("doc_type", ""),
-                "HK" if "HK" in d.get("doc_type","") else ("US" if "US" in d.get("doc_type","") else d.get("doc_type","")),
-                d.get("language", ""),
-                d.get("transaction_type", ""),
-                d.get("customer_name", ""),
-                d.get("account_number", ""),
-                d.get("contract_date", ""),
-                d.get("en_total", 0),
-                d.get("en_passed", 0),
-                d.get("en_total", 0) - d.get("en_passed", 0),
-                d.get("zh_total", 0),
-                d.get("zh_passed", 0),
-                d.get("zh_total", 0) - d.get("zh_passed", 0),
-                "通过" if d.get("overall") == "pass" else "失败",
-                "; ".join(d.get("issues", [])),
+                cd.get("file_name", ""),
+                cd.get("audit_time", ""),
+                cd.get("doc_type", ""),
+                "HK" if "HK" in cd.get("doc_type","") else ("US" if "US" in cd.get("doc_type","") else cd.get("doc_type","")),
+                cd.get("language", ""),
+                cd.get("transaction_type", ""),
+                cd.get("customer_name", ""),
+                cd.get("account_number", ""),
+                cd.get("contract_date", ""),
+                cd.get("en_total", 0),
+                cd.get("en_passed", 0),
+                cd.get("en_total", 0) - cd.get("en_passed", 0),
+                cd.get("zh_total", 0),
+                cd.get("zh_passed", 0),
+                cd.get("zh_total", 0) - cd.get("zh_passed", 0),
+                "通过" if cd.get("overall") == "pass" else "失败",
+                "; ".join(cd.get("issues", [])),
             ]
             ws1.append(row1)
             style_row(ws1, ws1.max_row, pass_fill)
 
             # 英文条款行
-            for c in d.get("en_clauses", []):
+            for c in cd.get("en_clauses", []):
                 r_fill = GREEN if c.get("result") == "pass" else RED
                 ws2.append([
-                    d.get("file_name",""),
-                    d.get("customer_name",""),
-                    d.get("doc_type",""),
+                    cd.get("file_name",""),
+                    cd.get("customer_name",""),
+                    cd.get("doc_type",""),
                     c.get("clause_num",""),
                     c.get("keyword","")[:80],
                     "通过" if c.get("result") == "pass" else "失败",
@@ -288,12 +303,12 @@ async def export_clause_audit():
                 style_row(ws2, ws2.max_row, r_fill)
 
             # 中文条款行
-            for c in d.get("zh_clauses", []):
+            for c in cd.get("zh_clauses", []):
                 r_fill = GREEN if c.get("result") == "pass" else RED
                 ws3.append([
-                    d.get("file_name",""),
-                    d.get("customer_name",""),
-                    d.get("doc_type",""),
+                    cd.get("file_name",""),
+                    cd.get("customer_name",""),
+                    cd.get("doc_type",""),
                     c.get("clause_num",""),
                     c.get("keyword","")[:80],
                     "通过" if c.get("result") == "pass" else "失败",
@@ -935,7 +950,7 @@ async def import_html_clauses_batch(files: list[UploadFile] = File(...)):
 
 # ===== 产品审核（统一端点） =====
 @app.post("/api/product-audit", response_class=JSONResponse)
-async def product_audit(files: list[UploadFile] = File(...), product: str = Form(...), subtype: Optional[str] = Form(None)):
+async def product_audit(files: list[UploadFile] = File(...), product: str = Form(...), subtype: Optional[str] = Form(None), skip_ai: bool = Form(False)):
     """统一产品审核端点：条款审核 + AI/VA 审核。product=auto 时自动识别每个文件的类型"""
     if product not in ("stock", "fund", "va", "statement", "auto"):
         return JSONResponse({"error": f"不支持的产品类型: {product}"}, status_code=400)
@@ -951,20 +966,21 @@ async def product_audit(files: list[UploadFile] = File(...), product: str = Form
         return JSONResponse({"error": f"单次最多上传 200 份文件，当前 {len(files)} 份"}, status_code=400)
 
     auditor = ContractAuditor()
-    results = []
-    errors = []
 
-    for file in files:
+    # 并行审核：所有文件并发处理，避免逐个串行等待 AI 调用
+    def process_one(file) -> dict:
         if not file.filename or not file.filename.lower().endswith('.pdf'):
-            errors.append({"file": file.filename, "error": "非 PDF 文件"})
-            continue
+            return {"error": {"file": file.filename, "error": "非 PDF 文件"}}
 
         ts = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         safe_name = Path(file.filename).name or "file.pdf"
         file_path = UPLOAD_DIR / f"{ts}_{safe_name}"
+
+        # 文件字节需要在 async 上下文中读取，这里读的是 UploadFile 的同步副本
+        content = file._read_bytes if hasattr(file, "_read_bytes") else None
         try:
             with open(file_path, "wb") as f:
-                f.write(await file.read())
+                f.write(content)
 
             item = {"file_name": file.filename.replace("\\", "/")}
 
@@ -990,7 +1006,7 @@ async def product_audit(files: list[UploadFile] = File(...), product: str = Form
             item["product"] = effective_product
 
             # 2. AI 审核（股票 + 基金）
-            if effective_product in ("stock", "fund"):
+            if effective_product in ("stock", "fund") and not skip_ai:
                 try:
                     parser = PDFParser()
                     contract_data = parser.parse(str(file_path))
@@ -1018,9 +1034,27 @@ async def product_audit(files: list[UploadFile] = File(...), product: str = Form
                     item["va_audit"] = None
 
             save_record({"type": f"{effective_product}_audit", **item})
-            results.append(item)
+            return {"result": item}
         except Exception as e:
-            errors.append({"file": file.filename, "error": str(e)})
+            return {"error": {"file": file.filename, "error": str(e)}}
+
+    # 读取所有文件字节（async，仅读取）
+    for file in files:
+        file._read_bytes = await file.read()
+
+    # 并发执行，IO 密集型适当放宽线程数
+    workers = min(len(files), 10)
+    loop = asyncio.get_running_loop()
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        outcomes = await asyncio.gather(*[loop.run_in_executor(pool, process_one, f) for f in files])
+
+    results = []
+    errors = []
+    for outcome in outcomes:
+        if "result" in outcome:
+            results.append(outcome["result"])
+        elif "error" in outcome:
+            errors.append(outcome["error"])
 
     return {"success": True, "total": len(results), "errors": errors, "results": results}
 
@@ -1075,33 +1109,40 @@ async def export_excel():
             with open(f, "r", encoding="utf-8") as fp:
                 data = json.load(fp)
 
+            # VA 记录：旧格式 flat va，新格式嵌套 va_audit
+            va = None
             if data.get("type") == "va":
+                va = data
+            elif isinstance(data.get("va_audit"), dict):
+                va = data["va_audit"]
+
+            if va:
                 row = [
-                    data.get("file_name", ""),
-                    data.get("audit_time", ""),
-                    data.get("customer_name", ""),
-                    data.get("account_number", ""),
-                    data.get("asset_name", ""),
-                    data.get("asset_code", ""),
-                    data.get("language", ""),
-                    data.get("transaction_type", ""),
-                    data.get("contract_date", ""),
-                    data.get("total", 0),
-                    data.get("passed", 0),
-                    data.get("failed", 0),
-                    "通过" if data.get("overall") == "pass" else "失败",
+                    va.get("file_name", ""),
+                    va.get("audit_time", ""),
+                    va.get("customer_name", ""),
+                    va.get("account_number", ""),
+                    va.get("asset_name", ""),
+                    va.get("asset_code", ""),
+                    va.get("language", ""),
+                    va.get("transaction_type", ""),
+                    va.get("contract_date", ""),
+                    va.get("total", 0),
+                    va.get("passed", 0),
+                    va.get("failed", 0),
+                    "通过" if va.get("overall") == "pass" else "失败",
                 ]
                 r = ws2.append(row)
                 last = ws2.max_row
-                fill = pass_fill if data.get("overall") == "pass" else fail_fill
+                fill = pass_fill if va.get("overall") == "pass" else fail_fill
                 for cell in ws2[last]:
                     cell.fill = fill
 
                 # 写详细检查项
-                for check in data.get("checks", []):
+                for check in va.get("checks", []):
                     ws3.append([
-                        data.get("file_name", ""),
-                        data.get("customer_name", ""),
+                        va.get("file_name", ""),
+                        va.get("customer_name", ""),
                         check.get("category", ""),
                         check.get("item", ""),
                         check.get("result", ""),
@@ -1112,24 +1153,32 @@ async def export_excel():
                     f3 = pass_fill if r == "pass" else (fail_fill if r == "fail" else warn_fill)
                     ws3[last3][4].fill = f3
 
-            elif data.get("success"):
-                cd = data.get("contract_data", {})
+            # 成交单 AI 审核记录：旧格式 success+contract_data，新格式嵌套 ai_audit
+            ai = None
+            if data.get("success") and isinstance(data.get("contract_data"), dict):
+                ai = {"data": data, "cd": data.get("contract_data", {})}
+            elif isinstance(data.get("ai_audit"), dict):
+                ai = {"data": data.get("ai_audit", {}), "cd": data.get("clause_audit", {}) or {}}
+
+            if ai:
+                d_ai = ai["data"]
+                cd = ai["cd"]
                 row = [
-                    data.get("file_name", ""),
-                    data.get("audit_time", ""),
-                    f"{cd.get('customer_name','')} {cd.get('customer_name_cn','')}".strip(),
+                    data.get("file_name", cd.get("file_name", "")),
+                    cd.get("audit_time", data.get("audit_time", "")),
+                    f"{cd.get('customer_name','')}".strip(),
                     cd.get("account_number", ""),
-                    f"{cd.get('stock_name','')} ({cd.get('stock_code','')})".strip(),
+                    "",
                     cd.get("contract_date", ""),
-                    data.get("critical_count", 0),
-                    data.get("warning_count", 0),
-                    data.get("info_count", 0),
-                    data.get("total_findings", 0),
-                    data.get("ai_summary", "")[:100],
+                    d_ai.get("critical_count", 0),
+                    d_ai.get("warning_count", 0),
+                    d_ai.get("info_count", 0),
+                    d_ai.get("total_findings", 0),
+                    d_ai.get("ai_summary", "")[:100],
                 ]
                 ws1.append(row)
                 last = ws1.max_row
-                fill = pass_fill if data.get("critical_count", 0) == 0 else fail_fill
+                fill = pass_fill if d_ai.get("critical_count", 0) == 0 else fail_fill
                 for cell in ws1[last]:
                     cell.fill = fill
         except Exception:

@@ -423,6 +423,14 @@ class ContractAuditor:
         en_checks = self._check_clauses(raw_text, en_clauses, "EN")
         zh_checks = self._check_clauses(raw_text, zh_clauses, "ZH")
 
+        # VA 分期成交字段为条件字段：仅在多笔分期成交时出现。
+        # 单笔成交（无 Partial Execution）时对应信息已由「成交數量/平均成交價/交易金額」覆盖，标记为不适用。
+        if doc_type == "VA" and "Partial Execution" not in raw_text:
+            for c in zh_checks:
+                if c.clause_num.removeprefix("ZH-") in ("条款22", "条款23", "条款24"):
+                    c.result = "pass"
+                    c.note = "单笔成交，无分期成交字段（不适用）"
+
         en_passed = sum(1 for c in en_checks if c.result == "pass")
         zh_passed = sum(1 for c in zh_checks if c.result == "pass")
 
@@ -793,12 +801,31 @@ class ContractAuditor:
         variants.append("".join(kept))
         return variants
 
+    def _plural_variants(self, seg: str) -> set:
+        """生成英文单词单复数容忍变体（如 Quantity/Quantities），去除空白后返回候选集。"""
+        seg = re.sub(r"\s+", "", seg)
+        candidates = {seg}
+        for plural, singular in (("Quantities", "Quantity"), ("quantities", "quantity")):
+            candidates.add(seg.replace(plural, singular))
+            candidates.add(seg.replace(singular, plural))
+        return candidates
+
     def _check_clauses(self, text: str, clauses: list, lang: str) -> list[ClauseCheck]:
         results = []
         variants = self._normalized_variants(text)
         for name, keyword in clauses:
-            normalized_keyword = re.sub(r"\s+", "", keyword)
-            found = any(normalized_keyword in v for v in variants)
+            # 双语标签（EN\nZH）在 PDF 中常被值单元格隔开（EN / 值 / ZH），
+            # 不能按整体连续匹配，需逐段独立匹配。
+            segments = [s for s in keyword.split("\n") if re.sub(r"\s+", "", s)]
+            if len(segments) > 1:
+                found = all(
+                    any(c in v for c in self._plural_variants(seg) for v in variants)
+                    for seg in segments
+                )
+            else:
+                found = any(
+                    c in v for c in self._plural_variants(keyword) for v in variants
+                )
             results.append(ClauseCheck(
                 clause_num=f"{lang}-{name}",
                 keyword=keyword,

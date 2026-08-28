@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 成交单审核平台</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+        }
+        .landing {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #eafff4 0%, #f6ffe9 45%, #ffffef 100%);
+        }
+        .landing-bg { position: absolute; inset: 0; pointer-events: none; }
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.7;
+            animation: blobFloat 14s ease-in-out infinite;
+        }
+        .blob-1 { width: 420px; height: 420px; background: #a8e6cf; top: -120px; left: -100px; }
+        .blob-2 { width: 380px; height: 380px; background: #f9f871; bottom: -140px; right: -80px; animation-delay: -4s; }
+        .blob-3 { width: 300px; height: 300px; background: #7fe0b2; top: 40%; right: 15%; animation-delay: -8s; }
+        .blob-4 { width: 260px; height: 260px; background: #ffe27a; top: 15%; left: 20%; animation-delay: -10s; }
+        @keyframes blobFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -30px) scale(1.1); }
+            66% { transform: translate(-30px, 25px) scale(0.95); }
+        }
+        .float-leaf {
+            position: absolute; font-size: 28px; opacity: 0.6;
+            animation: leafFloat 8s ease-in-out infinite;
+        }
+        .leaf-1 { top: 12%; left: 12%; }
+        .leaf-2 { top: 22%; right: 14%; font-size: 34px; animation-delay: -2s; }
+        .leaf-3 { bottom: 18%; left: 18%; font-size: 30px; animation-delay: -4s; }
+        .leaf-4 { bottom: 24%; right: 24%; font-size: 24px; animation-delay: -6s; }
+        .leaf-5 { top: 55%; left: 8%; font-size: 24px; animation-delay: -3s; }
+        @keyframes leafFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-22px) rotate(12deg); }
+        }
+
+        .landing-content {
+            position: relative; z-index: 10; text-align: center;
+            padding: 40px 24px; max-width: 620px;
+            animation: contentIn 0.8s ease both;
+        }
+        @keyframes contentIn {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .landing-badge {
+            display: inline-block; background: #ffffffcc; color: #1f8a5b;
+            border: 1px solid #cdeee0; font-size: 13px; font-weight: 600;
+            padding: 6px 18px; border-radius: 30px; margin-bottom: 22px;
+            backdrop-filter: blur(6px);
+        }
+        .landing-title {
+            font-size: 46px; font-weight: 800; line-height: 1.15;
+            color: #145c3f; margin-bottom: 18px; letter-spacing: -0.5px;
+        }
+        .landing-title::after {
+            content: ''; display: block; width: 64px; height: 5px; border-radius: 3px;
+            background: linear-gradient(90deg, #63d6a3, #f7d94f); margin: 18px auto 0;
+        }
+        .landing-subtitle {
+            font-size: 16px; line-height: 1.7; color: #4a6b5c; margin-bottom: 30px;
+        }
+        .landing-products {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 36px;
+        }
+        .lp-item {
+            display: flex; align-items: center; gap: 8px;
+            background: #ffffffb3; border: 1px solid #e7f3dd; border-radius: 16px;
+            padding: 10px 18px; font-size: 14px; font-weight: 600; color: #2f6b4f;
+            backdrop-filter: blur(6px); transition: transform 0.2s ease, box-shadow 0.2s ease;
+            animation: cardIn 0.5s ease both;
+        }
+        .lp-item:nth-child(1) { animation-delay: 0.10s; }
+        .lp-item:nth-child(2) { animation-delay: 0.18s; }
+        .lp-item:nth-child(3) { animation-delay: 0.26s; }
+        .lp-item:nth-child(4) { animation-delay: 0.34s; }
+        .lp-item:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(84, 179, 127, 0.18); }
+        .lp-emoji { font-size: 20px; }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .landing-cta {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(90deg, #3ecf8e, #7bd93f); color: #fff;
+            border: none; font-size: 17px; font-weight: 700; padding: 16px 40px;
+            border-radius: 40px; cursor: pointer; text-decoration: none;
+            box-shadow: 0 12px 28px rgba(62, 207, 142, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .landing-cta:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 18px 34px rgba(62, 207, 142, 0.45); }
+        .cta-arrow { transition: transform 0.2s ease; }
+        .landing-cta:hover .cta-arrow { transform: translateX(4px); }
+        .landing-hint { margin-top: 18px; font-size: 12px; color: #7ba08f; }
+
+        @media (max-width: 640px) {
+            .landing-title { font-size: 34px; }
+            .landing-subtitle { font-size: 14px; }
+            .lp-item { padding: 8px 14px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing">
+        <div class="landing-bg">
+            <span class="blob blob-1"></span>
+            <span class="blob blob-2"></span>
+            <span class="blob blob-3"></span>
+            <span class="blob blob-4"></span>
+            <span class="float-leaf leaf-1">🌿</span>
+            <span class="float-leaf leaf-2">🍋</span>
+            <span class="float-leaf leaf-3">🌱</span>
+            <span class="float-leaf leaf-4">✨</span>
+            <span class="float-leaf leaf-5">🍃</span>
+        </div>
+
+        <div class="landing-content">
+            <div class="landing-badge">HK 投资成交单 · AI 辅助审核</div>
+            <h1 class="landing-title">AI 成交单<br>智能审核平台</h1>
+            <p class="landing-subtitle">
+                将成交单与官方模板自动对照，<br>
+                找出缺失或不一致的条款，几分钟完成人工数小时的核对。
+            </p>
+
+            <div class="landing-products">
+                <div class="lp-item"><span class="lp-emoji">📈</span><span>股票成交单</span></div>
+                <div class="lp-item"><span class="lp-emoji">💼</span><span>基金成交单</span></div>
+                <div class="lp-item"><span class="lp-emoji">🪙</span><span>VA 虚拟资产</span></div>
+                <div class="lp-item"><span class="lp-emoji">🗓️</span><span>投资月结单</span></div>
+            </div>
+
+            <a class="landing-cta" href="/app">
+                开始使用
+                <span class="cta-arrow">→</span>
+            </a>
+
+            <div class="landing-hint">条款核查 + VA 专项检查完全离线 · AI 复核可选</div>
+        </div>
+    </div>
+</body>
+</html>
